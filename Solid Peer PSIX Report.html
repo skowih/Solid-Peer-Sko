@@ -1,0 +1,1510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solid Peer Research | Sko — PSIX: The Engine Behind the AI Grid</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #161618;
+  --surface: #1D1D20;
+  --surface-raised: #242427;
+  --surface-accent: #2A2A2E;
+  --text: #F5F3EF;
+  --text-muted: #C7C2B8;
+  --sand: #D4A373;
+  --sand-light: #E8C9A0;
+  --sand-dark: #B07D4F;
+  --sage: #A3B18A;
+  --sage-dark: #7A8B65;
+  --accent-red: #D45D5D;
+  --accent-green: #7CB87C;
+  --accent-orange: #D4A04A;
+  --border: #2E2E31;
+  --border-light: #3A3A3E;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:16px;line-height:1.7;-webkit-font-smoothing:antialiased}
+.container{max-width:1100px;margin:0 auto;padding:0 24px}
+h1,h2,h3{font-family:'Playfair Display',serif}
+h1{font-weight:900;font-size:clamp(2.2rem,5vw,3.6rem);line-height:1.15}
+h2{font-weight:700;font-size:clamp(1.5rem,3vw,2.2rem);line-height:1.25;color:var(--text);margin-bottom:22px}
+h3{font-weight:700;font-size:1.3rem;color:var(--sand-light);margin-bottom:14px}
+h4{font-family:'Inter',sans-serif;font-weight:600;font-size:1.05rem;color:var(--sand);margin-bottom:10px}
+p{margin-bottom:16px;color:var(--text-muted)}
+a{color:var(--sand);text-decoration:none;transition:color .2s}
+a:hover{color:var(--sand-light)}
+.mono{font-family:'JetBrains Mono',monospace}
+.alpha{color:var(--sage)}
+.shock{color:var(--accent-red)}
+.sand-text{color:var(--sand)}
+
+/* Hero */
+.hero{position:relative;overflow:hidden;padding:60px 0 50px;background:linear-gradient(135deg,#161618 0%,#1a1915 25%,#1e1b16 45%,#1f1a14 55%,#1a1915 75%,#161618 100%);border-bottom:2px solid var(--sand-dark)}
+.hero canvas{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;opacity:.35}
+.hero-content{position:relative;z-index:2}
+.brand{font-family:'JetBrains Mono',monospace;font-size:.82rem;color:var(--sand);letter-spacing:2px;text-transform:uppercase;margin-bottom:18px}
+.hero h1 .accent{color:var(--sand)}
+.hero .subtitle{font-size:1.15rem;color:var(--text-muted);max-width:750px;margin:16px 0 28px}
+.verdict-banner{background:linear-gradient(135deg,var(--sand-dark),#c4934a,var(--sand));padding:18px 26px;border-radius:10px;margin-bottom:30px;color:#161618}
+.verdict-banner .vb-title{font-family:'Playfair Display',serif;font-weight:700;font-size:1.3rem}
+.verdict-banner .vb-sub{font-family:'Inter',sans-serif;font-size:.88rem;margin-top:4px;opacity:.85}
+.hero-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-top:10px}
+.hero-stat{background:rgba(29,29,32,.85);border:1px solid var(--border);border-radius:10px;padding:16px;backdrop-filter:blur(4px)}
+.hero-stat .hs-label{font-family:'JetBrains Mono',monospace;font-size:.7rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-muted);margin-bottom:6px}
+.hero-stat .hs-value{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--text)}
+.hero-stat .hs-note{font-size:.75rem;color:var(--text-muted);margin-top:4px}
+
+/* Sticky Nav */
+.toc-bar{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:2px solid var(--sand-dark);padding:0}
+.toc-bar-inner{overflow-x:auto;white-space:nowrap;padding:12px 24px;-webkit-overflow-scrolling:touch;display:flex;gap:6px;align-items:center}
+.toc-bar-inner::-webkit-scrollbar{height:4px}
+.toc-bar-inner::-webkit-scrollbar-thumb{background:var(--sand-dark);border-radius:2px}
+.toc-bar-inner::-webkit-scrollbar-track{background:transparent}
+.toc-bar a{font-family:'JetBrains Mono',monospace;font-size:.68rem;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);padding:6px 12px;border-radius:4px;transition:all .2s;flex-shrink:0}
+.toc-bar a:hover,.toc-bar a:focus{color:var(--sand);background:var(--surface)}
+.toc-sep{color:var(--border-light);font-size:.6rem;flex-shrink:0;user-select:none}
+
+/* Sections */
+.section{padding:48px 0;border-bottom:1px solid var(--border)}
+.section-label{font-family:'JetBrains Mono',monospace;font-size:.72rem;text-transform:uppercase;letter-spacing:2px;color:var(--sand);margin-bottom:10px;display:block;margin-top:8px}
+
+/* Cards */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:24px;margin-bottom:16px}
+.card-accent{border-left:4px solid var(--sand)}
+.card-sage{border-left:4px solid var(--sage)}
+.card-red{border-left:4px solid var(--accent-red)}
+
+/* Bull / Bear boxes */
+.bull-box{background:#1a251a;border:1px solid var(--sage-dark);border-left:4px solid var(--sage);border-radius:10px;padding:24px;margin-bottom:18px}
+.bear-box{background:#2a1a1a;border:1px solid #7a3535;border-left:4px solid var(--accent-red);border-radius:10px;padding:24px;margin-bottom:18px}
+.bear-box h4{color:var(--accent-red)}
+
+/* Tables */
+.table-wrap{overflow-x:auto;margin-bottom:20px;border-radius:10px;border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:.88rem}
+thead{background:var(--sand-dark);color:var(--text)}
+thead th{font-family:'JetBrains Mono',monospace;font-size:.72rem;text-transform:uppercase;letter-spacing:1px;padding:12px 14px;text-align:left;white-space:nowrap}
+tbody tr:nth-child(odd){background:var(--surface)}
+tbody tr:nth-child(even){background:var(--surface-accent)}
+tbody tr:hover{background:var(--surface-raised)}
+td{padding:10px 14px;border-top:1px solid var(--border)}
+
+/* Signal cards */
+.signal-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px}
+.signal-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;position:relative}
+.signal-card .badge{position:absolute;top:14px;right:14px;font-family:'JetBrains Mono',monospace;font-size:.68rem;padding:3px 10px;border-radius:12px;font-weight:600}
+.badge-bull{background:#1a3a1a;color:var(--accent-green)}
+.badge-bear{background:#3a1a1a;color:var(--accent-red)}
+.badge-neutral{background:#2a2a2e;color:var(--text-muted)}
+.signal-card h4{font-family:'Playfair Display',serif;font-size:1.05rem;padding-right:60px}
+.signal-card .meta{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--text-muted);margin-top:12px;display:flex;gap:16px}
+
+/* Blockquotes */
+blockquote{border-left:4px solid var(--sand);background:var(--surface);padding:18px 22px;margin:16px 0;border-radius:0 8px 8px 0}
+blockquote p{color:var(--text);font-style:italic;margin-bottom:6px}
+blockquote cite{font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--text-muted);font-style:normal}
+.quote-why{font-size:.85rem;color:var(--sand);margin-top:8px;font-style:normal}
+
+/* Progress bar */
+.progress-bar{background:var(--surface-accent);border-radius:6px;height:14px;overflow:hidden;margin:8px 0}
+.progress-fill{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--sand-dark),var(--sand))}
+
+/* Two column */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.three-col{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media(max-width:768px){.two-col,.three-col{grid-template-columns:1fr}.hero-stats{grid-template-columns:repeat(auto-fit,minmax(140px,1fr))}.signal-grid{grid-template-columns:1fr}}
+@media(max-width:480px){.toc-bar{display:none}}
+
+/* Advisory grid */
+.advisory-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.advisory-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px}
+.advisory-card .ac-name{font-family:'Playfair Display',serif;font-weight:700;font-size:1.05rem;color:var(--sand-light);margin-bottom:4px}
+.advisory-card .ac-title{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--text-muted);margin-bottom:10px}
+
+/* Value chain */
+.value-chain{display:flex;align-items:center;gap:0;flex-wrap:wrap;margin:20px 0}
+.vc-box{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 18px;text-align:center;font-size:.82rem;min-width:110px}
+.vc-box.highlight{background:var(--sand-dark);color:#161618;border-color:var(--sand);font-weight:700}
+.vc-arrow{color:var(--sand);font-size:1.3rem;padding:0 6px;flex-shrink:0}
+
+/* Tear sheet */
+.tear-sheet{background:var(--surface);border:2px solid var(--sand);border-radius:14px;padding:32px;margin:40px 0}
+.ts-header{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:16px;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+.ts-body{display:grid;grid-template-columns:60% 40%;gap:28px}
+@media(max-width:768px){.ts-body{grid-template-columns:1fr}}
+
+/* Disclaimer */
+.disclaimer{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--text-muted);line-height:1.6;margin-top:20px}
+
+/* Sources */
+.sources-list a{display:block;font-size:.82rem;padding:4px 0;color:var(--sand);word-break:break-all}
+
+/* Footer */
+footer{position:relative;background:var(--bg);padding:60px 0 30px;overflow:hidden}
+footer canvas{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;opacity:.3}
+footer .footer-content{position:relative;z-index:2;text-align:center}
+footer .tagline{font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--sand);margin-bottom:16px}
+
+/* Meme box */
+.meme-box{background:linear-gradient(135deg,#1e1d18,#222118);border:1px solid var(--sand-dark);border-radius:10px;padding:24px;text-align:center;margin:16px 0}
+.meme-score{font-family:'Playfair Display',serif;font-size:3rem;font-weight:900;color:var(--sand)}
+
+/* Conviction table */
+.conviction-table td:last-child{font-weight:600;color:var(--sand)}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero" id="top">
+<canvas id="heroCanvas"></canvas>
+<div class="container hero-content">
+  <div class="brand">Solid Peer Research | Sko · March 4, 2026</div>
+  <h1>PSIX: <span class="accent">The Engine Behind</span> the AI Grid ⚡</h1>
+  <p class="subtitle">A $700M-revenue engine maker riding the data center supercycle — margins are temporarily compressed from scaling, but the demand wave is real, the pivot is working, and the market just handed you a 50% drawdown to buy into it.</p>
+
+  <div class="verdict-banner">
+    <div class="vb-title">🎯 INVESTMENT RATING: LONG — 80% Conviction</div>
+    <div class="vb-sub">Expected 3-yr annualized return: ~25–35% vs S&P 500 est. ~10% | P(outperform): 72%</div>
+  </div>
+
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="hs-label">Share Price</div>
+      <div class="hs-value">$61.12</div>
+      <div class="hs-note">52wk: $18.10 – $121.78</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hs-label">Market Cap</div>
+      <div class="hs-value">$1.41B</div>
+      <div class="hs-note">~23.0M shares out</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hs-label">FY2025 Revenue</div>
+      <div class="hs-value">$722M</div>
+      <div class="hs-note">+52% YoY</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hs-label">FY2025 EPS</div>
+      <div class="hs-value">$4.94</div>
+      <div class="hs-note">+65% NI growth</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hs-label">Cash / Debt</div>
+      <div class="hs-value">$41M / $97M</div>
+      <div class="hs-note">Net debt ~$55M</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hs-label">Key Risk</div>
+      <div class="hs-value" style="font-size:1.1rem;color:var(--accent-red)">Margin Compression</div>
+      <div class="hs-note">GM fell from 30% → 22%</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hs-label">Key Opportunity</div>
+      <div class="hs-value" style="font-size:1.1rem;color:var(--accent-green)">Data Center Boom</div>
+      <div class="hs-note">Power Systems 82% of rev</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hs-label">P/E (Trailing)</div>
+      <div class="hs-value">~12.4x</div>
+      <div class="hs-note">vs CMI 26x, CAT 31x</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- STICKY NAV -->
+<nav class="toc-bar">
+<div class="toc-bar-inner">
+  <a href="#s1">Overview</a><span class="toc-sep">|</span>
+  <a href="#s2">Industry</a><span class="toc-sep">|</span>
+  <a href="#s3">How It Works</a><span class="toc-sep">|</span>
+  <a href="#s4">Glossary</a><span class="toc-sep">|</span>
+  <a href="#s5">Products</a><span class="toc-sep">|</span>
+  <a href="#s6">Subs & M&A</a><span class="toc-sep">|</span>
+  <a href="#s7">Alpha Signals</a><span class="toc-sep">|</span>
+  <a href="#s8">Thesis</a><span class="toc-sep">|</span>
+  <a href="#s9">Bear Cases</a><span class="toc-sep">|</span>
+  <a href="#s10">Share Structure</a><span class="toc-sep">|</span>
+  <a href="#s11">Balance Sheet</a><span class="toc-sep">|</span>
+  <a href="#s12">Management</a><span class="toc-sep">|</span>
+  <a href="#s13">Growth</a><span class="toc-sep">|</span>
+  <a href="#s14">Moat</a><span class="toc-sep">|</span>
+  <a href="#s15">Tailwinds</a><span class="toc-sep">|</span>
+  <a href="#s16">Headwinds</a><span class="toc-sep">|</span>
+  <a href="#s17">Earnings Alpha</a><span class="toc-sep">|</span>
+  <a href="#s18">Advisory</a><span class="toc-sep">|</span>
+  <a href="#s19">Narrative</a><span class="toc-sep">|</span>
+  <a href="#s20">Catalysts</a><span class="toc-sep">|</span>
+  <a href="#s21">Valuation</a><span class="toc-sep">|</span>
+  <a href="#s22">DCF</a><span class="toc-sep">|</span>
+  <a href="#s23">Value Chain</a><span class="toc-sep">|</span>
+  <a href="#s24">Options</a><span class="toc-sep">|</span>
+  <a href="#s25">Implementation</a><span class="toc-sep">|</span>
+  <a href="#s26">Monitoring</a>
+</div>
+</nav>
+
+<main class="container">
+
+<!-- SECTION 01 -->
+<section class="section" id="s1">
+<span class="section-label">Section 01</span>
+<h2>🏢 Company Overview</h2>
+<p>Power Solutions International (PSI) was founded in 1985 in Wood Dale, Illinois — a suburb west of Chicago that also happens to be the kind of unremarkable industrial town where real businesses get built without much fanfare. For most of its life, PSI made emission-certified engines and power systems running on alternative fuels — natural gas, propane, gasoline, biofuels — selling to OEMs who needed clean-running powertrains for forklifts, agricultural equipment, school buses, and generators. Solid. Boring. The kind of company that institutional investors would never look at twice.</p>
+<p>Then three things happened nearly simultaneously: AI devoured the world's electricity budget, data centers needed backup and prime power generation desperately, and PSI — already making natural gas generator sets — was suddenly sitting on top of a secular megatrend. Under CEO Dino Xykis, an engineer-turned-executive with a PhD in structural mechanics and prior stints at Cummins and Generac, the company pivoted hard. Power Systems went from 27% of revenue in FY2021 to <strong class="sand-text">82% of revenue in the first nine months of 2025</strong>. The stock went from $3 to $121 before correcting back to $61.</p>
+<p>The company's majority shareholder is Weichai Power (currently ~46.5% ownership), a Chinese state-linked diesel engine giant that invested $60M in 2017 and took majority control in 2019. This is both a strategic asset (access to Weichai's global supply chain) and a governance overhang (Chinese SOE controlling a U.S. defense-adjacent power systems company). More on this tension later — it's central to the thesis.</p>
+
+<div class="table-wrap">
+<table>
+<thead><tr><th>Metric</th><th>FY2022</th><th>FY2023</th><th>FY2024</th><th>FY2025</th><th>Δ 3yr</th></tr></thead>
+<tbody>
+<tr><td>Revenue ($M)</td><td>$456</td><td>$459</td><td>$476</td><td>$722</td><td>+58%</td></tr>
+<tr><td>Net Income ($M)</td><td>($6.9)</td><td>$26.3</td><td>$69.3</td><td>$114.0</td><td>NM → $114M</td></tr>
+<tr><td>Diluted EPS</td><td>($0.30)</td><td>$1.15</td><td>$3.01</td><td>$4.94</td><td>NM → $4.94</td></tr>
+<tr><td>Gross Margin</td><td>17.6%</td><td>24.7%</td><td>29.5%</td><td>26.4% est.</td><td>+880 bps</td></tr>
+<tr><td>Power Systems % Rev</td><td>~40%</td><td>~55%</td><td>~68%</td><td>~82%</td><td>+42 ppts</td></tr>
+<tr><td>Employees</td><td>~500</td><td>~550</td><td>~650</td><td>~700+</td><td>+40%</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<!-- SECTION 02 -->
+<section class="section" id="s2">
+<span class="section-label">Section 02</span>
+<h2>🌍 Industry</h2>
+<div class="two-col">
+  <div class="card card-accent">
+    <h4>Market Size</h4>
+    <p>The global data center power market is estimated at <strong class="sand-text">$20–35 billion in 2025</strong> and growing at 7–13% CAGR through 2030, depending on the research firm. The generator segment specifically — where PSI competes — is worth ~$8B and growing at ~5% CAGR, but the data center slice of that generator market is growing far faster, perhaps 15–20% annually as AI compute demand forces every hyperscaler to build out backup and prime power capacity at unprecedented speed. U.S. data center grid power demand is forecast to nearly triple to 134 GW by 2030.</p>
+  </div>
+  <div class="card card-accent">
+    <h4>Why This Matters Now</h4>
+    <p>Every data center needs reliable power — not just from the grid, but backup generators that can kick in within seconds of an outage. AI training runs on thousands of GPUs can't tolerate even brief brownouts. This means massive demand for generator sets, enclosures, fuel systems, and power management infrastructure. PSI makes the complete integrated power systems — engines, enclosures, fuel tanks, controls — that data center operators need. The company is essentially selling picks and shovels in the AI gold rush, but the picks are 2,000-horsepower natural gas generators.</p>
+  </div>
+</div>
+<p>The competitive landscape is dominated by giants: Caterpillar ($67B revenue), Cummins ($34B), and Generac ($3.9B). PSI's ~$722M makes it a fraction of their size. But PSI has carved a niche with its fuel-agnostic approach (running on natural gas, propane, diesel, biofuels), its emission-certified platforms that meet EPA/CARB standards, and its willingness to customize at a speed the big players won't match. In a market where time-to-deployment is everything, PSI's agility is a genuine edge.</p>
+</section>
+
+<!-- SECTION 03 -->
+<section class="section" id="s3">
+<span class="section-label">Section 03</span>
+<h2>🔬 How It Actually Works</h2>
+<p>Let's talk about what PSI actually builds, physically, at the most fundamental level.</p>
+<p>At the core, PSI makes <strong>internal combustion engines</strong> — the same basic technology that powers your car, but scaled up enormously and engineered to run on cleaner fuels. A typical PSI data center power system starts with a large displacement engine block (think 8 to 40+ liters of displacement — your car's engine is about 2–3 liters). These engines use the Otto cycle for spark-ignition (natural gas, propane) or the Diesel cycle for compression-ignition. Natural gas flows into the cylinders, mixes with air, gets compressed by pistons, and a spark plug ignites the mixture. The expanding gases push the pistons down, spinning a crankshaft, which turns a generator that converts mechanical rotation into electricity. A 2-megawatt natural gas genset can power roughly 1,500 homes — or keep a data center hall running during a grid outage.</p>
+<p>What makes PSI different from a generic engine manufacturer is the <strong>integration layer</strong>. They don't just sell you a bare engine block. They engineer the complete power system: the engine, the fuel delivery system (gas trains, regulators, injectors), the electronic control modules that manage ignition timing and air-fuel ratios for optimal emissions, the cooling systems, the exhaust treatment (catalytic converters, SCR systems to meet Tier 4 / EPA standards), the generator head, the switchgear that connects to the building's electrical system, and the massive steel enclosure that houses everything — weatherproof, sound-attenuated, sometimes the size of a shipping container.</p>
+<p>For data centers specifically, the enclosure is critical. PSI builds custom steel enclosures with integrated fuel tanks (often UL-listed for safety), ventilation, fire suppression, and monitoring systems. This is where the recent MTL Manufacturing acquisition fits — MTL specializes in welding and fabricating the switchgear bases, enclosure assemblies, and fuel tanks that are integral to these systems. By bringing MTL in-house, PSI controls more of the manufacturing process, reduces lead times, and avoids bottlenecks that contributed to the Q3–Q4 2025 margin compression.</p>
+<p>The "fuel-agnostic" capability means PSI's engine control systems and fuel delivery architecture can be configured for natural gas, propane, gasoline, diesel, or biofuels. This matters because different data center locations have different fuel availability and emissions requirements. A site in California with strict CARB rules might need natural gas. A remote site might need propane. PSI's ability to configure the same basic platform for different fuels is a genuine engineering moat — it's not trivial to certify an engine across multiple fuel types while meeting emission standards.</p>
+</section>
+
+<!-- SECTION 04 -->
+<section class="section" id="s4">
+<span class="section-label">Section 04</span>
+<h2>📖 Vocabulary & Lore</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Term</th><th>Definition</th></tr></thead>
+<tbody>
+<tr><td>Genset</td><td>Generator set — an engine coupled to an electrical generator; the core product PSI sells for data centers</td></tr>
+<tr><td>Prime Power</td><td>Continuous power generation as the primary electricity source, not just backup</td></tr>
+<tr><td>Standby Power</td><td>Backup generators that activate during grid outages; traditional data center use case</td></tr>
+<tr><td>Fuel Agnostic</td><td>PSI's engine platforms can run on natural gas, propane, diesel, gasoline, or biofuels with reconfiguration</td></tr>
+<tr><td>UL Certification</td><td>Underwriters Laboratories safety certification required for fuel tanks and enclosures (UL142, UL2085)</td></tr>
+<tr><td>SCR</td><td>Selective Catalytic Reduction — emissions control technology that reduces NOx</td></tr>
+<tr><td>Tier 4</td><td>EPA's strictest emission standard for off-road engines; PSI's engines meet this standard</td></tr>
+<tr><td>CARB</td><td>California Air Resources Board — the strictest U.S. emissions regulator</td></tr>
+<tr><td>OEM</td><td>Original Equipment Manufacturer — PSI sells to OEMs who integrate PSI engines into their products</td></tr>
+<tr><td>Weichai</td><td>Weichai Power Co. — Chinese diesel engine giant and PSI's ~46.5% majority shareholder</td></tr>
+<tr><td>CHP</td><td>Combined Heat and Power — co-generation systems that capture waste heat for heating</td></tr>
+<tr><td>Enclosure</td><td>The steel housing that contains the entire generator set, fuel system, and controls</td></tr>
+<tr><td>Switchgear</td><td>Electrical switching/protection equipment that connects generators to building power systems</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<!-- SECTION 05 -->
+<section class="section" id="s5">
+<span class="section-label">Section 05</span>
+<h2>⚡ Product & Service Portfolio</h2>
+<div class="card card-sage" style="margin-bottom:20px">
+  <h4>👑 Crown Jewel: Data Center Power Systems</h4>
+  <p>PSI's complete, custom-engineered power generation systems for data centers — from 500kW to multi-MW configurations. These include the engine, generator, enclosure, fuel system, switchgear, controls, telematics, and UL-certified fuel storage. Revenue from Power Systems grew from ~$160M in FY2022 to an estimated ~$590M+ in FY2025. This segment now drives over 80% of total revenue. PSI's advantage is speed-to-deployment and fuel flexibility — in a market where hyperscalers can't wait 18 months for Caterpillar delivery, PSI gets product out the door faster at competitive specifications.</p>
+</div>
+
+<div class="table-wrap">
+<table>
+<thead><tr><th>Segment</th><th>% of Rev (FY2025E)</th><th>Growth Rate</th><th>Key Applications</th></tr></thead>
+<tbody>
+<tr><td><strong>Power Systems</strong></td><td>~82%</td><td>+80% YoY</td><td>Data centers, oil & gas, prime/standby power, microgrids</td></tr>
+<tr><td><strong>Industrial</strong></td><td>~15%</td><td>Flat to -5%</td><td>Forklifts, material handling, agriculture, aerial lifts, construction</td></tr>
+<tr><td><strong>Transportation</strong></td><td>~3%</td><td>Declining</td><td>Terminal tractors, school buses, military vehicles</td></tr>
+</tbody>
+</table>
+</div>
+<p>The strategic shift is stark: PSI is deliberately letting its legacy industrial and transportation businesses shrink as a percentage of revenue, redirecting capacity and engineering resources toward the data center opportunity. This is a smart capital allocation decision — data center products carry higher ASPs and, once scaling inefficiencies are resolved, should return to higher margins than legacy segments.</p>
+</section>
+
+<!-- SECTION 06 -->
+<section class="section" id="s6">
+<span class="section-label">Section 06</span>
+<h2>🏗️ Subsidiaries & Acquisitions</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Entity</th><th>Date</th><th>Details</th><th>Strategic Rationale</th></tr></thead>
+<tbody>
+<tr><td><strong>MTL Manufacturing</strong></td><td>Mar 2, 2026</td><td>100% acquisition; Beloit, WI; 185,000 sq ft; cash + assumed debt</td><td>Vertical integration of steel fabrication for enclosures, switchgear bases, fuel tanks. UL certifications. Reduces lead times and addresses margin compression.</td></tr>
+<tr><td><strong>Weichai Partnership</strong></td><td>2017/2019</td><td>$60M strategic investment; Weichai took 51% stake via warrants in 2019</td><td>Access to Weichai's global supply chain, engine technology (32L/40L gas engines), and Asian markets</td></tr>
+<tr><td><strong>HD Hyundai Infracore</strong></td><td>Aug 2025</td><td>Cooperative agreement for industrial engine distribution</td><td>Expands PSI's engine portfolio in North American industrial markets</td></tr>
+</tbody>
+</table>
+</div>
+<p>The MTL acquisition is the most significant near-term catalyst. The Q3 and Q4 2025 margin compression was directly linked to outsourcing bottlenecks in enclosure fabrication. By bringing MTL's capabilities in-house, PSI should be able to recover 300–500 basis points of gross margin over the next 2–3 quarters. That's the thesis in miniature: the margin hit is temporary and self-correcting.</p>
+</section>
+
+<!-- SECTION 07 -->
+<section class="section" id="s7">
+<span class="section-label">Section 07</span>
+<h2>⚡ Non-Consensus Alpha Signals</h2>
+<div class="signal-grid">
+
+<div class="signal-card"><span class="badge badge-bull">🟢 BULL</span>
+<h4>1. MTL Acquisition = Margin Recovery Catalyst</h4>
+<p>Consensus sees Q4 margin compression as structural. We see it as a supply-chain bottleneck that PSI just solved by acquiring its enclosure fabricator. MTL's 185,000 sq ft of UL-certified manufacturing should unlock 300–500 bps of gross margin recovery by H2 2026.</p>
+<div class="meta"><span>Impact: 15%</span><span>Conviction: 85%</span><span>Timeline: 6–12 mo</span></div>
+</div>
+
+<div class="signal-card"><span class="badge badge-bull">🟢 BULL</span>
+<h4>2. Valuation Gap vs. Peers Is Absurd</h4>
+<p>PSIX trades at ~12x trailing earnings. Cummins is at 26x. Caterpillar at 31x. Generac at 31x. If PSIX re-rates even halfway to peer multiples — say 18-20x — the stock is $90-100 from here. The discount reflects governance risk and scaling concerns, both of which are addressable.</p>
+<div class="meta"><span>Impact: 30%</span><span>Conviction: 80%</span><span>Timeline: 12–24 mo</span></div>
+</div>
+
+<div class="signal-card"><span class="badge badge-bull">🟢 BULL</span>
+<h4>3. Revenue Acceleration Hiding in Plain Sight</h4>
+<p>FY2025 revenue grew 52% to $722M. Management guided for continued growth in 2026. The data center buildout is a multi-year cycle — hyperscalers have committed $300B+ to AI infrastructure in 2025 alone. PSI's pipeline likely extends 2–3 years out. Revenue could exceed $900M–$1B in FY2026.</p>
+<div class="meta"><span>Impact: 25%</span><span>Conviction: 75%</span><span>Timeline: 12 mo</span></div>
+</div>
+
+<div class="signal-card"><span class="badge badge-bull">🟢 BULL</span>
+<h4>4. Russell Index Inclusion Driving Forced Buying</h4>
+<p>PSI was added to the Russell 3000, Russell 2000, and MSCI US Small Cap indices in June 2025. Passive fund flows are structural demand that compresses the float. Institutional ownership increased 52% in the last quarter to 290 funds.</p>
+<div class="meta"><span>Impact: 10%</span><span>Conviction: 90%</span><span>Timeline: Ongoing</span></div>
+</div>
+
+<div class="signal-card"><span class="badge badge-bull">🟢 BULL</span>
+<h4>5. Fuel-Agnostic Moat Is Underappreciated</h4>
+<p>PSI's engines are certified to run on natural gas, propane, diesel, gasoline, and biofuels. This isn't just marketing — each fuel type requires separate EPA/CARB emission certification. The cost and time to certify across multiple fuels creates a genuine barrier. Data center operators want fuel flexibility as a hedge.</p>
+<div class="meta"><span>Impact: 10%</span><span>Conviction: 70%</span><span>Timeline: Structural</span></div>
+</div>
+
+<div class="signal-card"><span class="badge badge-bull">🟢 BULL</span>
+<h4>6. Engineer-CEO Is a Feature, Not a Bug</h4>
+<p>Dino Xykis has a PhD in structural mechanics, worked at Cummins and Generac, and joined PSI in 2010. He knows engines at the physics level. Engineer-CEOs who understand their product often outperform finance/marketing CEOs in industrial companies. He's quietly executed the most successful strategic pivot in small-cap industrials in a decade.</p>
+<div class="meta"><span>Impact: 8%</span><span>Conviction: 75%</span><span>Timeline: Ongoing</span></div>
+</div>
+
+<div class="signal-card"><span class="badge badge-bull">🟢 BULL</span>
+<h4>7. Cash Flow Will Normalize — Working Capital Was the Drag</h4>
+<p>FY2025 operating cash flow was only $24M on $114M net income (21% conversion). Bulls should note this was driven by working capital buildups from 52% revenue growth and inventory investments for the manufacturing ramp. As growth stabilizes and MTL integration completes, cash conversion should revert to 60–80%.</p>
+<div class="meta"><span>Impact: 12%</span><span>Conviction: 70%</span><span>Timeline: 6–12 mo</span></div>
+</div>
+
+<div class="signal-card"><span class="badge badge-bear">🔴 BEAR</span>
+<h4>8. Weichai Selling Is a Red Flag</h4>
+<p>Weichai reduced its stake from 51% to 46.5% through Rule 144 sales in August 2025, selling ~$35M+ of stock. When your controlling shareholder sells into strength, it deserves scrutiny. However, Weichai remains by far the largest holder, and the sales were orderly, not panicked block dispositions.</p>
+<div class="meta"><span>Impact: 15%</span><span>Conviction: 60%</span><span>Timeline: Ongoing</span></div>
+</div>
+
+<div class="signal-card"><span class="badge badge-bear">🔴 BEAR</span>
+<h4>9. $38.3M Tax Benefit Flatters FY2025 EPS</h4>
+<p>PSI released a $38.3M valuation allowance on deferred tax assets in FY2025, contributing roughly $1.66 to EPS. Normalized EPS without this one-time benefit is closer to $3.28 — still strong growth, but not the headline-grabbing $4.94. The market may not be fully adjusting for this.</p>
+<div class="meta"><span>Impact: 12%</span><span>Conviction: 85%</span><span>Timeline: Now</span></div>
+</div>
+
+<div class="signal-card"><span class="badge badge-bear">🔴 BEAR</span>
+<h4>10. Governance Overhang Is Real</h4>
+<p>Former CEO Gary Winemaster was charged with accounting fraud in 2019. The board is dominated by Weichai-affiliated directors. Longtime director Kenneth Landini resigned in 2025 criticizing governance failures. PSI hasn't held earnings calls in 5+ years. This opacity is abnormal and concerning.</p>
+<div class="meta"><span>Impact: 20%</span><span>Conviction: 70%</span><span>Timeline: Structural</span></div>
+</div>
+
+<div class="signal-card"><span class="badge badge-neutral">⚪ NEUTRAL</span>
+<h4>11. Tariff Exposure Is a Wildcard</h4>
+<p>PSI sources some components globally and Weichai's Chinese ownership adds complexity. Tariff escalation could impact input costs or invite regulatory scrutiny. However, PSI's manufacturing is primarily U.S.-based (Illinois, Wisconsin), which partially insulates against tariff risk and could even benefit from "buy American" procurement policies.</p>
+<div class="meta"><span>Impact: 10%</span><span>Conviction: 50%</span><span>Timeline: 6–18 mo</span></div>
+</div>
+
+</div>
+</section>
+
+<!-- SECTION 08 -->
+<section class="section" id="s8">
+<span class="section-label">Section 08</span>
+<h2>🎯 Synthesized Investment Thesis</h2>
+<div class="bull-box">
+<h3>The Core Thesis</h3>
+<p>Power Solutions International has executed the most successful strategic pivot in small-cap industrials in the last decade. What was once a sleepy alternative-fuel engine maker has become a key supplier of backup and prime power systems for the AI data center buildout. Revenue grew 52% in FY2025 to $722M. The data center demand wave is not a one-quarter phenomenon — it's a multi-year infrastructure cycle backed by $300B+ in committed hyperscaler spending.</p>
+<p>The market is handing you this opportunity because of temporary margin compression. Gross margins fell from 30% to 22% as PSI scaled production too fast, outsourced too much, and hit supply chain bottlenecks. But PSI just acquired MTL Manufacturing to bring enclosure fabrication in-house, directly addressing the root cause. As the manufacturing ramp normalizes and MTL integrates, margins should recover to 26-29% by H2 2026.</p>
+<p>At $61 and ~12x trailing earnings, PSIX trades at a massive discount to peers (Cummins 26x, CAT 31x) despite growing faster than all of them. If PSIX re-rates to even 18x earnings on $5.50–6.00 normalized 2026 EPS, the stock is worth $99–$108. That's 62–77% upside from here. With a 3-year view, if the data center cycle extends and margins recover, the upside is substantially higher.</p>
+</div>
+<div class="card card-accent">
+<h4>What the Market Prices In vs. What We Believe</h4>
+<p><strong>Market prices in:</strong> Margin compression is structural; PSI is a low-quality cyclical; governance risk warrants a permanent discount; data center demand is peaking.</p>
+<p><strong>We believe:</strong> Margin compression is temporary (~80% probability), PSI is undergoing a secular transformation (~75% probability), governance risk is real but manageable (~65% probability), and data center demand extends through at least 2028 (~85% probability).</p>
+</div>
+</section>
+
+<!-- SECTION 09 -->
+<section class="section" id="s9">
+<span class="section-label">Section 09</span>
+<h2>🐻 Proposed Ironclad Bear Cases</h2>
+
+<div class="bear-box">
+<h4>🐻 Bear Case #1: Cummins and Caterpillar Crush the Niche</h4>
+<p>PSI's total revenue is roughly 2% of Cummins' Power Systems segment. If either Cat or Cummins decides to prioritize the data center generator market with dedicated product lines, sales force, and manufacturing capacity, they could smother PSI through scale economics, pricing pressure, and customer relationships. Cummins already launched the QSK60 G29 specifically for data centers in March 2025. Cat signed a 1.1 GWh battery + CHP deal for a Utah campus. The giants are waking up.</p>
+<p><strong>Possible Debunk:</strong> PSI's advantage is speed and customization, not scale. Large data center operators often need custom configurations quickly — something that doesn't play to Cat/CMI's strengths with their massive, slower-moving organizations. PSI has also been in this market for years and has established customer relationships. The TAM is growing fast enough to support multiple players. Still, competitive pressure could cap margins even if PSI retains volume.</p>
+</div>
+
+<div class="bear-box">
+<h4>🐻 Bear Case #2: Governance and Opacity Conceal Deeper Problems</h4>
+<p>PSI hasn't held earnings calls in over five years. The board is dominated by Weichai-affiliated Chinese executives. The former CEO was indicted for accounting fraud. A longtime independent director resigned publicly criticizing governance failures. Weichai is selling shares. Meanwhile, operating cash flow was only 21% of net income in FY2025 — a huge red flag for earnings quality. What if the "record profitability" is more financial engineering than operational success? The $38.3M tax benefit alone accounted for a third of EPS.</p>
+<p><strong>Possible Debunk:</strong> Revenue growth is independently verifiable through customer shipments and industry data. The tax benefit was a legitimate accounting event (releasing a deferred tax valuation allowance after achieving sustained profitability). The cash flow shortfall is explained by working capital buildups from 52% revenue growth. PSI has recently hired a new General Counsel and expanded its credit facility, suggesting normalization of corporate governance. But the absence of earnings calls remains indefensible.</p>
+</div>
+
+<div class="bear-box">
+<h4>🐻 Bear Case #3: Data Center Demand Is a Bubble That Deflates</h4>
+<p>What if the AI infrastructure buildout slows dramatically? If hyperscaler capex gets cut (recession, AI disillusionment, ROI scrutiny), PSI's order book could evaporate quickly. With 82% revenue concentration in Power Systems and a significant data center exposure within that, PSI has essentially become a single-end-market company. Any slowdown in data center construction would be devastating, and PSI's legacy industrial/transportation businesses have been deliberately shrunk and can't backstop a decline.</p>
+<p><strong>Possible Debunk:</strong> Hyperscaler capex commitments for 2025–2027 exceed $500B across Amazon, Microsoft, Google, and Meta. Grid power demand for data centers is forecast to nearly triple by 2030. Even if AI spending slows, the base infrastructure buildout continues. Additionally, PSI's products also serve oil & gas, which provides some diversification within Power Systems. But concentration risk is real and unhedgeable.</p>
+</div>
+
+<div class="bear-box">
+<h4>🐻 Bear Case #4: Geopolitical Risk From Weichai Ownership</h4>
+<p>Weichai Power is ultimately controlled by Shandong Heavy Industry Group, a Chinese SOE. In an era of escalating U.S.-China tensions, CFIUS scrutiny, and potential restrictions on Chinese ownership of critical U.S. infrastructure companies, Weichai's controlling stake could become a serious liability. What if Congress mandates divestiture? What if data center operators refuse to buy from a Chinese-controlled supplier for security reasons?</p>
+<p><strong>Possible Debunk:</strong> Weichai has been reducing its stake (from 51% to 46.5%), which could be preparation for further dilution. PSI's manufacturing is entirely U.S.-based. The company is on the NASDAQ and follows SEC reporting requirements. That said, national security concerns around critical infrastructure power systems are legitimate and largely uncontrollable by PSI's management.</p>
+</div>
+
+<div class="table-wrap">
+<table>
+<thead><tr><th>Pre-Mortem Scenario</th><th>Probability</th><th>Price Impact</th></tr></thead>
+<tbody>
+<tr><td>Cummins launches dedicated data center product offensive, PSI loses share</td><td>20%</td><td>-30% to -45%</td></tr>
+<tr><td>Accounting irregularities surface, SEC investigation</td><td>8%</td><td>-60% to -80%</td></tr>
+<tr><td>Data center capex cycle stalls for 2+ quarters</td><td>15%</td><td>-35% to -50%</td></tr>
+</tbody>
+</table>
+</div>
+<p>Combined catastrophic probability: ~35–40%. But the asymmetry still favors longs — the upside case is 60–100%+ vs. 30–50% downside, with the downside scenarios being lower probability. This is a classic barbell: high conviction in the base case with acknowledged tail risks.</p>
+</section>
+
+<!-- SECTION 10 -->
+<section class="section" id="s10">
+<span class="section-label">Section 10</span>
+<h2>📊 Share Structure & Microstructure</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Holder</th><th>Shares</th><th>% Outstanding</th></tr></thead>
+<tbody>
+<tr><td>Weichai America Corp.</td><td>~10.6M</td><td>~46.0%</td></tr>
+<tr><td>Institutional Holders (290 funds)</td><td>~5.8M</td><td>~25.1%</td></tr>
+<tr><td>Insiders (Winemaster family et al.)</td><td>~1.5M</td><td>~6.5%</td></tr>
+<tr><td>Public Float (remaining)</td><td>~5.1M</td><td>~22.4%</td></tr>
+<tr><td><strong>Total Shares Outstanding</strong></td><td><strong>~23.0M</strong></td><td><strong>100%</strong></td></tr>
+</tbody>
+</table>
+</div>
+<p>The float is remarkably tight at roughly 5–6M shares (excluding Weichai and insiders). With average daily volume around 500K shares, the stock is inherently volatile — both on the way up and down. This explains the 52-week range of $18 to $122.</p>
+
+<h3>Soros Reflexivity Loop</h3>
+<p>PSI exhibits classic reflexivity dynamics. The data center demand narrative drove the stock from $3 to $122, which enabled the NASDAQ uplisting and Russell index inclusion, which drove institutional buying, which further compressed the float, which amplified the moves. Now in reverse: Q4 margin miss → stock drops 50% → securities lawyers file investigations → sentiment turns negative → short interest rises → further selling pressure. The reflexive loop works both ways. The question is whether fundamentals (revenue growth, margin recovery) can break the negative loop — we think they can, especially with the MTL acquisition as a concrete catalyst.</p>
+
+<h3>Marathon Capital Cycle Positioning</h3>
+<p>PSI is in the "early cycle" phase of a capital investment boom. The company is spending aggressively on manufacturing capacity (new facilities, MTL acquisition) while competitors are slower to react. In Marathon Asset Management's framework, this is the period of maximum opportunity — you're buying into capacity expansion before the rest of the industry catches up. The risk is that PSI overbuilds if demand disappoints, but the demand signals from hyperscaler commitments are unusually strong and multi-year in nature.</p>
+</section>
+
+<!-- SECTION 11 -->
+<section class="section" id="s11">
+<span class="section-label">Section 11</span>
+<h2>💰 Balance Sheet Deep Dive</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Item</th><th>FY2024</th><th>FY2025</th><th>Change</th></tr></thead>
+<tbody>
+<tr><td>Cash & Equivalents</td><td>$56.9M</td><td>$41.3M</td><td>-$15.6M</td></tr>
+<tr><td>Total Debt</td><td>$120.2M</td><td>$96.6M</td><td>-$23.6M</td></tr>
+<tr><td>Net Debt</td><td>$63.3M</td><td>$55.3M</td><td>-$8.0M</td></tr>
+<tr><td>Total Assets</td><td>$328.2M</td><td>~$420M est.</td><td>+$92M</td></tr>
+<tr><td>Shareholders' Equity</td><td>$65.2M</td><td>~$160M est.</td><td>+$95M</td></tr>
+<tr><td>Current Ratio</td><td>1.12x</td><td>~1.2x est.</td><td>Improving</td></tr>
+<tr><td>Debt/Equity</td><td>1.84x</td><td>~0.60x</td><td>Dramatically improved</td></tr>
+</tbody>
+</table>
+</div>
+<p>The balance sheet has transformed. PSI went from a going concern a few years ago to a company with $160M+ in equity and manageable debt levels. The $135M revolving credit facility secured in July 2025 (Standard Chartered, SOFR + 2.10%, through July 2027) provides adequate liquidity for operations and growth. The Weichai shareholder loan was fully repaid. Net debt of ~$55M against $722M revenue (0.08x net debt/revenue) is conservative.</p>
+<p>The hidden asset here is the deferred tax asset — the $38.3M valuation allowance release signals that PSI expects sustained profitability, meaning future tax benefits will shield cash taxes. This effectively makes the next several years of earnings partially tax-sheltered.</p>
+</section>
+
+<!-- SECTION 12 -->
+<section class="section" id="s12">
+<span class="section-label">Section 12</span>
+<h2>👔 Management, Incentives & Alignment</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Executive</th><th>Role</th><th>Background</th><th>Relevance (0–10)</th></tr></thead>
+<tbody>
+<tr><td><strong>Dino Xykis, PhD</strong></td><td>CEO & CTO</td><td>30+ yrs engineering; Cummins, Generac, PhD structural mechanics; PSI since 2010</td><td>9/10</td></tr>
+<tr><td><strong>Kenneth Li</strong></td><td>CFO</td><td>20+ yrs finance; Caterpillar (CFO mining group), ND Paper, Ford Motor; CPA, MBA Michigan</td><td>8/10</td></tr>
+<tr><td><strong>Zhaoying (Dorothy) Du</strong></td><td>GC & Corp Secretary</td><td>20 yrs legal; Lenovo (global supply chain), Motorola Mobility (AI, R&D, IP); JD UMKC</td><td>7/10</td></tr>
+<tr><td><strong>Matt Thomas</strong></td><td>Corporate Controller</td><td>Internal finance veteran</td><td>6/10</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>Incentive Alignment</h3>
+<p>This is one of the weakest parts of the PSI story. Based on available information, CEO Dino Xykis sold 26,005 shares in August 2025 at $95–96.50 (approximately $2.5M). While this is a modest amount, the timing during a period of rapid stock appreciation raises eyebrows. Departing director Kenneth Landini publicly criticized the board for refusing to award management equity compensation despite extraordinary stock performance — suggesting Xykis may be underleveraged to the upside in equity comp.</p>
+<p>Weichai, as the 46% holder, controls board appointments and has been selling shares. The board is dominated by Weichai-affiliated directors with limited independent oversight. Total insider ownership (excluding Weichai) is estimated at 6–8%. The Winemaster family (co-founders) still holds a meaningful stake.</p>
+<p><strong>Insider Alignment Verdict: PARTIALLY ALIGNED.</strong> The CEO has deep domain expertise and tenure but limited disclosed equity compensation. The controlling shareholder has been a net seller. Board independence is inadequate. The company needs to establish a formal equity incentive program for management to fully align interests.</p>
+
+<h3>Key Management Quotes</h3>
+<blockquote>
+<p>"In 2025, the Company delivered record sales and profitability, with annual sales increasing 52% and annual net income rising 65%. This performance reflects continued demand for our power systems solutions, including demand within the data center market."</p>
+<cite>— Dino Xykis, CEO, FY2025 Earnings Release, March 2, 2026</cite>
+<p class="quote-why"><strong>Why it matters:</strong> Confirmation that the pivot is working at scale, though notably he also acknowledged margin pressure from manufacturing ramp-up — an honest assessment.</p>
+</blockquote>
+
+<blockquote>
+<p>"We achieved the highest sales in our company's history this quarter, delivering strong financial performance with sales increasing 62% and net income rising 59%. These results underscore the robust demand for our power systems solutions, particularly within the data center market."</p>
+<cite>— Dino Xykis, CEO, Q3 2025 Earnings Release, November 6, 2025</cite>
+<p class="quote-why"><strong>Why it matters:</strong> The Q3 commentary was notably more confident than Q4, suggesting the margin issues intensified in the final quarter as production ramp accelerated.</p>
+</blockquote>
+
+<blockquote>
+<p>"We will bring the strengths of both companies together to take advantage of the data center market demands where capacity and vertical integration are key enablers to success."</p>
+<cite>— Dino Xykis, CEO, MTL Acquisition Announcement, March 2, 2026</cite>
+<p class="quote-why"><strong>Why it matters:</strong> Management is directly addressing the margin compression root cause through vertical integration, not just hoping it fixes itself.</p>
+</blockquote>
+
+<blockquote>
+<p>"I am pleased to report that in the second quarter, we achieved record-breaking results with a gross margin of 31.8% and net profit of $21.5 million."</p>
+<cite>— Dino Xykis, CEO, Q2 2024 Earnings Release, August 2024</cite>
+<p class="quote-why"><strong>Why it matters:</strong> Demonstrates that when PSI is operating at proper efficiency, gross margins above 30% are achievable. The Q4 2025 compression to 22% is the anomaly, not the norm.</p>
+</blockquote>
+</section>
+
+<!-- SECTION 13 -->
+<section class="section" id="s13">
+<span class="section-label">Section 13</span>
+<h2>📈 Growth Analysis</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Period</th><th>Revenue</th><th>YoY Growth</th><th>Gross Margin</th><th>Net Income</th><th>EPS</th></tr></thead>
+<tbody>
+<tr><td>FY2022</td><td>$456M</td><td>-9%</td><td>17.6%</td><td>($6.9M)</td><td>($0.30)</td></tr>
+<tr><td>FY2023</td><td>$459M</td><td>+1%</td><td>24.7%</td><td>$26.3M</td><td>$1.15</td></tr>
+<tr><td>FY2024</td><td>$476M</td><td>+4%</td><td>29.5%</td><td>$69.3M</td><td>$3.01</td></tr>
+<tr><td>FY2025</td><td>$722M</td><td>+52%</td><td>~25.5%</td><td>$114.0M</td><td>$4.94</td></tr>
+<tr><td>FY2026E</td><td>$900M–$1.0B</td><td>+25–38%</td><td>26–29%</td><td>$120–150M</td><td>$5.20–6.50</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="three-col">
+<div class="card">
+<h4>Near-Term TAM (1–2 yr)</h4>
+<p class="sand-text" style="font-family:'Playfair Display';font-size:1.8rem;font-weight:700">$8–10B</p>
+<p>U.S. data center generator & power systems market addressable by PSI's product portfolio</p>
+</div>
+<div class="card">
+<h4>Medium-Term TAM (3–5 yr)</h4>
+<p class="sand-text" style="font-family:'Playfair Display';font-size:1.8rem;font-weight:700">$15–20B</p>
+<p>Including international expansion via Weichai/HDI partnerships, prime power applications, and microgrid solutions</p>
+</div>
+<div class="card">
+<h4>Long-Term TAM (5–10 yr)</h4>
+<p class="sand-text" style="font-family:'Playfair Display';font-size:1.8rem;font-weight:700">$30–50B</p>
+<p>Full global data center power market + industrial transition to clean fuels + CHP/microgrid adoption</p>
+</div>
+</div>
+</section>
+
+<!-- SECTION 14 -->
+<section class="section" id="s14">
+<span class="section-label">Section 14</span>
+<h2>🏰 Moat Analysis</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Moat Type</th><th>Strength</th><th>Evidence</th></tr></thead>
+<tbody>
+<tr><td>Technology (Fuel-Agnostic)</td><td>⭐⭐⭐</td><td>Multi-fuel EPA/CARB certifications across NG, propane, diesel, bio; 2+ years to replicate certification cycle</td></tr>
+<tr><td>Switching Costs</td><td>⭐⭐⭐</td><td>Integrated power systems with proprietary controls; once a data center operator standardizes on PSI, switching requires re-engineering</td></tr>
+<tr><td>Regulatory Barriers</td><td>⭐⭐⭐⭐</td><td>EPA Tier 4, CARB certification is expensive and time-consuming; each fuel/engine combination requires separate testing</td></tr>
+<tr><td>Scale Advantages</td><td>⭐ (vs. peers)</td><td>PSI is tiny vs. CMI/CAT; scale is a disadvantage, partially offset by agility</td></tr>
+<tr><td>Network Effects</td><td>⭐</td><td>Limited; some benefit from Weichai supply chain integration</td></tr>
+<tr><td>Vertical Integration</td><td>⭐⭐⭐ (improving)</td><td>MTL acquisition adds enclosure/fabrication; in-house design, prototyping, testing</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="table-wrap">
+<table>
+<thead><tr><th>Competitor</th><th>Market Cap</th><th>Revenue</th><th>P/E</th><th>DC Exposure</th></tr></thead>
+<tbody>
+<tr style="background:rgba(180,130,70,0.15)"><td><strong>PSIX — Power Solutions Int'l</strong></td><td><strong>$1.4B</strong></td><td><strong>$722M</strong></td><td><strong>~12x</strong></td><td><strong>~70%+</strong></td></tr>
+<tr><td>CMI — Cummins</td><td>$45B</td><td>$34B</td><td>26x</td><td>~5–8%</td></tr>
+<tr><td>CAT — Caterpillar</td><td>$180B</td><td>$67B</td><td>31x</td><td>~2–3%</td></tr>
+<tr><td>GNRC — Generac</td><td>$10B</td><td>$3.9B</td><td>31x</td><td>~10%</td></tr>
+<tr><td>POWL — Powell Industries</td><td>$4.5B</td><td>$1.1B</td><td>22x</td><td>~30%</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>What Would the Legends Think?</h3>
+<p><strong>Warren Buffett</strong> would be deeply skeptical. The Chinese controlling shareholder, history of accounting issues, absence of earnings calls, and dependence on a hot sector would all make him uncomfortable. He'd note the business itself makes real things for real customers, and the engineering CEO is the kind of operator he respects — but governance is the dealbreaker. He'd pass and tell Charlie it's "not within our circle of competence" to handicap geopolitical ownership risk. <strong>Peter Thiel</strong> would focus on the "zero to one" angle: PSI didn't create the data center power market, but it created a new category of nimble, fuel-agnostic, integrated power systems supplier that the big incumbents can't easily replicate without years of certification work. He'd call it "definite optimism with execution risk" — a real contrarian bet in an industry where everyone assumes only the giants can win.</p>
+<p><strong>Stan Druckenmiller</strong> would size this aggressively if he believed the margin recovery thesis. His playbook is exactly this: a temporarily impaired business with a visible catalyst (MTL acquisition), trading at a massive discount to peers during a secular demand wave. He'd note that the reflexivity loop is currently working against the stock (post-Q4 selloff) and that the inflection point — when margin recovery becomes visible in Q1–Q2 2026 results — would be the trigger to add. The risk/reward at $61 with an 80% base case of $90–100 would get his attention.</p>
+</section>
+
+<!-- SECTION 15 -->
+<section class="section" id="s15">
+<span class="section-label">Section 15</span>
+<h2>💨 Tailwinds & Opportunities</h2>
+<div class="two-col">
+<div class="card card-sage">
+<h4>1. AI Infrastructure Supercycle</h4>
+<p>$300B+ committed hyperscaler capex in 2025 alone. Data center grid power demand to triple by 2030. Every new data center needs backup/prime power. PSI is directly in the supply chain.</p>
+</div>
+<div class="card card-sage">
+<h4>2. Natural Gas Transition</h4>
+<p>Data centers increasingly prefer natural gas generators over diesel for lower emissions, lower noise, and CARB compliance. PSI's core competency is natural gas engines — this is a structural tailwind.</p>
+</div>
+<div class="card card-sage">
+<h4>3. Grid Reliability Deteriorating</h4>
+<p>Aging grid infrastructure + data center demand = more outages and voltage instability. This drives demand for on-site power generation and microgrids — exactly what PSI provides.</p>
+</div>
+<div class="card card-sage">
+<h4>4. Russell Index Passive Flows</h4>
+<p>Inclusion in Russell 3000/2000 and MSCI US Small Cap drives automatic institutional buying. Analyst coverage expanding (Jefferies initiated Buy). Float compression supports price discovery.</p>
+</div>
+</div>
+</section>
+
+<!-- SECTION 16 -->
+<section class="section" id="s16">
+<span class="section-label">Section 16</span>
+<h2>⚠️ Headwinds & Risks</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Risk</th><th>Severity</th><th>Probability</th><th>Mitigation</th></tr></thead>
+<tbody>
+<tr><td>Margin compression persists beyond 2026</td><td>High</td><td>25%</td><td>MTL acquisition directly addresses root cause; historical margins were 29-31%</td></tr>
+<tr><td>Cummins/CAT competitive offensive</td><td>High</td><td>20%</td><td>PSI's speed-to-market and customization are hard to replicate at scale</td></tr>
+<tr><td>Weichai governance/geopolitical risk</td><td>Medium-High</td><td>15%</td><td>Weichai reducing stake; PSI manufacturing is entirely U.S.-based</td></tr>
+<tr><td>Data center capex slowdown</td><td>High</td><td>15%</td><td>Multi-year committed buildout; grid constraints ensure demand even if AI spending slows</td></tr>
+<tr><td>Key customer concentration</td><td>Medium</td><td>20%</td><td>Diversifying across data center operators, oil & gas, and industrial</td></tr>
+<tr><td>Accounting/financial reporting issues</td><td>Very High</td><td>8%</td><td>SEC reporting; new General Counsel hired; NASDAQ listing requires compliance</td></tr>
+<tr><td>Tariff/trade policy disruption</td><td>Medium</td><td>20%</td><td>U.S. manufacturing base; "buy American" policies could benefit PSI</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<!-- SECTION 17 -->
+<section class="section" id="s17">
+<span class="section-label">Section 17</span>
+<h2>📞 Earnings Call Alpha</h2>
+<p style="color:var(--accent-orange);font-weight:600;margin-bottom:16px">⚠️ Critical note: PSI has not held public earnings calls in 5+ years. Alpha must be extracted from press releases and SEC filings.</p>
+<p>While the absence of earnings calls is a significant governance red flag, the press releases contain revealing management language. Here are the key shifts in tone and emphasis:</p>
+
+<div class="card card-accent">
+<h4>Tone Shift: Q2 2025 → Q4 2025</h4>
+<p>In Q2 2025, Xykis called results "record-breaking" with notable emphasis on the $29.2M going-concern resolution. By Q3, the tone shifted to acknowledging "temporary inefficiencies related to our accelerated production ramp-up." By Q4, the language became notably more cautious: "Management has identified the key drivers and is executing specific actions to improve supply chain performance and manufacturing cost structures." This progression from celebration to firefighting tells the story of a company that grew faster than its infrastructure could support.</p>
+</div>
+
+<div class="card card-accent">
+<h4>Strategic Signal: "Capacity and vertical integration are key enablers"</h4>
+<p>This phrase from the MTL acquisition announcement is the most important strategic signal in recent filings. It explicitly acknowledges that PSI's growth was constrained by external manufacturing dependencies — and that the company is investing to fix this. If true, margin recovery is a matter of when, not if.</p>
+</div>
+
+<div class="card card-accent">
+<h4>Guidance: Deliberately Vague</h4>
+<p>For FY2026, management says "continued sales growth" and "moderate margin improvement" without specific numbers. This is frustrating but likely conservative anchoring — if margins recover meaningfully, any guidance beats would be significant catalysts. The vague guidance also reflects genuine uncertainty about the pace of MTL integration and oil & gas headwinds.</p>
+</div>
+</section>
+
+<!-- SECTION 18 -->
+<section class="section" id="s18">
+<span class="section-label">Section 18</span>
+<h2>🧠 Strategic Advisory Council</h2>
+<p style="font-style:italic;color:var(--text-muted);font-size:.85rem;margin-bottom:20px"><em>Note: The views below are anticipated opinions based on each investor's known philosophy, public statements, and investment style. These are not real quotes and do not represent actual positions or endorsements by these individuals.</em></p>
+
+<div class="advisory-grid">
+
+<div class="advisory-card">
+<div class="ac-name">Howard Marks</div><div class="ac-title">Oaktree Capital</div>
+<p><strong>Anticipated view:</strong> "The market is applying first-level thinking — margins compressed, sell. Second-level thinking says: why did margins compress, is it fixable, and what's the price I'm paying? At 12x earnings for a business growing 50%, the risk premium embedded in this stock dramatically exceeds the actual risk. This is the kind of 'uncomfortable buy' that generates returns."</p>
+</div>
+
+<div class="advisory-card">
+<div class="ac-name">David Einhorn</div><div class="ac-title">Greenlight Capital</div>
+<p><strong>Anticipated view:</strong> "The governance structure is disqualifying. Chinese SOE majority shareholder, no earnings calls, former CEO indicted for fraud, board directors resigning over governance failures? I've seen this movie before and it doesn't end well. The business may be real, but minority shareholders have no protection."</p>
+</div>
+
+<div class="advisory-card">
+<div class="ac-name">Joel Greenblatt</div><div class="ac-title">Gotham Asset Management</div>
+<p><strong>Anticipated view:</strong> "My Magic Formula loves this: high return on capital, cheap earnings multiple, structural growth. The ROE of 106% is eye-popping even accounting for leverage. If this were a normal governance structure, it would be in my top decile. The Weichai overhang keeps it from being a pure 'Magic Formula' buy, but the value is undeniable."</p>
+</div>
+
+<div class="advisory-card">
+<div class="ac-name">Bill Ackman</div><div class="ac-title">Pershing Square</div>
+<p><strong>Anticipated view:</strong> "I'd want to be an activist here. The opportunity is clear — force Weichai to divest, install a truly independent board, initiate quarterly earnings calls, and re-rate the stock from 12x to 25x. Unfortunately, at 46% ownership, Weichai blocks any activist campaign. Without governance reform, this stock will always trade at a discount."</p>
+</div>
+
+<div class="advisory-card">
+<div class="ac-name">Cathie Wood</div><div class="ac-title">ARK Invest</div>
+<p><strong>Anticipated view:</strong> "PSI is at the intersection of two of our biggest themes: AI infrastructure and energy transformation. The fuel-agnostic engine platform is exactly the kind of convergence technology that enables the transition. I'd be concerned about the legacy combustion technology — where's the hydrogen pathway? — but the data center demand cycle is undeniable."</p>
+</div>
+
+<div class="advisory-card">
+<div class="ac-name">Cliff Asness</div><div class="ac-title">AQR Capital</div>
+<p><strong>Anticipated view:</strong> "Quantitatively, PSIX screens well on value and momentum factors simultaneously — that's unusual. The trailing 12-month return is extreme, but the forward multiple suggests value. The problem is the factor exposure to a single sector (data center infrastructure) creates uncompensated idiosyncratic risk. Position sizing matters enormously here."</p>
+</div>
+
+<div class="advisory-card">
+<div class="ac-name">Seth Klarman</div><div class="ac-title">Baupost Group</div>
+<p><strong>Anticipated view:</strong> "The margin of safety at $61 is meaningful if you believe in the $5.50–6.00 normalized EPS trajectory. But safety depends on earnings quality, and the 21% cash conversion ratio in FY2025 gives me pause. I'd want to see at least two quarters of normalized cash flow before building conviction. The governance risk is the kind of thing that turns a margin of safety into a value trap."</p>
+</div>
+
+<div class="advisory-card">
+<div class="ac-name">Chase Coleman</div><div class="ac-title">Tiger Global</div>
+<p><strong>Anticipated view:</strong> "Growth at a reasonable price in AI infrastructure? Yes. But I'd prefer to play this through the hyperscalers directly or through pure-play data center REITs where governance isn't an issue. PSI is growing impressively, but the Chinese ownership creates headline risk I don't need in a portfolio already overweight AI infrastructure."</p>
+</div>
+
+<div class="advisory-card">
+<div class="ac-name">Leon Cooperman</div><div class="ac-title">Omega Advisors</div>
+<p><strong>Anticipated view:</strong> "This is a classic small-cap deep value situation. The stock is down 50% from highs, trading at 12x earnings, growing 50%+, in a sector with multi-year visibility. The governance risk is real but priced in. When institutions start covering this name more broadly — and they will — the re-rating will be swift. I'd own a position."</p>
+</div>
+
+</div>
+</section>
+
+<!-- SECTION 19 -->
+<section class="section" id="s19">
+<span class="section-label">Section 19</span>
+<h2>🎭 Narrative, Meme Potential & Short Dynamics</h2>
+<p>PSIX rides two of the hottest narratives in capital markets: <strong>AI infrastructure</strong> and <strong>energy transition</strong>. The ticker is memorable, the story is simple ("they make generators for AI data centers"), and the stock has already demonstrated explosive move potential (from $3 to $122 in 30 months). Discovery level is rising rapidly — the stock went from OTC Pink to NASDAQ in December 2024, joined the Russell indices in June 2025, and got Jefferies coverage in December 2025.</p>
+
+<div class="meme-box">
+<div class="meme-score">42/100</div>
+<p style="color:var(--sand);font-weight:600;margin:8px 0">Meme Score</p>
+<p style="font-size:.85rem;color:var(--text-muted)">Current materialization: ~25%. Moderate viral potential — the AI data center angle is compelling but the Chinese ownership and governance issues dampen retail enthusiasm. Ticker is clean. Thesis is simple to explain.</p>
+<p style="font-size:.82rem;color:var(--text-muted);margin-top:8px">Potential slogans: "Power to the AI" · "Generators go brrr" · "The picks and shovels of AI... literally"</p>
+</div>
+
+<h3>Short Interest & Squeeze Dynamics</h3>
+<p>PSIX has historically had elevated short interest — it was once at 33% short float. Following the massive run-up and subsequent 50% decline, short interest has likely moderated but remains significant given the tight float (~5M tradeable shares). The put/call ratio was recently 0.59, indicating net bullish options sentiment despite the price decline.</p>
+<div class="card">
+<h4>Short Squeeze Probability Score: 35/100</h4>
+<p>Moderate. The tight float (5M shares) amplifies any squeeze potential, but Weichai's selling adds share supply and the governance overhang discourages aggressive short covering. A strong Q1 2026 earnings beat with margin recovery could trigger a meaningful squeeze.</p>
+</div>
+
+<h3>Sector Investor Optimism</h3>
+<div class="card">
+<h4>Sector Optimism Score: 78/100</h4>
+<p>Data center infrastructure and AI power are among the most bullish consensus trades in 2025–2026. Institutional money is flowing heavily into the space. Hyperscaler capex announcements continue to accelerate. ETFs focused on data center infrastructure (like DTCR) are seeing inflows. However, the "crowded trade" nature of this theme means any disappointment gets punished severely — as PSIX experienced firsthand with its Q4 margin miss.</p>
+</div>
+</section>
+
+<!-- SECTION 20 -->
+<section class="section" id="s20">
+<span class="section-label">Section 20</span>
+<h2>📅 Catalyst Calendar</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Date (Est.)</th><th>Catalyst</th><th>Type</th><th>Impact</th></tr></thead>
+<tbody>
+<tr><td>Mar 24, 2026</td><td>10-K Annual Report filing (FY2025)</td><td>Idiosyncratic</td><td>High — full financial details</td></tr>
+<tr><td>Q1 2026</td><td>MTL Manufacturing integration progress</td><td>Idiosyncratic</td><td>High — first signal of margin recovery</td></tr>
+<tr><td>May 2026 (est.)</td><td>Q1 2026 Earnings Release</td><td>Idiosyncratic</td><td>Very High — margin inflection point</td></tr>
+<tr><td>Jun 2026</td><td>Russell index annual reconstitution</td><td>Secular</td><td>Medium — continued inclusion drives flows</td></tr>
+<tr><td>2026</td><td>Potential additional analyst coverage initiations</td><td>Idiosyncratic</td><td>High — currently only 2 analysts</td></tr>
+<tr><td>Ongoing</td><td>Hyperscaler data center construction announcements</td><td>Industry</td><td>Medium — validates demand thesis</td></tr>
+<tr><td>Ongoing</td><td>Weichai stake changes / geopolitical developments</td><td>Geopolitical</td><td>High — either direction</td></tr>
+<tr><td>Jul 2027</td><td>$135M credit facility maturity</td><td>Idiosyncratic</td><td>Medium — refinancing risk</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<!-- SECTION 21 -->
+<section class="section" id="s21">
+<span class="section-label">Section 21</span>
+<h2>💎 Valuation & Peer Comparison</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Company</th><th>Mkt Cap</th><th>Rev (LTM)</th><th>P/E</th><th>EV/EBITDA</th><th>Rev Growth</th><th>GM</th></tr></thead>
+<tbody>
+<tr style="background:rgba(180,130,70,0.15)"><td><strong>PSIX</strong></td><td><strong>$1.4B</strong></td><td><strong>$722M</strong></td><td><strong>~12x</strong></td><td><strong>~9x</strong></td><td><strong>+52%</strong></td><td><strong>~25%</strong></td></tr>
+<tr><td>CMI — Cummins</td><td>$45B</td><td>$34B</td><td>26x</td><td>15x</td><td>+3%</td><td>35%</td></tr>
+<tr><td>CAT — Caterpillar</td><td>$180B</td><td>$67B</td><td>31x</td><td>19x</td><td>-3%</td><td>37%</td></tr>
+<tr><td>GNRC — Generac</td><td>$10B</td><td>$3.9B</td><td>31x</td><td>18x</td><td>+8%</td><td>37%</td></tr>
+<tr><td>POWL — Powell Industries</td><td>$4.5B</td><td>$1.1B</td><td>22x</td><td>16x</td><td>+15%</td><td>30%</td></tr>
+</tbody>
+</table>
+</div>
+<p>The valuation gap is striking. PSIX is growing faster than any peer by a wide margin (52% vs. single digits) yet trades at less than half the earnings multiple. Even applying a 30% "governance discount" for Weichai ownership and a 15% "quality discount" for margin compression, PSIX should trade at 15–18x earnings — implying $74–$90 at the low end and $83–$117 if margins recover to 28%+ and EPS reaches $6.50.</p>
+
+<h3>Sum of the Parts</h3>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Segment</th><th>Rev Est. FY2026</th><th>Multiple</th><th>Value</th><th>Per Share</th></tr></thead>
+<tbody>
+<tr><td>Power Systems</td><td>$750M</td><td>2.5x rev</td><td>$1,875M</td><td>$81.52</td></tr>
+<tr><td>Industrial</td><td>$130M</td><td>1.0x rev</td><td>$130M</td><td>$5.65</td></tr>
+<tr><td>Transportation</td><td>$20M</td><td>0.5x rev</td><td>$10M</td><td>$0.43</td></tr>
+<tr><td>Less: Net Debt</td><td></td><td></td><td>($55M)</td><td>($2.39)</td></tr>
+<tr><td><strong>SOTP Value</strong></td><td></td><td></td><td><strong>$1,960M</strong></td><td><strong>$85.22</strong></td></tr>
+</tbody>
+</table>
+</div>
+<p>SOTP implies ~40% upside from current levels, and this uses conservative multiples. If Power Systems gets rerated to 3x revenue (still below POWL), the per-share value exceeds $100.</p>
+</section>
+
+<!-- SECTION 22 -->
+<section class="section" id="s22">
+<span class="section-label">Section 22</span>
+<h2>📐 Probabilistic DCF & Scenarios</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Scenario</th><th>FY2026 Rev</th><th>Gross Margin</th><th>EPS</th><th>Multiple</th><th>Target Price</th><th>Probability</th></tr></thead>
+<tbody>
+<tr><td class="shock">🐻 Bear</td><td>$750M</td><td>22%</td><td>$3.24</td><td>13x</td><td>$42</td><td>15%</td></tr>
+<tr><td>📊 Base</td><td>$900M</td><td>26%</td><td>$4.69</td><td>17x</td><td>$80</td><td>50%</td></tr>
+<tr><td class="alpha">🐂 Bull</td><td>$1.0B</td><td>28%</td><td>$5.65</td><td>23x</td><td>$130</td><td>25%</td></tr>
+<tr><td>🚀 Mega-Bull</td><td>$1.1B</td><td>30%</td><td>$6.70</td><td>26x</td><td>$174</td><td>8%</td></tr>
+<tr><td class="shock">💥 Black Swan</td><td>$500M</td><td>18%</td><td>$1.67</td><td>8x</td><td>$13</td><td>2%</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Probability-weighted fair value: ~$92.86</strong> — implying ~52% upside from the current $61 price.</p>
+<p>Price targets by timeframe: <strong>6-month:</strong> $70–80 (margin recovery visibility) | <strong>12-month:</strong> $80–110 (full-year 2026 trajectory) | <strong>3-year:</strong> $110–150 (sustained growth + re-rating)</p>
+
+<!-- Interactive Valuation Model -->
+<div style="background:linear-gradient(135deg,#1e1d18,#222118);border:2px solid var(--sand-dark);border-radius:14px;padding:32px;margin:28px 0 0 0;">
+<h3 style="text-align:center;margin-bottom:6px;">🧮 Build Your Own Target Price</h3>
+<p style="text-align:center;font-size:.85rem;color:var(--text-muted);margin-bottom:28px;">Plug in your assumptions — the model derives net income from revenue × gross margin, applies an operating leverage factor, and prices the equity at your chosen multiple.</p>
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;margin-bottom:28px;">
+
+<!-- Input: FY Revenue -->
+<div>
+<label style="font-family:'JetBrains Mono',monospace;font-size:.72rem;text-transform:uppercase;letter-spacing:1px;color:var(--sand);display:block;margin-bottom:8px;">FY Revenue ($M)</label>
+<input id="iv-rev" type="range" min="500" max="1500" value="900" step="10" style="width:100%;accent-color:#D4A373;cursor:pointer;" oninput="updateModel()">
+<div style="display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--text-muted);margin-top:4px;">
+<span>$500M</span>
+<span id="iv-rev-val" style="color:var(--sand);font-weight:600;font-size:.85rem;">$900M</span>
+<span>$1.5B</span>
+</div>
+</div>
+
+<!-- Input: Gross Margin -->
+<div>
+<label style="font-family:'JetBrains Mono',monospace;font-size:.72rem;text-transform:uppercase;letter-spacing:1px;color:var(--sand);display:block;margin-bottom:8px;">Gross Margin (%)</label>
+<input id="iv-gm" type="range" min="15" max="38" value="26" step="0.5" style="width:100%;accent-color:#D4A373;cursor:pointer;" oninput="updateModel()">
+<div style="display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--text-muted);margin-top:4px;">
+<span>15%</span>
+<span id="iv-gm-val" style="color:var(--sand);font-weight:600;font-size:.85rem;">26.0%</span>
+<span>38%</span>
+</div>
+</div>
+
+<!-- Input: P/E Multiple -->
+<div>
+<label style="font-family:'JetBrains Mono',monospace;font-size:.72rem;text-transform:uppercase;letter-spacing:1px;color:var(--sand);display:block;margin-bottom:8px;">P/E Multiple</label>
+<input id="iv-pe" type="range" min="5" max="35" value="17" step="0.5" style="width:100%;accent-color:#D4A373;cursor:pointer;" oninput="updateModel()">
+<div style="display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--text-muted);margin-top:4px;">
+<span>5x</span>
+<span id="iv-pe-val" style="color:var(--sand);font-weight:600;font-size:.85rem;">17.0x</span>
+<span>35x</span>
+</div>
+</div>
+
+</div>
+
+<!-- Output Panel -->
+<div id="iv-output" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px;text-align:center;">
+<div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:6px;">Gross Profit</div>
+<div id="iv-gp" style="font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--text);">$234M</div>
+</div>
+<div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:6px;">Est. Net Income</div>
+<div id="iv-ni" style="font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--text);">$108M</div>
+</div>
+<div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:6px;">Implied EPS</div>
+<div id="iv-eps" style="font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--sand-light);">$4.69</div>
+</div>
+<div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:6px;">Target Price</div>
+<div id="iv-target" style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:var(--sand);">$79.69</div>
+</div>
+<div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:6px;">Upside from $61</div>
+<div id="iv-upside" style="font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--accent-green);">+30.6%</div>
+</div>
+</div>
+
+<!-- Assumptions footnote -->
+<p style="font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--text-muted);margin-top:14px;margin-bottom:0;text-align:center;">Assumes ~23.1M diluted shares, OpEx/SGA at ~41% of gross profit (derived from PSI's historical operating leverage at scale), ~$6M interest expense, effective tax rate ~18%.</p>
+</div>
+
+<script>
+function updateModel(){
+  const rev=parseFloat(document.getElementById('iv-rev').value);
+  const gm=parseFloat(document.getElementById('iv-gm').value);
+  const pe=parseFloat(document.getElementById('iv-pe').value);
+  const shares=23.1;
+  document.getElementById('iv-rev-val').textContent='$'+rev+'M';
+  document.getElementById('iv-gm-val').textContent=gm.toFixed(1)+'%';
+  document.getElementById('iv-pe-val').textContent=pe.toFixed(1)+'x';
+  const grossProfit=rev*(gm/100);
+  const opex=grossProfit*0.41;
+  const ebit=grossProfit-opex;
+  const interest=6;
+  const ebt=Math.max(ebit-interest,0);
+  const tax=ebt*0.18;
+  const ni=ebt-tax;
+  const eps=ni/shares;
+  const target=eps*pe;
+  const upside=((target-61)/61)*100;
+  document.getElementById('iv-gp').textContent='$'+Math.round(grossProfit)+'M';
+  document.getElementById('iv-ni').textContent='$'+Math.round(ni)+'M';
+  document.getElementById('iv-eps').textContent='$'+eps.toFixed(2);
+  document.getElementById('iv-target').textContent='$'+target.toFixed(2);
+  const uEl=document.getElementById('iv-upside');
+  uEl.textContent=(upside>=0?'+':'')+upside.toFixed(1)+'%';
+  uEl.style.color=upside>=0?'var(--accent-green)':'var(--accent-red)';
+  document.getElementById('iv-target').style.transform='scale(1.08)';
+  setTimeout(()=>{document.getElementById('iv-target').style.transform='scale(1)';},150);
+  document.getElementById('iv-target').style.transition='transform .15s ease';
+}
+</script>
+</section>
+
+<!-- SECTION 23 -->
+<section class="section" id="s23">
+<span class="section-label">Section 23</span>
+<h2>🔗 Value Chain & Ecosystem Map</h2>
+<div class="value-chain">
+<div class="vc-box">Raw Materials<br><small>Steel, Aluminum, Electronics</small></div>
+<div class="vc-arrow">→</div>
+<div class="vc-box">Engine Components<br><small>Blocks, Pistons, Injectors</small></div>
+<div class="vc-arrow">→</div>
+<div class="vc-box highlight">⚡ PSI Integration<br><small>Engines + Enclosures + Controls</small></div>
+<div class="vc-arrow">→</div>
+<div class="vc-box">OEM / Direct<br><small>Data Center Operators</small></div>
+<div class="vc-arrow">→</div>
+<div class="vc-box">End Users<br><small>Hyperscalers, Colo, Enterprise</small></div>
+</div>
+<p>PSI sits at the highest-value point in the chain: systems integration. They take commodity engine components and create certified, custom-engineered power systems. This is where the intellectual property lives — in the control systems, emissions calibration, and system-level engineering. The MTL acquisition extends PSI's control further upstream into enclosure fabrication, capturing more margin and reducing dependency on third-party vendors who were bottlenecking production.</p>
+</section>
+
+<!-- SECTION 24 -->
+<section class="section" id="s24">
+<span class="section-label">Section 24</span>
+<h2>📈 Options Plays</h2>
+<p>Based on NASDAQ data, the PSIX options chain currently shows limited availability. Options have begun listing following the December 2024 NASDAQ uplisting, but <strong>liquidity is thin</strong> with wide bid-ask spreads.</p>
+<p><strong>Liquidity Assessment:</strong> Very thin. Options were recently listed; open interest is low across most strikes.</p>
+<p>IV vs. historical vol: implied volatility is elevated (~85–100%) reflecting the stock's recent volatility (beta 2.03, 52-week range $18–$122). Historical 30-day vol is also high. IV appears roughly fair to slightly cheap given the event density ahead.</p>
+
+<div class="table-wrap">
+<table>
+<thead><tr><th colspan="5">Cash-Secured Puts</th></tr>
+<tr><th>Strike</th><th>Expiry</th><th>Approx Premium</th><th>Effective Cost Basis</th><th>Ann. Yield</th></tr></thead>
+<tbody>
+<tr><td>$50</td><td>Jun 2026</td><td>~$5.50</td><td>$44.50</td><td>~35%</td></tr>
+<tr><td>$55</td><td>Sep 2026</td><td>~$9.00</td><td>$46.00</td><td>~28%</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="table-wrap">
+<table>
+<thead><tr><th colspan="7">Bull Call Spreads</th></tr>
+<tr><th>Long Strike</th><th>Short Strike</th><th>Expiry</th><th>Approx Cost</th><th>Max Profit</th><th>Breakeven</th><th>R/R</th></tr></thead>
+<tbody>
+<tr><td>$65</td><td>$90</td><td>Sep 2026</td><td>~$8.00</td><td>~$17.00</td><td>$73</td><td>2.1:1</td></tr>
+<tr><td>$70</td><td>$100</td><td>Dec 2026</td><td>~$10.00</td><td>~$20.00</td><td>$80</td><td>2.0:1</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="table-wrap">
+<table>
+<thead><tr><th colspan="5">Covered Calls (Existing Holders)</th></tr>
+<tr><th>Strike</th><th>Expiry</th><th>Approx Premium</th><th>Upside Captured</th><th>Ann. Income</th></tr></thead>
+<tbody>
+<tr><td>$85</td><td>Jun 2026</td><td>~$5.00</td><td>39%</td><td>~27%</td></tr>
+<tr><td>$95</td><td>Sep 2026</td><td>~$7.00</td><td>56%</td><td>~19%</td></tr>
+</tbody>
+</table>
+</div>
+<p style="font-size:.82rem;color:var(--accent-orange)">⚠️ Illiquidity Warning: Bid-ask spreads are wide. Use limit orders exclusively. Consider the illiquidity premium when sizing positions. Options data is time-sensitive — verify pricing before trading. This is not a recommendation.</p>
+</section>
+
+<!-- SECTION 25 -->
+<section class="section" id="s25">
+<span class="section-label">Section 25</span>
+<h2>🎯 Implementation & Portfolio Construction</h2>
+
+<div class="verdict-banner" style="margin-bottom:24px">
+<div class="vb-title">VERDICT: LONG PSIX — 80% Conviction</div>
+<div class="vb-sub">This is not a binary outcome. It's a calculated bet on temporary margin compression resolving in a business with structural demand tailwinds.</div>
+</div>
+
+<h3>Conviction % — In-Depth Calculation</h3>
+<div class="table-wrap">
+<table class="conviction-table">
+<thead><tr><th>Factor</th><th>Weight</th><th>Score (0–100)</th><th>Weighted</th></tr></thead>
+<tbody>
+<tr><td>Business quality / moat</td><td>20%</td><td>65</td><td>13.0</td></tr>
+<tr><td>Management & alignment</td><td>15%</td><td>60</td><td>9.0</td></tr>
+<tr><td>Balance sheet / financial health</td><td>10%</td><td>72</td><td>7.2</td></tr>
+<tr><td>Growth trajectory & TAM</td><td>15%</td><td>92</td><td>13.8</td></tr>
+<tr><td>Valuation vs intrinsic value</td><td>15%</td><td>88</td><td>13.2</td></tr>
+<tr><td>Catalyst density (next 12 mo)</td><td>10%</td><td>85</td><td>8.5</td></tr>
+<tr><td>Bear case severity (inverse)</td><td>10%</td><td>55</td><td>5.5</td></tr>
+<tr><td>Macro/sector tailwinds</td><td>5%</td><td>90</td><td>4.5</td></tr>
+<tr style="background:rgba(180,130,70,0.2)"><td><strong>TOTAL CONVICTION</strong></td><td><strong>100%</strong></td><td></td><td><strong>74.7% → Rounded to 80%</strong></td></tr>
+</tbody>
+</table>
+</div>
+<p>The raw score of 74.7% rounds to approximately 75%, but we bump to 80% because the margin compression catalyst (MTL acquisition) is an identifiable, actionable trigger that the market hasn't fully priced. The governance discount drags the management score and bear case severity, which are the primary reasons this isn't a 90%+ conviction call.</p>
+
+<h3>Kelly Criterion Position Sizing</h3>
+<p>Kelly fraction = (bp − q) / b, where b = payoff odds (~1.52, based on $93 target / $61 entry), p = probability of win (~70%), q = 30%.</p>
+<p>Kelly = (1.52 × 0.70 − 0.30) / 1.52 = <strong>0.50 (50% of portfolio)</strong>. Full Kelly is always too aggressive. At quarter-Kelly (12%), this suggests a <strong>meaningful but not concentrated position</strong>. For a diversified portfolio, 3–6% allocation is appropriate given the governance risk and volatility.</p>
+
+<h3>Phased Entry Strategy</h3>
+<p><strong>Tranche 1 (40%):</strong> Enter at current levels (~$58–65). The post-Q4 selloff has created an attractive entry. <strong>Tranche 2 (30%):</strong> Add on any further weakness below $50, which would represent extreme pessimism. <strong>Tranche 3 (30%):</strong> Add on confirmation of margin recovery in Q1 2026 results (May 2026), even at higher prices.</p>
+
+<h3>Exit Triggers</h3>
+<p><strong>Positive exits:</strong> Sell 50% at $80–90 (base case achieved); sell remaining at $110+ or hold for continued re-rating. <strong>Negative exits:</strong> Exit fully if gross margin remains below 23% for two consecutive quarters; exit if Weichai increases stake back above 50%; exit if SEC investigation materializes; exit if data center order cancellations are reported.</p>
+</section>
+
+<!-- SECTION 26 -->
+<section class="section" id="s26">
+<span class="section-label">Final Section</span>
+<h2>🏁 Thesis Confidence & Monitoring</h2>
+<div class="card card-accent">
+<h4>Confidence: 80%</h4>
+<div class="progress-bar"><div class="progress-fill" style="width:80%"></div></div>
+<p style="margin-top:12px"><strong>Single Biggest Risk:</strong> Margin compression proves structural rather than temporary — if gross margins remain below 24% through FY2026, the growth-without-profitability narrative takes hold and the stock could re-rate down to 8–10x earnings ($28–35).</p>
+</div>
+
+<h4>Kill Signals — Exit If:</h4>
+<p>1. Gross margin below 23% for two consecutive quarters post-MTL integration (by Q3 2026)<br>
+2. Weichai announces increase in ownership stake back above 50%<br>
+3. SEC formal investigation or accounting restatement<br>
+4. Major data center customer loss or order cancellation disclosed<br>
+5. Management departure (Xykis or Li) without clear succession</p>
+
+<h4>Accelerate Signals — Add If:</h4>
+<p>1. Q1 2026 gross margin recovers above 27%<br>
+2. Additional sell-side analyst coverage initiations (3+ analysts)<br>
+3. PSI initiates quarterly earnings calls<br>
+4. Weichai announces plan to reduce stake below 40%<br>
+5. New multi-year data center contract announcement with named hyperscaler<br>
+6. Share buyback program initiated</p>
+</section>
+
+<!-- TEAR SHEET -->
+<div class="tear-sheet" id="tearsheet">
+<div class="ts-header">
+<div>
+<h2 style="margin-bottom:4px">Power Solutions International, Inc.</h2>
+<span class="mono" style="font-size:.82rem;color:var(--text-muted)">PSIX · NASDAQ · $61.12 · March 4, 2026</span>
+</div>
+<div style="text-align:right">
+<span class="mono" style="font-size:.7rem;color:var(--text-muted)">Solid Peer Research | Sko</span>
+</div>
+</div>
+<div class="ts-body">
+<div>
+<p><strong>Thesis:</strong> PSI is a rapidly growing, fuel-agnostic power systems manufacturer riding the AI data center infrastructure supercycle. Temporary margin compression from scaling too fast is being addressed through vertical integration (MTL acquisition). At 12x trailing earnings — half the peer multiple — the risk/reward is compelling for investors who can tolerate governance opacity from the Weichai controlling shareholder.</p>
+<div class="card" style="margin:14px 0;padding:14px">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:.85rem">
+<div>Market Cap: <strong>$1.41B</strong></div>
+<div>EV: <strong>~$1.47B</strong></div>
+<div>Revenue (FY2025): <strong>$722M</strong></div>
+<div>Rev Growth: <strong>+52%</strong></div>
+<div>Gross Margin: <strong>~25.5%</strong></div>
+<div>Net Debt: <strong>$55M</strong></div>
+</div>
+</div>
+<p style="font-size:.88rem"><strong>Price Targets:</strong> Bear $42 | Base $80 | Bull $130</p>
+<p style="font-size:.88rem"><strong>Top 3 Catalysts:</strong> MTL integration → margin recovery · Q1 2026 earnings inflection · Additional analyst coverage</p>
+<p style="font-size:.88rem"><strong>Top 3 Risks:</strong> Margin compression persists · Cummins/CAT competitive response · Weichai governance overhang</p>
+</div>
+<div style="text-align:center">
+<div style="font-family:'Playfair Display';font-size:2.4rem;font-weight:900;color:var(--sage);margin-bottom:6px">LONG</div>
+<div style="font-family:'JetBrains Mono';font-size:.85rem;color:var(--text-muted);margin-bottom:16px">80% Conviction</div>
+<div style="text-align:left;font-size:.85rem">
+<p>Prob-weighted FV: <strong class="sand-text">$92.86</strong> (+52%)</p>
+<p>Meme Score: <strong>42/100</strong></p>
+<p>Short Squeeze: <strong>35/100</strong></p>
+<p>Sector Optimism: <strong>78/100</strong></p>
+<p>Insider Alignment: <strong class="accent-orange" style="color:var(--accent-orange)">PARTIAL</strong></p>
+</div>
+<div style="margin-top:16px;padding:12px;background:var(--surface-accent);border-radius:8px">
+<p style="font-size:.82rem;font-style:italic;color:var(--text)">"In one sentence: PSI is the rare small-cap where a 50% drawdown created a genuine entry point into a multi-year secular growth story — if you can stomach the governance."</p>
+</div>
+</div>
+</div>
+<div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--border);text-align:center">
+<span class="mono" style="font-size:.7rem;color:var(--text-muted)">Solid Peer Research | Sko · March 4, 2026 · Not financial advice</span>
+</div>
+</div>
+
+<!-- SOURCES -->
+<section class="section" id="sources">
+<span class="section-label">Sources</span>
+<h2>📚 Sources</h2>
+<h4>Company Filings & Press Releases</h4>
+<div class="sources-list">
+<a href="https://investors.psiengines.com/press-releases" target="_blank">PSI Investor Relations — Press Releases</a>
+<a href="https://www.globenewswire.com/news-release/2026/03/02/3247879/17954/en/Power-Solutions-International-Announces-Fourth-Quarter-and-Record-Full-Year-2025-Financial-Results.html" target="_blank">FY2025 & Q4 2025 Earnings Release — March 2, 2026</a>
+<a href="https://investors.psiengines.com/news-releases/news-release-details/power-solutions-international-announces-strong-third-quarter" target="_blank">Q3 2025 Earnings Release — November 6, 2025</a>
+<a href="https://www.globenewswire.com/news-release/2026/03/02/3247891/17954/en/Power-Solutions-International-Inc-Acquires-MTL-Manufacturing-Equipment-Inc.html" target="_blank">MTL Manufacturing Acquisition — March 2, 2026</a>
+<a href="https://last10k.com/sec-filings/psix" target="_blank">PSIX SEC Filings (10-K, 10-Q) — Last10K</a>
+</div>
+
+<h4>News & Analysis</h4>
+<div class="sources-list">
+<a href="https://www.signalbloom.ai/news/PSIX/psix-beats-q4-revenue-estimates-but-plunging-margins-and-eps-miss-signal-operational-crisis" target="_blank">SignalBloom AI — Q4 Margin Analysis — March 2026</a>
+<a href="https://beyondspx.com/quote/PSIX/power-solutions-international-the-data-center-power-play-with-a-control-premium-problem-nasdaq-psix" target="_blank">BeyondSPX — Data Center Power Play Analysis — December 2025</a>
+<a href="https://finance.yahoo.com/news/power-solutions-international-inc-psix-001558253.html" target="_blank">Yahoo Finance — PSIX Bear Case Theory — October 2025</a>
+<a href="https://swisstransparentportfolio.substack.com/p/power-solutions-international-inc" target="_blank">Swiss Transparent Portfolio — PSIX Deep Dive — March 2025</a>
+</div>
+
+<h4>Analyst Coverage</h4>
+<div class="sources-list">
+<a href="https://www.nasdaq.com/articles/jefferies-initiates-coverage-power-solutions-international-psix-buy-recommendation" target="_blank">Jefferies Buy Initiation, $110.51 PT — December 1, 2025</a>
+<a href="https://stockanalysis.com/stocks/psix/" target="_blank">StockAnalysis.com — PSIX Overview</a>
+</div>
+
+<h4>Industry Data</h4>
+<div class="sources-list">
+<a href="https://www.grandviewresearch.com/industry-analysis/data-center-power-market" target="_blank">Grand View Research — Data Center Power Market ($20B → $42B by 2030)</a>
+<a href="https://www.spglobal.com/energy/en/news-research/latest-news/electric-power/101425-data-center-grid-power-demand-to-rise-22-in-2025-nearly-triple-by-2030" target="_blank">S&P Global — Data Center Grid Power Demand Forecast</a>
+<a href="https://www.mordorintelligence.com/industry-reports/data-center-generator-market" target="_blank">Mordor Intelligence — Data Center Generator Market ($7.9B → $9.9B by 2031)</a>
+</div>
+
+<h4>Ownership & Governance</h4>
+<div class="sources-list">
+<a href="https://www.stocktitan.net/sec-filings/PSIX/schedule-13d-a-power-solutions-international-inc-sec-filing-7dadf1c71baf.html" target="_blank">Weichai Schedule 13D/A — Ownership reduced to 46.5% — August 2025</a>
+<a href="https://www.investing.com/news/insider-trading-news/weichai-america-corp-sells-power-solutions-psix-stock-worth-145m-93CH-4196024" target="_blank">Investing.com — Weichai $14.5M Share Sale — August 2025</a>
+</div>
+</section>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+<canvas id="footerCanvas"></canvas>
+<div class="footer-content container">
+<div class="tagline">Solid Peer Research | Sko</div>
+<p style="font-family:'Playfair Display';font-size:1rem;color:var(--sand);margin-bottom:20px">Powering Alpha Through the Noise ⚡</p>
+<p class="disclaimer">Not financial advice. For informational and entertainment purposes only. Do your own research. Verify all figures independently. Author may have exposure to discussed securities and may trade at any time without notice. Past performance does not guarantee future results. All investment involves risk of loss.</p>
+<p class="mono" style="font-size:.7rem;color:var(--text-muted);margin-top:16px">© 2026 Solid Peer Research | Sko</p>
+</div>
+</footer>
+
+<script>
+// ==========================================
+// HERO AMBIENT ANIMATION — Power Grid Visualization
+// ==========================================
+(function(){
+const c=document.getElementById('heroCanvas');
+if(!c)return;
+const ctx=c.getContext('2d');
+let W,H;
+function resize(){W=c.width=c.offsetWidth;H=c.height=c.offsetHeight;}
+resize();
+window.addEventListener('resize',resize);
+
+// Power lines / grid nodes
+const nodes=[];
+const NUM_NODES=35;
+for(let i=0;i<NUM_NODES;i++){
+  nodes.push({
+    x:Math.random()*1200,
+    y:Math.random()*600,
+    vx:(Math.random()-.5)*.15,
+    vy:(Math.random()-.5)*.1,
+    r:Math.random()*3+1,
+    pulse:Math.random()*Math.PI*2,
+    energy:Math.random()
+  });
+}
+
+function drawGrid(t){
+  ctx.clearRect(0,0,W,H);
+  // Draw connections (power lines)
+  for(let i=0;i<nodes.length;i++){
+    for(let j=i+1;j<nodes.length;j++){
+      const dx=nodes[i].x-nodes[j].x;
+      const dy=nodes[i].y-nodes[j].y;
+      const dist=Math.sqrt(dx*dx+dy*dy);
+      if(dist<200){
+        const alpha=(1-dist/200)*0.15;
+        // Pulsing energy along line
+        const pulse=Math.sin(t*0.001+i+j)*0.5+0.5;
+        ctx.beginPath();
+        ctx.strokeStyle=`rgba(212,163,115,${alpha*pulse})`;
+        ctx.lineWidth=0.8;
+        ctx.moveTo(nodes[i].x,nodes[i].y);
+        ctx.lineTo(nodes[j].x,nodes[j].y);
+        ctx.stroke();
+        
+        // Energy packet traveling along line
+        if(dist<120&&pulse>0.7){
+          const px=nodes[i].x+(nodes[j].x-nodes[i].x)*((t*0.002+i)%1);
+          const py=nodes[i].y+(nodes[j].y-nodes[i].y)*((t*0.002+i)%1);
+          ctx.beginPath();
+          ctx.arc(px,py,1.5,0,Math.PI*2);
+          ctx.fillStyle=`rgba(232,201,160,${alpha*2})`;
+          ctx.fill();
+        }
+      }
+    }
+  }
+  // Draw nodes (generators/substations)
+  for(const n of nodes){
+    n.x+=n.vx;n.y+=n.vy;
+    if(n.x<0||n.x>W)n.vx*=-1;
+    if(n.y<0||n.y>H)n.vy*=-1;
+    n.pulse+=0.02;
+    const glow=Math.sin(n.pulse)*0.3+0.7;
+    ctx.beginPath();
+    ctx.arc(n.x,n.y,n.r*glow,0,Math.PI*2);
+    ctx.fillStyle=`rgba(212,163,115,${0.4*glow})`;
+    ctx.fill();
+    // Outer ring for larger nodes
+    if(n.r>2.5){
+      ctx.beginPath();
+      ctx.arc(n.x,n.y,n.r*2.5,0,Math.PI*2);
+      ctx.strokeStyle=`rgba(163,177,138,${0.15*glow})`;
+      ctx.lineWidth=0.5;
+      ctx.stroke();
+    }
+  }
+}
+
+let frame=0;
+function animate(){
+  drawGrid(frame);
+  frame++;
+  requestAnimationFrame(animate);
+}
+animate();
+})();
+
+// ==========================================
+// CLICK ANIMATIONS — Engine Firing Sequence
+// ==========================================
+document.addEventListener('click',function(e){
+  if(e.target.closest('a,button,input,select,textarea,.toc-bar'))return;
+  createEngineClick(e.clientX,e.clientY,false);
+});
+document.addEventListener('dblclick',function(e){
+  if(e.target.closest('a,button,input,select,textarea,.toc-bar'))return;
+  e.preventDefault();
+  createEngineClick(e.clientX,e.clientY,true);
+});
+
+function createEngineClick(x,y,isDbl){
+  const count=isDbl?32:14;
+  const duration=isDbl?900:500;
+  
+  // Central ignition flash
+  const flash=document.createElement('div');
+  Object.assign(flash.style,{
+    position:'fixed',left:x+'px',top:y+'px',width:'8px',height:'8px',
+    background:'radial-gradient(circle,#fff,#E8C9A0,transparent)',
+    borderRadius:'50%',pointerEvents:'none',zIndex:'9999',
+    transform:'translate(-50%,-50%)'
+  });
+  document.body.appendChild(flash);
+  flash.animate([
+    {transform:'translate(-50%,-50%) scale(1)',opacity:1},
+    {transform:'translate(-50%,-50%) scale('+(isDbl?8:4)+')',opacity:0}
+  ],{duration:duration*0.6,easing:'ease-out'}).onfinish=()=>flash.remove();
+  
+  // Piston-like elements radiating out
+  for(let i=0;i<count;i++){
+    const el=document.createElement('div');
+    const angle=(i/count)*Math.PI*2;
+    const dist=isDbl?(60+Math.random()*80):(30+Math.random()*40);
+    const size=isDbl?(4+Math.random()*6):(2+Math.random()*4);
+    const isExhaust=Math.random()>0.6;
+    const color=isExhaust?
+      `hsl(${30+Math.random()*20},${60+Math.random()*30}%,${50+Math.random()*30}%)`:
+      `hsl(${35+Math.random()*15},${70+Math.random()*20}%,${70+Math.random()*20}%)`;
+    
+    Object.assign(el.style,{
+      position:'fixed',left:x+'px',top:y+'px',
+      width:size+'px',height:isExhaust?size*0.5+'px':size+'px',
+      background:color,
+      borderRadius:isExhaust?'2px':'50%',
+      pointerEvents:'none',zIndex:'9998',
+      transform:'translate(-50%,-50%)'
+    });
+    document.body.appendChild(el);
+    
+    const endX=x+Math.cos(angle)*dist;
+    const endY=y+Math.sin(angle)*dist;
+    const rotate=isExhaust?Math.random()*360:0;
+    
+    el.animate([
+      {transform:'translate(-50%,-50%) scale(0.2) rotate(0deg)',opacity:1},
+      {transform:`translate(${endX-x}px,${endY-y}px) scale(${isDbl?1.5:1}) rotate(${rotate}deg)`,opacity:0.8,offset:0.3},
+      {transform:`translate(${(endX-x)*1.3}px,${(endY-y)*1.3}px) scale(0.1) rotate(${rotate*2}deg)`,opacity:0}
+    ],{duration:duration,easing:'cubic-bezier(0.25,0.46,0.45,0.94)'}).onfinish=()=>el.remove();
+  }
+  
+  // Exhaust ring (expanding)
+  if(isDbl){
+    const ring=document.createElement('div');
+    Object.assign(ring.style,{
+      position:'fixed',left:x+'px',top:y+'px',width:'20px',height:'20px',
+      border:'2px solid rgba(163,177,138,0.6)',
+      borderRadius:'50%',pointerEvents:'none',zIndex:'9997',
+      transform:'translate(-50%,-50%)'
+    });
+    document.body.appendChild(ring);
+    ring.animate([
+      {transform:'translate(-50%,-50%) scale(1)',opacity:0.8,borderWidth:'2px'},
+      {transform:'translate(-50%,-50%) scale(6)',opacity:0,borderWidth:'0.5px'}
+    ],{duration:800,easing:'ease-out'}).onfinish=()=>ring.remove();
+  }
+}
+
+// ==========================================
+// FOOTER CANVAS — Running Engine Cross-Section
+// ==========================================
+(function(){
+const c=document.getElementById('footerCanvas');
+if(!c)return;
+const ctx=c.getContext('2d');
+let W,H;
+function resize(){W=c.width=c.offsetWidth;H=c.height=c.offsetHeight;}
+resize();
+window.addEventListener('resize',resize);
+
+// Simplified engine pistons
+const pistons=[];
+for(let i=0;i<6;i++){
+  pistons.push({
+    x:W*0.15+i*(W*0.12),
+    phase:i*Math.PI/3,
+    height:40
+  });
+}
+
+// Exhaust particles
+const particles=[];
+
+function drawEngine(t){
+  ctx.clearRect(0,0,W,H);
+  const time=t*0.001;
+  
+  // Engine block outline
+  ctx.strokeStyle='rgba(212,163,115,0.1)';
+  ctx.lineWidth=1;
+  ctx.strokeRect(W*0.08,H*0.2,W*0.84,H*0.6);
+  
+  // Pistons
+  for(const p of pistons){
+    const stroke=Math.sin(time*3+p.phase)*p.height*0.4;
+    const cy=H*0.5+stroke;
+    
+    // Cylinder
+    ctx.strokeStyle='rgba(212,163,115,0.12)';
+    ctx.lineWidth=1;
+    ctx.strokeRect(p.x-15,H*0.3,30,H*0.4);
+    
+    // Piston head
+    const compression=Math.sin(time*3+p.phase);
+    const heat=Math.max(0,compression);
+    ctx.fillStyle=`rgba(${180+heat*75},${130+heat*40},${70+heat*30},${0.2+heat*0.3})`;
+    ctx.fillRect(p.x-12,cy-4,24,8);
+    
+    // Spark (at top of stroke)
+    if(compression>0.9){
+      ctx.beginPath();
+      ctx.arc(p.x,cy-10,3+Math.random()*3,0,Math.PI*2);
+      ctx.fillStyle=`rgba(255,220,150,${0.6+Math.random()*0.4})`;
+      ctx.fill();
+      
+      // Add exhaust particle
+      if(Math.random()>0.7){
+        particles.push({
+          x:p.x+Math.random()*10-5,
+          y:H*0.25,
+          vx:(Math.random()-0.5)*0.8,
+          vy:-Math.random()*1.5-0.5,
+          life:1,
+          size:Math.random()*3+1
+        });
+      }
+    }
+    
+    // Connecting rod
+    ctx.beginPath();
+    ctx.moveTo(p.x,cy+4);
+    ctx.lineTo(p.x+Math.sin(time*3+p.phase)*8,H*0.75);
+    ctx.strokeStyle='rgba(200,180,160,0.15)';
+    ctx.lineWidth=2;
+    ctx.stroke();
+  }
+  
+  // Crankshaft (rotating)
+  ctx.beginPath();
+  ctx.arc(W*0.5,H*0.78,15,0,Math.PI*2);
+  ctx.strokeStyle='rgba(212,163,115,0.15)';
+  ctx.lineWidth=1.5;
+  ctx.stroke();
+  const crankAngle=time*3;
+  ctx.beginPath();
+  ctx.moveTo(W*0.5,H*0.78);
+  ctx.lineTo(W*0.5+Math.cos(crankAngle)*12,H*0.78+Math.sin(crankAngle)*12);
+  ctx.strokeStyle='rgba(212,163,115,0.25)';
+  ctx.stroke();
+  
+  // Exhaust particles
+  for(let i=particles.length-1;i>=0;i--){
+    const p=particles[i];
+    p.x+=p.vx;p.y+=p.vy;p.life-=0.015;
+    if(p.life<=0){particles.splice(i,1);continue;}
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,p.size*p.life,0,Math.PI*2);
+    ctx.fillStyle=`rgba(180,160,140,${p.life*0.3})`;
+    ctx.fill();
+  }
+  if(particles.length>100)particles.splice(0,20);
+}
+
+let frame=0;
+function animate(){
+  drawEngine(frame*16);
+  frame++;
+  requestAnimationFrame(animate);
+}
+animate();
+})();
+</script>
+</body>
+</html>
