@@ -1,0 +1,1739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solid Peer Research | Sko — CXDO: The Cloud's Quiet Kingmaker</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F7F4EF;
+  --bg-alt: #EFEAE2;
+  --surface: #FDFBF7;
+  --surface-raised: #F0ECE4;
+  --text: #1A1A2E;
+  --text-muted: #6B6B80;
+  --primary: #2563EB;
+  --primary-light: #DBEAFE;
+  --primary-dark: #1D4ED8;
+  --secondary: #059669;
+  --secondary-dark: #047857;
+  --accent-red: #DC2626;
+  --accent-green: #16A34A;
+  --accent-orange: #D97706;
+  --border: rgba(37,99,235,0.12);
+  --border-light: rgba(37,99,235,0.06);
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family:'Inter',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.7;
+  font-size:15px;
+  -webkit-font-smoothing:antialiased;
+}
+
+h1,h2,h3 { font-family:'Playfair Display',serif; }
+h4 { font-family:'Inter',sans-serif; font-weight:700; }
+
+.container { max-width:1100px; margin:0 auto; padding:0 24px; }
+
+/* HERO */
+.hero {
+  position:relative;
+  background: linear-gradient(135deg, #0F172A 0%, #1E293B 25%, #1D4ED8 60%, #2563EB 80%, #3B82F6 100%);
+  color:#fff;
+  padding:80px 0 60px;
+  overflow:hidden;
+}
+.hero canvas { position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; opacity:0.3; }
+.hero .container { position:relative; z-index:2; }
+.hero-brand {
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:2px;
+  color:rgba(255,255,255,0.6);
+  margin-bottom:16px;
+}
+.hero h1 {
+  font-size:clamp(32px,5vw,56px);
+  font-weight:900;
+  line-height:1.1;
+  margin-bottom:12px;
+}
+.hero-hook {
+  font-size:clamp(16px,2vw,20px);
+  color:rgba(255,255,255,0.75);
+  font-weight:300;
+  margin-bottom:28px;
+  max-width:700px;
+}
+.verdict-banner {
+  background:linear-gradient(90deg,var(--primary-dark),var(--primary),#3B82F6);
+  border-radius:10px;
+  padding:16px 24px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:13px;
+  letter-spacing:0.5px;
+  margin-bottom:32px;
+  line-height:1.6;
+}
+.hero-stats {
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:16px;
+}
+.hero-stat {
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.12);
+  border-radius:10px;
+  padding:18px;
+  backdrop-filter:blur(8px);
+}
+.hero-stat-label {
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;
+  text-transform:uppercase;
+  letter-spacing:1.5px;
+  color:rgba(255,255,255,0.5);
+  margin-bottom:6px;
+}
+.hero-stat-value {
+  font-family:'JetBrains Mono',monospace;
+  font-size:clamp(20px,3vw,28px);
+  font-weight:700;
+  color:#fff;
+}
+.hero-stat-detail {
+  font-size:11px;
+  color:rgba(255,255,255,0.5);
+  margin-top:4px;
+}
+
+/* NAV BAR */
+.toc-bar {
+  width:100%;
+  position:sticky;
+  top:0;
+  z-index:100;
+  background:var(--bg);
+  border-bottom:2px solid var(--primary);
+  overflow-x:auto;
+  white-space:nowrap;
+  text-align:center;
+  padding:14px 24px;
+  box-sizing:border-box;
+  -webkit-overflow-scrolling:touch;
+}
+.toc-bar::-webkit-scrollbar { height:4px; }
+.toc-bar::-webkit-scrollbar-thumb { background:var(--primary-dark); border-radius:2px; }
+.toc-bar::-webkit-scrollbar-track { background:transparent; }
+.toc-bar a {
+  display:inline-block;
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  padding:4px 14px;
+  color:var(--text-muted);
+  text-decoration:none;
+  border-right:1px solid var(--border);
+}
+.toc-bar a:last-child { border-right:none; }
+.toc-bar a:hover { color:var(--primary); }
+
+/* SECTIONS */
+.report-section { padding:48px 0; }
+.report-section + .report-section { border-top:1px solid var(--border-light); }
+.section-label {
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:2px;
+  color:var(--primary);
+  margin-bottom:8px;
+}
+.report-section h2 {
+  margin-top:0;
+  margin-bottom:20px;
+  font-size:clamp(24px,3vw,32px);
+  font-weight:800;
+  line-height:1.2;
+  border-left:4px solid var(--primary);
+  padding-left:16px;
+}
+
+/* CARDS */
+.card {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:24px;
+  margin-bottom:16px;
+}
+.card-accent { border-left:4px solid var(--primary); }
+.card-bull { border-left:4px solid var(--accent-green); background:rgba(22,163,74,0.03); }
+.card-bear { border-left:4px solid var(--accent-red); background:rgba(220,38,38,0.03); }
+.card-neutral { border-left:4px solid var(--accent-orange); background:rgba(217,119,6,0.03); }
+
+.card h3 {
+  font-size:18px;
+  margin-bottom:12px;
+  line-height:1.3;
+}
+.card h4 { font-size:14px; margin-bottom:8px; }
+
+/* TABLES */
+.table-wrap { overflow-x:auto; margin:16px 0; border-radius:10px; }
+table {
+  width:100%;
+  border-collapse:collapse;
+  font-size:13px;
+}
+thead th {
+  background:var(--primary-dark);
+  color:#fff;
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:0.5px;
+  padding:12px 14px;
+  text-align:left;
+  font-weight:600;
+}
+tbody td {
+  padding:10px 14px;
+  border-bottom:1px solid var(--border-light);
+}
+tbody tr:nth-child(odd) { background:var(--bg); }
+tbody tr:nth-child(even) { background:var(--bg-alt); }
+tbody tr:hover { background:var(--surface-raised); }
+
+/* GRID LAYOUTS */
+.grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; }
+.grid-4 { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
+
+/* BLOCKQUOTES */
+blockquote {
+  border-left:4px solid var(--primary);
+  background:var(--bg-alt);
+  padding:16px 20px;
+  margin:16px 0;
+  border-radius:0 8px 8px 0;
+  font-style:italic;
+}
+blockquote cite {
+  display:block;
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;
+  color:var(--text-muted);
+  margin-top:8px;
+  font-style:normal;
+  text-transform:uppercase;
+  letter-spacing:0.5px;
+}
+.quote-context {
+  font-style:normal;
+  font-size:13px;
+  color:var(--primary-dark);
+  font-weight:600;
+  margin-top:8px;
+}
+
+/* BADGES */
+.badge {
+  display:inline-block;
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  padding:3px 10px;
+  border-radius:20px;
+  font-weight:600;
+}
+.badge-bull { background:rgba(22,163,74,0.1); color:var(--accent-green); }
+.badge-bear { background:rgba(220,38,38,0.1); color:var(--accent-red); }
+.badge-neutral { background:rgba(217,119,6,0.1); color:var(--accent-orange); }
+
+/* PROGRESS BAR */
+.progress-bar {
+  width:100%;
+  height:12px;
+  background:var(--bg-alt);
+  border-radius:6px;
+  overflow:hidden;
+  margin:8px 0;
+}
+.progress-fill {
+  height:100%;
+  background:linear-gradient(90deg,var(--primary-dark),var(--primary));
+  border-radius:6px;
+  transition:width 1s ease;
+}
+
+/* EMPHASIS */
+.alpha { color:var(--accent-green); font-weight:600; }
+.shock { color:var(--accent-red); font-weight:600; }
+.primary-text { color:var(--primary); font-weight:600; }
+.mono { font-family:'JetBrains Mono',monospace; }
+.big-num {
+  font-family:'JetBrains Mono',monospace;
+  font-size:28px;
+  font-weight:700;
+}
+
+/* SIGNAL CARDS */
+.signal-card {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:20px;
+  margin-bottom:12px;
+}
+.signal-card .signal-meta {
+  display:flex;
+  gap:16px;
+  margin-top:12px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;
+  color:var(--text-muted);
+  text-transform:uppercase;
+  letter-spacing:0.5px;
+}
+
+/* TEAR SHEET */
+.tear-sheet {
+  background:var(--surface);
+  border:2px solid var(--primary);
+  border-radius:12px;
+  padding:32px;
+  margin:32px 0;
+}
+.tear-sheet-grid { display:grid; grid-template-columns:60% 40%; gap:24px; }
+.tear-sheet h3 { font-size:22px; margin-bottom:16px; }
+
+/* PROCESS DIAGRAM */
+.process-flow {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:0;
+  flex-wrap:wrap;
+  margin:24px 0;
+  padding:20px;
+  background:var(--bg-alt);
+  border-radius:10px;
+}
+.process-step {
+  background:var(--primary);
+  color:#fff;
+  padding:12px 20px;
+  border-radius:8px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;
+  text-align:center;
+  min-width:100px;
+}
+.process-arrow {
+  font-size:20px;
+  color:var(--primary);
+  padding:0 8px;
+}
+
+/* FOOTER */
+.report-footer {
+  position:relative;
+  background:#0F172A;
+  color:rgba(255,255,255,0.7);
+  padding:60px 0 40px;
+  overflow:hidden;
+}
+.report-footer canvas {
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  pointer-events:none;
+  opacity:0.2;
+}
+.report-footer .container { position:relative; z-index:2; }
+.footer-sig {
+  font-family:'Playfair Display',serif;
+  font-size:20px;
+  color:var(--primary);
+  margin-bottom:8px;
+}
+.footer-tagline {
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;
+  color:rgba(255,255,255,0.4);
+  letter-spacing:1px;
+  margin-bottom:24px;
+}
+.footer-disclaimer {
+  font-size:11px;
+  color:rgba(255,255,255,0.3);
+  line-height:1.6;
+  max-width:800px;
+}
+
+/* SOURCES */
+.sources-section a {
+  color:var(--primary);
+  text-decoration:none;
+  font-size:13px;
+  line-height:2;
+  display:block;
+}
+.sources-section a:hover { text-decoration:underline; }
+
+/* ADVISORY DISCLAIMER */
+.advisory-disclaimer {
+  font-style:italic;
+  color:var(--text-muted);
+  font-size:12px;
+  margin-bottom:20px;
+  padding:12px;
+  background:var(--bg-alt);
+  border-radius:8px;
+}
+
+/* MEME BOX */
+.meme-box {
+  background:linear-gradient(135deg,var(--primary-light),var(--surface));
+  border:2px solid var(--primary);
+  border-radius:12px;
+  padding:24px;
+  text-align:center;
+}
+
+/* RESPONSIVE */
+@media (max-width:480px) {
+  .toc-bar { display:none; }
+}
+@media (max-width:768px) {
+  .grid-2, .grid-3, .grid-4 { grid-template-columns:1fr; }
+  .hero-stats { grid-template-columns:1fr 1fr; }
+  .tear-sheet-grid { grid-template-columns:1fr; }
+  .process-flow { flex-direction:column; }
+  .process-arrow { transform:rotate(90deg); }
+}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero" id="top">
+<canvas id="heroCanvas"></canvas>
+<div class="container">
+  <div class="hero-brand">Solid Peer Research | Sko · March 6, 2026</div>
+  <h1>Crexendo (CXDO)</h1>
+  <div class="hero-hook">The $200M cloud comms platform that just ate a $26M licensee — and has 235 more in the fishing pond.</div>
+  <div class="verdict-banner">
+    🎯 INVESTMENT RATING: LONG — 74% Conviction | Expected 3-yr annualized return: ~18–22% vs S&P 500 est. ~10% | P(outperform): 68%
+  </div>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="hero-stat-label">Share Price</div>
+      <div class="hero-stat-value">$6.72</div>
+      <div class="hero-stat-detail">52-wk: $3.75 – $7.80</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-label">Revenue (FY2025)</div>
+      <div class="hero-stat-value">$68.2M</div>
+      <div class="hero-stat-detail">+12% YoY organic</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-label">RPO (Backlog)</div>
+      <div class="hero-stat-value">$89.1M</div>
+      <div class="hero-stat-detail">60-month contract value</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-label">Cash Position</div>
+      <div class="hero-stat-value">$31.4M</div>
+      <div class="hero-stat-detail">Nearly zero debt</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- NAV -->
+<div class="toc-bar">
+  <a href="#overview">Overview</a>
+  <a href="#industry">Industry</a>
+  <a href="#how-it-works">How It Works</a>
+  <a href="#vocab">Vocab</a>
+  <a href="#products">Products</a>
+  <a href="#subs">Subs & M&A</a>
+  <a href="#alpha">Alpha Signals</a>
+  <a href="#thesis">Thesis</a>
+  <a href="#bear">Bear Cases</a>
+  <a href="#structure">Share Structure</a>
+  <a href="#balance">Balance Sheet</a>
+  <a href="#mgmt">Management</a>
+  <a href="#growth">Growth</a>
+  <a href="#moat">Moat</a>
+  <a href="#tailwinds">Tailwinds</a>
+  <a href="#headwinds">Headwinds</a>
+  <a href="#earnings">Earnings Alpha</a>
+  <a href="#advisory">Advisory</a>
+  <a href="#narrative">Narrative</a>
+  <a href="#catalysts">Catalysts</a>
+  <a href="#valuation">Valuation</a>
+  <a href="#dcf">DCF</a>
+  <a href="#chain">Value Chain</a>
+  <a href="#options">Options</a>
+  <a href="#implementation">Implementation</a>
+  <a href="#confidence">Confidence</a>
+</div>
+
+<!-- SECTION 01: COMPANY OVERVIEW -->
+<section class="report-section container" id="overview">
+  <div class="section-label">Section 01</div>
+  <h2>🏢 Company Overview</h2>
+  <p>Crexendo is one of those rare tech turnaround stories that actually worked. Founded in 1995 as StoresOnline — a B2C e-commerce outfit — the company pivoted hard into cloud communications under Steven Mihaylo's leadership starting in 2007. Today it operates as a dual-engine platform: selling its own UCaaS services directly to businesses (Cloud Telecommunications) and licensing its proprietary NetSapiens platform to 235+ service providers who white-label it for their own customers (Software Solutions). That second engine — the wholesale platform play — is the crown jewel, supporting over 7 million end users globally.</p>
+  <p>The company relisted on NASDAQ in July 2020, completed the transformational $50M NetSapiens acquisition in June 2021, and in March 2023 appointed Jeff Korn (a 20+ year company veteran) as CEO. Since Korn took the helm, Crexendo has swung from burning ~$100K/month to generating $9.3M in annual free cash flow. On March 2, 2026, they closed the $35M acquisition of Estech Systems (ESI), one of their own licensees, bringing them to the doorstep of $100M in annualized revenue.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Metric</th><th>FY2022</th><th>FY2023</th><th>FY2024</th><th>FY2025</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Revenue</td><td>$45.1M</td><td>$53.2M</td><td>$60.8M</td><td>$68.2M</td></tr>
+        <tr><td>Revenue Growth</td><td>—</td><td>+18%</td><td>+14%</td><td>+12%</td></tr>
+        <tr><td>GAAP Net Income</td><td>($3.4M)</td><td>($0.6M)</td><td>$1.7M</td><td>$5.1M</td></tr>
+        <tr><td>Adj. EBITDA</td><td>$1.2M</td><td>$5.2M</td><td>$8.5M</td><td>$11.2M</td></tr>
+        <tr><td>Cash & Equivalents</td><td>$5.7M</td><td>$10.3M</td><td>$18.2M</td><td>$31.4M</td></tr>
+        <tr><td>End Users on Platform</td><td>~3M</td><td>~4M</td><td>~5M</td><td>7M+</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- SECTION 02: INDUSTRY -->
+<section class="report-section container" id="industry">
+  <div class="section-label">Section 02</div>
+  <h2>🌍 Industry: The Great PBX Rip-and-Replace</h2>
+  <div class="grid-2">
+    <div class="card card-accent">
+      <h4>Market Size</h4>
+      <p>The global UCaaS market sits at approximately $56–87 billion in 2025 depending on definition scope, with consensus estimates projecting 15–20% CAGR through 2030+. The U.S. alone represents roughly $22 billion. Key growth drivers: continued legacy PBX replacement, hybrid/remote work permanence, AI-powered communication features, and multi-CaaS bundling (UCaaS + CCaaS + CPaaS).</p>
+    </div>
+    <div class="card card-accent">
+      <h4>Why It Matters for CXDO</h4>
+      <p>Crexendo isn't competing head-to-head with Microsoft Teams or RingCentral for enterprise seats. It's playing a different game — providing the platform <em>underneath</em> hundreds of regional service providers. Think of it as the Shopify of telecom: enabling others to sell, not selling to end customers alone. This wholesale model has structurally higher margins and dramatically lower customer acquisition costs. When Microsoft abandoned Metaswitch and Cisco disrupted BroadSoft, Crexendo became the migration destination.</p>
+    </div>
+  </div>
+  <p style="margin-top:16px;">The competitive landscape is dominated by Microsoft (Teams Phone), Cisco (Webex), RingCentral ($2B+ ARR), Zoom, and 8x8. But Crexendo's moat is in the <em>service provider enablement</em> layer — a niche where it competes with Ooma, Sangoma, and BroadSoft legacy installs rather than the consumer-facing giants. According to Frost & Sullivan, NetSapiens is the third-party platform vendor with the fastest growth rate in North America and the #4 ranked provider of UCaaS seats.</p>
+</section>
+
+<!-- SECTION 03: HOW IT WORKS -->
+<section class="report-section container" id="how-it-works">
+  <div class="section-label">Section 03</div>
+  <h2>🔬 How It Actually Works</h2>
+
+  <h4 style="margin-bottom:12px;">The Core Process</h4>
+  <p>At its most basic, Crexendo takes your voice (analog sound waves from your mouth) and converts them into digital packets that travel over the internet instead of old copper phone lines. But that's just the commodity part. The real product is a multi-tenant software platform — NetSapiens — that sits in the cloud and acts as a virtual telephone exchange for hundreds of different phone companies simultaneously. Each phone company (called a "licensee") gets their own branded portal, their own customers, their own pricing — but they all run on the same underlying Crexendo code. Think of it like an apartment building: one structure, many tenants, each with their own front door.</p>
+
+  <div class="process-flow">
+    <div class="process-step">End User<br>(Business Phone)</div>
+    <div class="process-arrow">→</div>
+    <div class="process-step">Service Provider<br>(Licensee)</div>
+    <div class="process-arrow">→</div>
+    <div class="process-step">NetSapiens<br>Platform (Cloud)</div>
+    <div class="process-arrow">→</div>
+    <div class="process-step">PSTN / Internet<br>(Call Routing)</div>
+    <div class="process-arrow">→</div>
+    <div class="process-step">Recipient<br>(Any Phone)</div>
+  </div>
+
+  <h4 style="margin:20px 0 12px;">Why It's Hard to Copy</h4>
+  <p>Building a multi-tenant cloud PBX platform that can reliably handle millions of concurrent voice sessions is genuinely hard engineering — voice is unforgiving of latency in ways that email or chat are not. NetSapiens has been refined since its founding in 2000, carrying 20+ years of iterative improvements, and the switching costs for licensees are enormous: migrating a phone company's entire customer base off a platform is a months-long, business-threatening project. Crexendo's "sessions not seats" pricing model — charging based on concurrent usage rather than per-user — further differentiates it by letting providers price creatively and capture wider margins than competitors who charge per seat.</p>
+
+  <div class="card card-accent">
+    <h4>The Key Metric That Matters: Net Dollar Retention Rate</h4>
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;">
+      <div>
+        <div class="big-num" style="color:var(--primary);">~100%</div>
+        <div class="mono" style="font-size:11px;color:var(--text-muted);">CREXENDO NET RETENTION</div>
+      </div>
+      <div>
+        <div style="font-size:14px;color:var(--text-muted);">Industry Average: 85–95% for SMB-focused UCaaS</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 04: VOCABULARY -->
+<section class="report-section container" id="vocab">
+  <div class="section-label">Section 04</div>
+  <h2>📖 Vocabulary & Lore</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Term</th><th>Definition</th></tr></thead>
+      <tbody>
+        <tr><td><strong>UCaaS</strong></td><td>Unified Communications as a Service — cloud-delivered voice, video, messaging, and collaboration.</td></tr>
+        <tr><td><strong>CPaaS</strong></td><td>Communications Platform as a Service — APIs/tools enabling developers to embed communication capabilities into applications.</td></tr>
+        <tr><td><strong>CCaaS</strong></td><td>Contact Center as a Service — cloud-based call center software with routing, analytics, and agent management.</td></tr>
+        <tr><td><strong>NetSapiens</strong></td><td>Crexendo's core multi-tenant platform, acquired in 2021 for $50M. The engine powering 7M+ users.</td></tr>
+        <tr><td><strong>AERR</strong></td><td>Annualized Exit Monthly Recurring Revenue — monthly recurring subscriptions × 12. Leading indicator of future revenue.</td></tr>
+        <tr><td><strong>RPO</strong></td><td>Remaining Performance Obligations — contracted revenue yet to be recognized, typically over 60 months.</td></tr>
+        <tr><td><strong>Sessions Not Seats</strong></td><td>Crexendo's pricing model charging by concurrent call sessions rather than per-user licenses.</td></tr>
+        <tr><td><strong>Licensee</strong></td><td>A service provider that licenses the NetSapiens platform to sell their own branded UCaaS to end customers.</td></tr>
+        <tr><td><strong>SIP Trunking</strong></td><td>Session Initiation Protocol trunking — connecting PBX systems to the public telephone network via internet.</td></tr>
+        <tr><td><strong>SBC</strong></td><td>Session Border Controller — network device that controls signaling and media streams for VoIP.</td></tr>
+        <tr><td><strong>CAIRO</strong></td><td>Crexendo's AI Receptionist and Orchestrator — a 24/7 AI phone agent launched January 2026.</td></tr>
+        <tr><td><strong>OCI</strong></td><td>Oracle Cloud Infrastructure — cloud platform Crexendo is migrating to for improved performance and cost.</td></tr>
+        <tr><td><strong>ESI</strong></td><td>Estech Systems Inc. — acquired March 2026 for $35M; ~$26M revenue, 85 employees, long-tenured licensee.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- SECTION 05: PRODUCTS -->
+<section class="report-section container" id="products">
+  <div class="section-label">Section 05</div>
+  <h2>📦 Product & Service Portfolio</h2>
+
+  <div class="card card-accent" style="border-left-color:var(--primary);">
+    <h3>👑 Crown Jewel: NetSapiens Platform</h3>
+    <p>A patented, cloud-native, multi-tenant communications platform delivered via high-availability infrastructure. It supports UCaaS, CCaaS, video meetings, and API-first integrations — all through a single codebase. Licensees can deploy it in their own cloud or Crexendo's hosted environment. Key stats:</p>
+    <div class="grid-3" style="margin-top:12px;">
+      <div style="text-align:center;padding:12px;background:var(--bg-alt);border-radius:8px;">
+        <div class="mono" style="font-size:24px;font-weight:700;color:var(--primary);">235+</div>
+        <div style="font-size:11px;color:var(--text-muted);">Platform Licensees</div>
+      </div>
+      <div style="text-align:center;padding:12px;background:var(--bg-alt);border-radius:8px;">
+        <div class="mono" style="font-size:24px;font-weight:700;color:var(--primary);">7M+</div>
+        <div style="font-size:11px;color:var(--text-muted);">End Users Globally</div>
+      </div>
+      <div style="text-align:center;padding:12px;background:var(--bg-alt);border-radius:8px;">
+        <div class="mono" style="font-size:24px;font-weight:700;color:var(--primary);">4.9/5</div>
+        <div style="font-size:11px;color:var(--text-muted);">G2 Rating (15 Qtrs)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <h4>CXsuite (Retail UCaaS)</h4>
+      <p>Enterprise-grade voice, video conferencing, instant messaging, presence, and contact center delivered as a subscription to businesses directly. Includes desktop phones, mobile/desktop apps, and web portals.</p>
+    </div>
+    <div class="card">
+      <h4>CAIRO — AI Receptionist</h4>
+      <p>Launched January 2026. A 24/7 conversational AI phone agent offering intelligent routing, multilingual support, calendar integration, intent-based filtering, rogue caller detection, and analytics. A clear competitive differentiator.</p>
+    </div>
+    <div class="card">
+      <h4>Crexendo Marketplace</h4>
+      <p>Launched February 2026. A centralized environment where service providers discover, activate, and monetize pre-integrated solutions for the NetSapiens platform. Focuses on AI-powered conversational apps and mobile-first tools.</p>
+    </div>
+    <div class="card">
+      <h4>API V2 Suite</h4>
+      <p>OpenAPI standards and REST API framework for providers and customers to embed real-time communications into custom workflows. Joined CPaaS Acceleration Alliance. Enables partners to build custom integrations.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 06: SUBSIDIARIES -->
+<section class="report-section container" id="subs">
+  <div class="section-label">Section 06</div>
+  <h2>🏗️ Subsidiaries & Acquisitions</h2>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Entity</th><th>Year</th><th>Price</th><th>Strategic Rationale</th></tr></thead>
+      <tbody>
+        <tr><td><strong>NetSapiens</strong></td><td>June 2021</td><td>$50M ($10M cash + stock)</td><td>Transformational. Added CPaaS platform, 190+ licensees, 1.7M users. Created wholesale revenue engine.</td></tr>
+        <tr><td><strong>Allegiant Networks</strong></td><td>2022</td><td>Small tuck-in</td><td>Customer base acquisition and regional expansion.</td></tr>
+        <tr><td><strong>Estech Systems (ESI)</strong></td><td>March 2026</td><td>$35M ($27.3M cash + $7.7M stock)</td><td>Largest licensee acquired. $26M rev, 6,200+ accounts, 75K+ seats. Path to $100M run rate.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card card-accent">
+    <h3>ESI Acquisition Economics</h3>
+    <p>This deal is worth examining closely. Crexendo paid 1.35x revenue for a business generating roughly $2.23M in income with 80% recurring UCaaS revenue at 86% gross margins. Most customers are on five-year contracts. The "fishing pond" strategy is now proven: Crexendo grows its licensee ecosystem, the most successful licensees become acquisition targets, and Crexendo consolidates the recurring revenue at higher margins while eliminating licensing costs. There are potentially dozens more licensees in the pond. Management indicated ESI grew 6-7% in 2025 — respectable, and below Crexendo's organic rate, suggesting room for operational improvement post-integration.</p>
+  </div>
+</section>
+
+<!-- SECTION 07: ALPHA SIGNALS -->
+<section class="report-section container" id="alpha">
+  <div class="section-label">Section 07</div>
+  <h2>⚡ Non-Consensus Alpha Signals</h2>
+
+  <div class="signal-card" style="border-left:4px solid var(--accent-green);">
+    <span class="badge badge-bull">🟢 BULL</span>
+    <h4 style="margin-top:8px;">#1 — The "Fishing Pond" M&A Flywheel Is Real</h4>
+    <p>ESI is proof of concept. With 235+ licensees, Crexendo has a built-in acquisition pipeline where it already knows the target's financials (because they run on Crexendo's platform). Integration risk is dramatically lower than typical M&A because the technology stack is already unified. This is not priced in.</p>
+    <div style="font-size:12px;color:var(--text-muted);margin-top:8px;"><strong>2nd order:</strong> Each acquisition removes a licensing fee and converts it to direct revenue, creating a margin expansion tailwind independent of organic growth.</div>
+    <div class="signal-meta"><span>Impact: High</span><span>Conviction: 85%</span><span>Timeline: 12–36 months</span></div>
+  </div>
+
+  <div class="signal-card" style="border-left:4px solid var(--accent-green);">
+    <span class="badge badge-bull">🟢 BULL</span>
+    <h4 style="margin-top:8px;">#2 — Cisco/Microsoft Disruption Creates Migration Wave</h4>
+    <p>When Microsoft killed Metaswitch and Cisco shook up BroadSoft, thousands of service providers were orphaned. Crexendo is actively harvesting this displacement — it's the reason software solutions revenue grew 27% in FY2025. The pipeline of migrating providers is still large, and launch times have compressed from 42 days to 18 days, accelerating revenue recognition.</p>
+    <div class="signal-meta"><span>Impact: High</span><span>Conviction: 80%</span><span>Timeline: Ongoing</span></div>
+  </div>
+
+  <div class="signal-card" style="border-left:4px solid var(--accent-green);">
+    <span class="badge badge-bull">🟢 BULL</span>
+    <h4 style="margin-top:8px;">#3 — International Expansion at 74% Growth Rate</h4>
+    <p>International revenue is growing at 74% YoY from a small base. The Gamma Communications partnership (Oct 2025) gives Crexendo PSTN footprint access across Europe. International UCaaS penetration is 5-10 years behind the U.S. This is the optionality the market isn't modeling.</p>
+    <div class="signal-meta"><span>Impact: Medium-High</span><span>Conviction: 70%</span><span>Timeline: 18–48 months</span></div>
+  </div>
+
+  <div class="signal-card" style="border-left:4px solid var(--accent-green);">
+    <span class="badge badge-bull">🟢 BULL</span>
+    <h4 style="margin-top:8px;">#4 — CAIRO AI Creates Pricing Power & Stickiness</h4>
+    <p>AI-powered receptionists and call handling aren't just features — they're the kind of "embedded AI" that drives upsell and creates new revenue streams. CAIRO won two ChannelVision 2026 AI awards. If even 10% of the 7M user base activates AI features at $5-10/user/month, that's $42–84M in incremental annual revenue potential.</p>
+    <div class="signal-meta"><span>Impact: Medium</span><span>Conviction: 60%</span><span>Timeline: 12–30 months</span></div>
+  </div>
+
+  <div class="signal-card" style="border-left:4px solid var(--accent-green);">
+    <span class="badge badge-bull">🟢 BULL</span>
+    <h4 style="margin-top:8px;">#5 — OCI Migration = Margin Expansion Catalyst</h4>
+    <p>Moving infrastructure to Oracle Cloud is reducing customer onboarding time (42→18 days) and will generate cost savings as legacy data center contracts roll off. This is pure margin accretion with no revenue risk.</p>
+    <div class="signal-meta"><span>Impact: Medium</span><span>Conviction: 78%</span><span>Timeline: 12–24 months</span></div>
+  </div>
+
+  <div class="signal-card" style="border-left:4px solid var(--accent-green);">
+    <span class="badge badge-bull">🟢 BULL</span>
+    <h4 style="margin-top:8px;">#6 — $100M Revenue Run Rate Puts CXDO on Institutional Radar</h4>
+    <p>At $68M revenue, CXDO is below most institutional screens. With ESI contributing ~$26M and 12%+ organic growth, pro forma 2026 revenue could approach $95–100M. Crossing the $100M threshold historically brings small-cap SaaS names meaningful analyst coverage expansion and institutional flows. Only 7–17% institutional ownership today — there's room for a re-rating.</p>
+    <div class="signal-meta"><span>Impact: High</span><span>Conviction: 72%</span><span>Timeline: 6–18 months</span></div>
+  </div>
+
+  <div class="signal-card" style="border-left:4px solid var(--accent-green);">
+    <span class="badge badge-bull">🟢 BULL</span>
+    <h4 style="margin-top:8px;">#7 — Tariff Immunity in a Trade War Environment</h4>
+    <p>As a SaaS/cloud platform company with minimal hardware exposure, Crexendo is insulated from tariff and supply chain risk — a genuine competitive advantage in 2026's uncertain trade environment. This makes it a relative outperformer in a risk-off scenario.</p>
+    <div class="signal-meta"><span>Impact: Low-Medium</span><span>Conviction: 90%</span><span>Timeline: Immediate</span></div>
+  </div>
+
+  <div class="signal-card" style="border-left:4px solid var(--accent-red);">
+    <span class="badge badge-bear">🔴 BEAR</span>
+    <h4 style="margin-top:8px;">#8 — ESI Integration Could Distract from Organic Growth</h4>
+    <p>$35M is a significant deal for a ~$200M market cap company. Integration of 85 employees and 6,200 accounts will consume management bandwidth. If Q1-Q2 2026 organic metrics decelerate, the stock could sell off.</p>
+    <div class="signal-meta"><span>Impact: Medium</span><span>Conviction: 45%</span><span>Timeline: 3–9 months</span></div>
+  </div>
+
+  <div class="signal-card" style="border-left:4px solid var(--accent-red);">
+    <span class="badge badge-bear">🔴 BEAR</span>
+    <h4 style="margin-top:8px;">#9 — Software Solutions Margin Compression in Q4</h4>
+    <p>Software solutions gross margin dropped 500bps YoY to 63% in Q4 2025, even as revenue grew 18%. If this is a structural shift rather than a one-quarter anomaly, the bull case valuation needs to be revised downward.</p>
+    <div class="signal-meta"><span>Impact: Medium-High</span><span>Conviction: 35%</span><span>Timeline: 1–3 quarters</span></div>
+  </div>
+
+  <div class="signal-card" style="border-left:4px solid var(--accent-red);">
+    <span class="badge badge-bear">🔴 BEAR</span>
+    <h4 style="margin-top:8px;">#10 — Mihaylo Concentration Risk</h4>
+    <p>Steven Mihaylo owns 37% of shares. He's 80+ years old and has stated he'll transfer shares to his foundation. Any large block sale — even planned — could create temporary supply pressure in this low-volume stock (~165K avg daily volume).</p>
+    <div class="signal-meta"><span>Impact: Medium</span><span>Conviction: 30%</span><span>Timeline: Uncertain</span></div>
+  </div>
+
+  <div class="signal-card" style="border-left:4px solid var(--accent-orange);">
+    <span class="badge badge-neutral">⚪ NEUTRAL</span>
+    <h4 style="margin-top:8px;">#11 — Macro SMB Spending Uncertainty</h4>
+    <p>Korn acknowledged on the Q4 call that some prospects are "sitting on the fence waiting, looking at the macroeconomic conditions" before committing to $400-500K platform migrations. If macro worsens, deal cycles extend. But counter-argument: UCaaS migration typically saves money vs legacy PBX, so it may actually accelerate in downturns.</p>
+    <div class="signal-meta"><span>Impact: Medium</span><span>Conviction: 50%</span><span>Timeline: Variable</span></div>
+  </div>
+</section>
+
+<!-- SECTION 08: THESIS -->
+<section class="report-section container" id="thesis">
+  <div class="section-label">Section 08</div>
+  <h2>🎯 Synthesized Investment Thesis</h2>
+
+  <div class="card card-bull">
+    <h3>The Sage Bull Case</h3>
+    <p>Crexendo is a compounding machine hiding in plain sight. The core insight is that this is not a traditional telecom company — it's a <strong>platform business</strong> with a built-in M&A pipeline, pricing power through switching costs, and a secular tailwind in cloud communications that has at least a decade of runway left.</p>
+    <p style="margin-top:12px;">The "fishing pond" strategy is genuinely novel. Crexendo grows its licensee base organically (235+ and counting), each licensee builds a book of recurring revenue on Crexendo's platform, and the most successful ones become acquisition targets where Crexendo already knows the financials, the churn rates, and the customer quality. ESI was the first proof — bought at 1.35x revenue with 80% recurring and 86% gross margins. If Crexendo executes two of these per year (management's stated goal), the revenue compounding becomes formidable.</p>
+    <p style="margin-top:12px;">Meanwhile, organic growth remains strong at 12%+, AI product launches (CAIRO) create upsell opportunities, international expansion through Gamma provides geographic diversification, and the OCI migration drives margin expansion. Insider ownership at 44% ensures alignment. The stock trades at roughly 2.7x EV/Revenue — cheap for a 12%+ organic growth, GAAP-profitable SaaS platform with a clear path to $100M revenue.</p>
+  </div>
+
+  <div class="card" style="background:var(--primary-light);border:2px solid var(--primary);">
+    <h4>Market prices in: A small UCaaS company growing ~10-12% with modest profitability.</h4>
+    <h4 style="margin-top:8px;">We believe:</h4>
+    <p><strong>(A)</strong> The fishing pond M&A strategy will drive 15-20% revenue CAGR (vs. 10-12% organic alone), with 75% probability.<br>
+    <strong>(B)</strong> International expansion and AI monetization create optionality worth 15-30% additional upside not in consensus, 60% probability.<br>
+    <strong>(C)</strong> Crossing $100M revenue triggers an institutional re-rating toward 3.5-4.0x EV/Revenue (from 2.7x today), 65% probability.</p>
+  </div>
+</section>
+
+<!-- SECTION 09: BEAR CASES -->
+<section class="report-section container" id="bear">
+  <div class="section-label">Section 09</div>
+  <h2>🐻 Proposed Ironclad Bear Cases</h2>
+
+  <div class="card card-bear">
+    <h3>🐻 Bear Case #1: The Platform Commoditization Trap</h3>
+    <p>What if UCaaS platforms become commoditized? RingCentral, with $2B+ in ARR, could aggressively expand its wholesale/partner program. Microsoft Teams Phone, already dominant in enterprise, could push further into the SMB channel. If the largest providers cut pricing or offer white-label programs, Crexendo's 235 licensees could face competitive pressure that compresses their margins — which in turn compresses what they're willing to pay Crexendo for platform access. The "sessions not seats" pricing advantage erodes if competitors match it.</p>
+    <p style="margin-top:12px;"><strong>Possible Debunk:</strong> Switching costs are genuinely prohibitive — migrating an entire service provider's customer base off a platform takes months and risks customer churn. The 4.9/5 G2 rating for 15 consecutive quarters suggests satisfaction is real, not manufactured. And RingCentral's wholesale strategy has historically targeted larger partners, not the regional SMBs that are Crexendo's bread and butter. Still, this risk is non-trivial on a 3-5 year horizon.</p>
+  </div>
+
+  <div class="card card-bear">
+    <h3>🐻 Bear Case #2: Mihaylo Overhang & Governance Concentration</h3>
+    <p>One man owns 37% of the company and is in his 80s. Mihaylo has publicly stated he intends to transfer his shares to a foundation — not sell them on the open market — but estate planning is inherently unpredictable. A foundation could choose to liquidate gradually. Even the perception of a large block coming to market could depress the stock for quarters. Additionally, at this ownership level, governance is effectively controlled by one person's preferences, which creates principal-agent risk for minority shareholders.</p>
+    <p style="margin-top:12px;"><strong>Possible Debunk:</strong> Mihaylo's public statement about foundation transfer (not sale) is somewhat reassuring. Jeff Korn's appointment was part of a planned transition. And the low institutional ownership means that foundation buying (if any) would be into a fairly thin float, limiting downside. But investors should assign real probability to temporary supply shocks.</p>
+  </div>
+
+  <div class="card card-bear">
+    <h3>🐻 Bear Case #3: Execution Risk on Multi-Acquisition Strategy</h3>
+    <p>Management wants to acquire 1-2 licensees per year. ESI was $35M — funded with $27.3M in cash (depleting over 85% of the $31.4M cash balance). Future acquisitions may require debt or equity dilution. The company has historically used stock for acquisitions (NetSapiens was funded mostly with equity). If they issue shares at current depressed multiples, dilution destroys per-share value even if revenue grows. And integration of multiple simultaneous acquisitions could overwhelm a 182-person company.</p>
+    <p style="margin-top:12px;"><strong>Possible Debunk:</strong> Cash flow is now $9.3M annually and growing, which replenishes the war chest quickly. Management has specifically stated they target "disciplined, accretive" deals. The integration risk is mitigated by the fact that acquisition targets are already on the Crexendo platform. But the dilution concern is legitimate — shares outstanding grew 13% in one year.</p>
+  </div>
+
+  <div class="card card-bear">
+    <h3>🐻 Bear Case #4: AI Hype Without Revenue Follow-Through</h3>
+    <p>CAIRO sounds exciting, but AI receptionist products are emerging from dozens of competitors. If Crexendo can't monetize AI features meaningfully — say, generating less than $2-3M in incremental revenue by end of 2027 — then the AI narrative was marketing, not substance. The 42 G2 awards sound impressive but are largely based on user satisfaction, not revenue impact.</p>
+    <p style="margin-top:12px;"><strong>Possible Debunk:</strong> The difference is that Crexendo has a captive distribution channel of 235+ licensees and 7M users. It doesn't need to win new customers for AI — it needs to upsell existing ones. That's a dramatically easier sales motion. Early signs are positive with ChannelVision AI awards. But it's early.</p>
+  </div>
+
+  <div class="table-wrap" style="margin-top:20px;">
+    <table>
+      <thead><tr><th>Pre-Mortem Failure Path</th><th>Probability</th><th>Price Impact</th></tr></thead>
+      <tbody>
+        <tr><td>Platform commoditization + margin compression</td><td>20%</td><td>-30% ($4.70)</td></tr>
+        <tr><td>Mihaylo estate liquidation creating supply overhang</td><td>15%</td><td>-20% ($5.40)</td></tr>
+        <tr><td>Acquisition execution failure + dilution spiral</td><td>15%</td><td>-35% ($4.35)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="margin-top:12px;font-size:13px;color:var(--text-muted);">Combined failure probability: ~40%. Expected downside: -25% ($5.05). Against expected bull case upside of +35-50% ($9.00-10.00), the asymmetry favors the long side — roughly 2:1 reward-to-risk.</p>
+</section>
+
+<!-- SECTION 10: SHARE STRUCTURE -->
+<section class="report-section container" id="structure">
+  <div class="section-label">Section 10</div>
+  <h2>📊 Share Structure & Microstructure</h2>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Category</th><th>Shares / %</th></tr></thead>
+      <tbody>
+        <tr><td>Shares Outstanding</td><td>~30.7M (pre-ESI stock issuance)</td></tr>
+        <tr><td>Estimated Float</td><td>~13.6M</td></tr>
+        <tr><td>Steven Mihaylo (Chairman Emeritus)</td><td>11.3M shares (~37%)</td></tr>
+        <tr><td>Total Insider Ownership</td><td>~44-50%</td></tr>
+        <tr><td>Institutional Ownership</td><td>~7-17%</td></tr>
+        <tr><td>Retail</td><td>~28-38%</td></tr>
+        <tr><td>Short Interest</td><td>~246K shares (~1.8% of float)</td></tr>
+        <tr><td>Average Daily Volume</td><td>~165K shares</td></tr>
+        <tr><td>Beta</td><td>0.91-0.93</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card card-accent">
+    <h4>Soros Reflexivity Loop</h4>
+    <p>CXDO exhibits a classic reflexive dynamic: the stock's low price and thin trading volume keep institutions away → low institutional ownership means fewer catalysts for re-rating → low price persists. The ESI acquisition (and path to $100M revenue) could break this loop: higher revenue → inclusion on more screens → institutional buying → improved liquidity → more institutional buying. Conversely, any forced selling (Mihaylo estate, for example) in thin volume could trigger the negative reflexive spiral.</p>
+  </div>
+
+  <div class="card card-accent">
+    <h4>Marathon Capital Cycle Positioning</h4>
+    <p>In capital cycle terms, the UCaaS wholesale platform space is mid-cycle: the initial build-out phase (high capex, low returns) was 2015-2021; Crexendo is now in the harvesting phase (declining capex intensity, expanding margins, generating FCF). Competitors like Cisco and Microsoft have exited or deprioritized their platform offerings, reducing supply. This is the sweet spot for patient capital.</p>
+  </div>
+</section>
+
+<!-- SECTION 11: BALANCE SHEET -->
+<section class="report-section container" id="balance">
+  <div class="section-label">Section 11</div>
+  <h2>💰 Balance Sheet Deep Dive</h2>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Item</th><th>Dec 31, 2025</th><th>Dec 31, 2024</th></tr></thead>
+      <tbody>
+        <tr><td>Cash & Equivalents</td><td>$31.4M</td><td>$18.2M</td></tr>
+        <tr><td>Total Debt</td><td>Minimal (~$0.7M)</td><td>~$1.1M</td></tr>
+        <tr><td>Net Cash</td><td>~$30.7M</td><td>~$17.1M</td></tr>
+        <tr><td>Current Ratio</td><td>~2.89</td><td>~2.14</td></tr>
+        <tr><td>Debt/Equity</td><td>~2.25%</td><td>~5%</td></tr>
+        <tr><td>Operating Cash Flow (FY)</td><td>$9.3M</td><td>$6.3M</td></tr>
+        <tr><td>Free Cash Flow (FY)</td><td>$9.3M (14% margin)</td><td>$6.7M</td></tr>
+        <tr><td>RPO (Backlog)</td><td>$89.1M</td><td>$85.6M</td></tr>
+        <tr><td>AERR (Exit Run Rate)</td><td>$57.5M</td><td>$51.6M</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>Note: the ESI acquisition (closing March 2, 2026) will use $27.3M in cash, temporarily reducing the cash position to approximately $4M before Q1 cash generation replenishes it. At a $9.3M annual FCF rate, cash rebuilds to ~$6-7M by June and ~$11-13M by year-end 2026, excluding any additional ESI synergies.</p>
+
+  <div class="card card-accent">
+    <h4>Hidden Assets</h4>
+    <p>Crexendo carries significant net operating loss carryforwards (NOLs) that offset future tax liabilities — a genuine but hard-to-quantify benefit. The intellectual property in the NetSapiens platform (20+ years of telecom software development, patents) is carried at essentially zero on the balance sheet but is the source of 70%+ gross margin revenue. The 235-licensee ecosystem itself has franchise-like value that no balance sheet captures.</p>
+  </div>
+</section>
+
+<!-- SECTION 12: MANAGEMENT -->
+<section class="report-section container" id="mgmt">
+  <div class="section-label">Section 12</div>
+  <h2>👔 Management, Incentives & Alignment</h2>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Executive</th><th>Title</th><th>Tenure</th><th>Ownership</th><th>Relevance /10</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Jeff Korn</strong></td><td>CEO & Exec Chairman</td><td>22+ years at Crexendo</td><td>~0.8% + RSUs</td><td>9/10</td></tr>
+        <tr><td><strong>Doug Gaylor</strong></td><td>President & COO</td><td>15+ years</td><td>RSUs vesting monthly</td><td>8/10</td></tr>
+        <tr><td><strong>Ron Vincent</strong></td><td>CFO</td><td>10+ years</td><td>~172K shares + RSUs</td><td>8/10</td></tr>
+        <tr><td><strong>Jon Brinton</strong></td><td>Chief Revenue Officer</td><td>Recent addition</td><td>RSUs</td><td>7/10</td></tr>
+        <tr><td><strong>Steven Mihaylo</strong></td><td>Chairman Emeritus</td><td>Founder-era (2007+)</td><td>11.3M shares (~37%)</td><td>6/10 (advisory)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card card-accent">
+    <h4>Incentive Alignment</h4>
+    <p><strong>CEO/C-Suite Comp:</strong> Jeff Korn and Doug Gaylor each received 10,000 RSUs in February 2026, vesting monthly over 36 months contingent on continued employment. Ron Vincent holds 172,635 shares directly plus RSU balances. Compensation is weighted toward equity, with the RSU structure tying value directly to stock performance.</p>
+    <p style="margin-top:8px;"><strong>Total Insider Ownership:</strong> ~44-50% (officers + directors). This is extraordinarily high for a public company. Mihaylo's 37% dominates, but active management collectively holds meaningful stakes.</p>
+    <p style="margin-top:8px;"><strong>Recent Insider Activity:</strong> Ron Vincent sold 15,000 shares at $7.05 in November 2025 (pre-arranged 10b5-1 plan) and 1,011 shares at $7.78 in January 2026. Jeff Korn sold 10,000 shares at $7.25 in November 2025 (also 10b5-1). These are small, planned dispositions — not panic selling.</p>
+    <p style="margin-top:12px;font-size:16px;font-weight:700;color:var(--accent-green);">Alignment Verdict: YES ✓</p>
+    <p style="font-size:13px;">The 44%+ insider ownership, long tenures (Korn's 22 years), and equity-heavy comp structure demonstrate strong alignment. The modest planned sales are normal liquidity management, not red flags. Mihaylo's stated intent to transfer (not sell) shares to his foundation is reassuring. No golden parachutes or related-party transactions have been identified.</p>
+  </div>
+
+  <h3 style="margin:24px 0 16px;font-size:20px;">Management Quotes</h3>
+
+  <blockquote>
+    "When the team and I assumed leadership in 2023, revenue was approximately $53 million, and the company was burning about $100,000 per month. Today, we are consistently cash flow positive, have grown annual revenue by more than $15 million, and expanded both profitability and EBITDA."
+    <cite>Jeff Korn, CEO — Q4 2025 Earnings Call, March 3, 2026</cite>
+  </blockquote>
+  <p class="quote-context">Why it matters: Demonstrates turnaround execution. In 3 years, Korn took the company from cash-burning to $9.3M FCF — a swing of ~$10.5M annually.</p>
+
+  <blockquote>
+    "ESI is a best-in-class organization... By incorporating ESI into Crexendo, we are combining our strong double-digit organic growth with an accretive acquisition from our deep 'fishing pond' of licensees."
+    <cite>Jeff Korn, CEO — ESI Acquisition Announcement, March 2, 2026</cite>
+  </blockquote>
+  <p class="quote-context">Why it matters: The "fishing pond" language is key — it signals a repeatable M&A playbook, not a one-off deal. This is the strategic narrative investors should track.</p>
+
+  <blockquote>
+    "We had a very strong quarter on both the top and bottom line... This was our ninth consecutive quarter of GAAP profitability and 28th consecutive quarter of non-GAAP net income."
+    <cite>Doug Gaylor, COO — Q3 2025 Earnings Call, November 4, 2025</cite>
+  </blockquote>
+  <p class="quote-context">Why it matters: Consistency of profitability is what separates Crexendo from growth-at-all-costs SaaS names. This track record reduces perceived risk for institutional allocators.</p>
+
+  <blockquote>
+    "I would hope it remain at the same level, but I'm not gonna commit to that... to migrate is not an inexpensive concept, and we have some people sitting on the fence waiting, looking at the macroeconomic conditions and deciding, is this the right time to write a $400,000 or $500,000 check?"
+    <cite>Jeff Korn, CEO — Q4 2025 Earnings Call Q&A, March 3, 2026</cite>
+  </blockquote>
+  <p class="quote-context">Why it matters: Refreshingly honest about growth uncertainty. Korn didn't overpromise — he acknowledged macro headwinds while expressing confidence in the underlying demand. This builds credibility.</p>
+
+  <blockquote>
+    "Our offering is compelling. It saves you a substantial amount of money, and I believe you're getting better services and better products."
+    <cite>Jeff Korn, CEO — Q4 2025 Earnings Call Q&A, March 3, 2026</cite>
+  </blockquote>
+  <p class="quote-context">Why it matters: Value proposition clarity. In a recession, cost-saving products see accelerated adoption — Crexendo's pitch is fundamentally about saving money on telecom infrastructure.</p>
+</section>
+
+<!-- SECTION 13: GROWTH -->
+<section class="report-section container" id="growth">
+  <div class="section-label">Section 13</div>
+  <h2>📈 Growth Analysis</h2>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Revenue Segment</th><th>FY2023</th><th>FY2024</th><th>FY2025</th><th>FY2026E (Pro Forma)</th></tr></thead>
+      <tbody>
+        <tr><td>Service Revenue</td><td>$29.1M</td><td>$31.0M</td><td>$33.3M</td><td>~$56M (incl. ESI)</td></tr>
+        <tr><td>Software Solutions</td><td>$18.0M</td><td>$23.4M</td><td>$29.7M</td><td>~$33-35M</td></tr>
+        <tr><td>Product Revenue</td><td>$6.1M</td><td>$6.4M</td><td>$5.2M</td><td>~$5M</td></tr>
+        <tr><td><strong>Total Revenue</strong></td><td><strong>$53.2M</strong></td><td><strong>$60.8M</strong></td><td><strong>$68.2M</strong></td><td><strong>~$94-100M</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="grid-3" style="margin-top:20px;">
+    <div class="card card-accent">
+      <h4>Near-Term TAM</h4>
+      <div class="big-num" style="color:var(--primary);">$22B</div>
+      <p style="font-size:13px;color:var(--text-muted);">U.S. UCaaS market (2025). CXDO penetration: &lt;0.3%</p>
+    </div>
+    <div class="card card-accent">
+      <h4>Medium-Term TAM</h4>
+      <div class="big-num" style="color:var(--primary);">$70B+</div>
+      <p style="font-size:13px;color:var(--text-muted);">Global UCaaS market (2026). Growing 15-20% CAGR.</p>
+    </div>
+    <div class="card card-accent">
+      <h4>Long-Term TAM</h4>
+      <div class="big-num" style="color:var(--primary);">$250B+</div>
+      <p style="font-size:13px;color:var(--text-muted);">Multi-CaaS (UCaaS+CCaaS+CPaaS) by 2031.</p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px;">
+    <h4>Backlog Quality</h4>
+    <p>RPO increased to $89.1M (from $85.6M), representing contracted revenue recognized over 60 months. The AERR (annualized exit recurring revenue) stands at $57.5M, up from $51.6M — an 11.4% increase. Net dollar retention of ~100% means existing customers maintain their spending, with growth coming from new licensees and organic seat expansion. The backlog-to-revenue ratio of ~1.3x provides solid visibility.</p>
+  </div>
+</section>
+
+<!-- SECTION 14: MOAT -->
+<section class="report-section container" id="moat">
+  <div class="section-label">Section 14</div>
+  <h2>🏰 Moat Analysis</h2>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Moat Dimension</th><th>Strength</th><th>Evidence</th></tr></thead>
+      <tbody>
+        <tr><td>Switching Costs</td><td><span class="alpha">Strong</span></td><td>Migrating entire service provider off platform = months of disruption, customer churn risk. Five-year contracts typical.</td></tr>
+        <tr><td>Network Effects</td><td><span class="primary-text">Moderate</span></td><td>More licensees → more investment in platform → better platform → attracts more licensees. 235+ creates ecosystem momentum.</td></tr>
+        <tr><td>Technology</td><td><span class="primary-text">Moderate</span></td><td>20+ years platform development, patented cloud-native architecture, concurrent session pricing model.</td></tr>
+        <tr><td>Scale</td><td><span style="color:var(--accent-orange);">Developing</span></td><td>7M+ users is meaningful but dwarfed by Microsoft/Cisco. Scale advantage is in the wholesale channel, not absolute size.</td></tr>
+        <tr><td>Regulatory</td><td><span style="color:var(--text-muted);">Minimal</span></td><td>Telecom has regulatory requirements but they're table stakes, not barriers. FedRAMP and HIPAA compliance help in verticals.</td></tr>
+        <tr><td>Brand / Reputation</td><td><span class="primary-text">Moderate</span></td><td>42 G2 Winter 2026 awards, 4.9/5 rating for 15 consecutive quarters, Frost & Sullivan recognition. Strong in niche, unknown broadly.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="table-wrap" style="margin-top:16px;">
+    <table>
+      <thead><tr><th>Competitor</th><th>Revenue</th><th>Market Cap</th><th>Key Difference</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Crexendo (CXDO)</strong></td><td>$68M</td><td>~$210M</td><td>Wholesale platform + retail. "Sessions not seats" pricing.</td></tr>
+        <tr><td>RingCentral (RNG)</td><td>$2.4B+</td><td>~$12B</td><td>Enterprise-focused. 300+ integrations. Gartner Leader.</td></tr>
+        <tr><td>8x8 (EGHT)</td><td>~$700M</td><td>~$600M</td><td>Mid-market UCaaS+CCaaS. International focus.</td></tr>
+        <tr><td>Vonage (Ericsson)</td><td>~$1.4B</td><td>Private</td><td>CPaaS-heavy. Acquired by Ericsson for $6.2B.</td></tr>
+        <tr><td>Sangoma (STC.TO)</td><td>~$250M</td><td>~$200M</td><td>Closest public comp. On-prem + cloud. Canadian.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- SECTION 15: TAILWINDS -->
+<section class="report-section container" id="tailwinds">
+  <div class="section-label">Section 15</div>
+  <h2>💨 Tailwinds & Opportunities</h2>
+
+  <div class="grid-2">
+    <div class="card card-bull">
+      <h4>1. Legacy PBX Replacement Cycle</h4>
+      <p>Hundreds of millions of PBX lines globally still need to migrate to cloud. Microsoft and Cisco exiting/deprioritizing their platforms accelerates the migration to independent platforms like NetSapiens.</p>
+    </div>
+    <div class="card card-bull">
+      <h4>2. AI Monetization Wave</h4>
+      <p>CAIRO and AI-powered analytics create new revenue streams. Voice AI is one of the fastest-growing segments in enterprise software. Crexendo's 7M user base provides distribution.</p>
+    </div>
+    <div class="card card-bull">
+      <h4>3. International Expansion</h4>
+      <p>Gamma partnership opens Europe. International UCaaS penetration lags U.S. by 5-10 years. 74% international growth rate from small base signals early traction.</p>
+    </div>
+    <div class="card card-bull">
+      <h4>4. Consolidation Opportunity</h4>
+      <p>The fragmented UCaaS channel is ripe for roll-up. Crexendo's ecosystem gives it informational advantage in M&A. Management targets 1-2 acquisitions annually.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 16: HEADWINDS -->
+<section class="report-section container" id="headwinds">
+  <div class="section-label">Section 16</div>
+  <h2>⚠️ Headwinds & Risks</h2>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Risk</th><th>Severity</th><th>Probability</th><th>Mitigation</th></tr></thead>
+      <tbody>
+        <tr><td>Microsoft/Cisco re-enter wholesale</td><td>High</td><td>Low (15%)</td><td>Switching costs protect base. Neither has shown intent.</td></tr>
+        <tr><td>Macro-driven SMB spending freeze</td><td>Medium</td><td>Medium (35%)</td><td>UCaaS saves money vs legacy. Counter-cyclical potential.</td></tr>
+        <tr><td>ESI integration failure</td><td>Medium-High</td><td>Low (15%)</td><td>Same platform reduces tech risk. Experienced team.</td></tr>
+        <tr><td>Share dilution from M&A</td><td>Medium</td><td>Medium (40%)</td><td>Strong FCF reduces need for equity. ESI mostly cash-funded.</td></tr>
+        <tr><td>Cybersecurity/data breach</td><td>High</td><td>Low (10%)</td><td>OCI migration, security certifications, 24/7 monitoring.</td></tr>
+        <tr><td>Key person risk (Korn departure)</td><td>Medium</td><td>Low (10%)</td><td>Deep bench with Gaylor and Vincent. Long tenures.</td></tr>
+        <tr><td>Low liquidity / limited float</td><td>Medium</td><td>Ongoing</td><td>Revenue growth should attract institutions over time.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- SECTION 17: EARNINGS CALL ALPHA -->
+<section class="report-section container" id="earnings">
+  <div class="section-label">Section 17</div>
+  <h2>📞 Earnings Call Alpha</h2>
+  <p style="margin-bottom:16px;font-size:13px;color:var(--text-muted);">Based on Q3 2025 (Nov 4, 2025) and Q4 2025/FY2025 (March 3, 2026) earnings calls.</p>
+
+  <div class="card">
+    <h4>Statement #1: The $100M Revenue Pathway</h4>
+    <blockquote>"The result is a stronger, more scalable company... positioning Crexendo to approach $100 million run rate in annual revenue."
+    <cite>Jeff Korn — ESI Acquisition Announcement, March 2, 2026</cite></blockquote>
+    <p class="quote-context">Why this matters: This is the first time management explicitly anchored a $100M revenue target. Combined with 12% organic growth, this implies management sees a clear path to nearly doubling the business within 2-3 years.</p>
+    <p style="font-size:12px;margin-top:6px;"><strong>Alpha angle:</strong> At 3x EV/Revenue on $100M, that's a $300M enterprise value — roughly $330M market cap (adding net cash) or ~$10.50/share. From $6.72, that's 56% upside.</p>
+  </div>
+
+  <div class="card">
+    <h4>Statement #2: Launch Time Compression</h4>
+    <blockquote>"We have decreased launch time from 42 days a year ago to 18 days."
+    <cite>Needham analyst note, citing Q3 2025 results and UGM conference</cite></blockquote>
+    <p class="quote-context">Why this matters: Faster onboarding = faster revenue recognition from new licensees. A 57% reduction in launch time is a genuine operational improvement that accelerates the revenue flywheel.</p>
+    <p style="font-size:12px;margin-top:6px;"><strong>Alpha angle:</strong> This implies Crexendo can process roughly 2.3x more licensee onboardings per quarter with the same resources — a hidden capacity expansion.</p>
+  </div>
+
+  <div class="card">
+    <h4>Statement #3: ESI Deal Economics</h4>
+    <blockquote>"Roughly 80% of revenue is recurring UCaaS, with UCaaS gross margins averaging about 86% and most customers on five-year contracts."
+    <cite>Jeff Korn, describing ESI — Q4 2025 Earnings Call, March 3, 2026</cite></blockquote>
+    <p class="quote-context">Why this matters: 86% gross margin recurring revenue at 1.35x purchase multiple is exceptional. If Crexendo can replicate this across its licensee base, the M&A strategy could drive significantly more value than the market anticipates.</p>
+    <p style="font-size:12px;margin-top:6px;"><strong>Alpha angle:</strong> At 86% gross margins on $20.8M recurring (80% of $26M), that's $17.9M in gross profit for $35M — a 51% gross profit yield on invested capital.</p>
+  </div>
+
+  <div class="card">
+    <h4>Tone Assessment</h4>
+    <p>Comparing Q3 and Q4 2025 calls, management tone shifted from "strong and proud" to "ecstatic and strategically bold." The ESI acquisition represents a step-change in ambition — Korn explicitly used the phrase "fishing pond" and signaled more deals to come. The macro hedging language around "people on the fence" was new in Q4 and honest, suggesting Korn won't over-promise. No notable deflections. New emphasis areas: AI products (CAIRO, Marketplace), international (Gamma), and M&A as a growth lever. The addition of Jon Brinton as CRO on the call signals growing investment in revenue leadership.</p>
+  </div>
+</section>
+
+<!-- SECTION 18: ADVISORY COUNCIL -->
+<section class="report-section container" id="advisory">
+  <div class="section-label">Section 18</div>
+  <h2>🧠 Strategic Advisory Council</h2>
+
+  <div class="advisory-disclaimer">Note: The views below are anticipated opinions based on each investor's known philosophy, public statements, and investment style. These are not real quotes and do not represent actual positions or endorsements by these individuals.</div>
+
+  <div class="grid-3">
+    <div class="card">
+      <h4>Peter Lynch</h4>
+      <p style="font-size:12px;color:var(--text-muted);">Fidelity Magellan (historical)</p>
+      <p><strong>Anticipated view:</strong> A classic "boring company" that does something essential — providing phone systems to small businesses. Insider ownership above 40%, growing at 12%, just turned GAAP profitable. The fishing pond M&A strategy is the kind of repeatable, understandable edge I'd look for. I'd be interested, but I'd want to see the ESI integration execute before building a full position.</p>
+    </div>
+    <div class="card">
+      <h4>Stanley Druckenmiller</h4>
+      <p style="font-size:12px;color:var(--text-muted);">Duquesne Capital (historical)</p>
+      <p><strong>Anticipated view:</strong> The macro angle here is defensive — SaaS company insulated from tariffs, saves customers money during downturns. But the position size is limited by the thin float. I'd watch for the $100M revenue threshold as a liquidity inflection point. If the stock traded $1M+ daily volume, this would be more interesting for institutional capital.</p>
+    </div>
+    <div class="card">
+      <h4>Joel Greenblatt</h4>
+      <p style="font-size:12px;color:var(--text-muted);">Gotham Asset Management</p>
+      <p><strong>Anticipated view:</strong> At 2.7x EV/Revenue with 12% growth and 14% FCF margins, the "magic formula" metrics are attractive. The return on capital is improving rapidly. This is the type of under-followed, under-researched situation where institutional neglect creates opportunity. The concentrated ownership is a positive for alignment, though it creates liquidity risk.</p>
+    </div>
+    <div class="card">
+      <h4>Howard Marks</h4>
+      <p style="font-size:12px;color:var(--text-muted);">Oaktree Capital</p>
+      <p><strong>Anticipated view:</strong> The balance sheet is clean and the business model has proven it can generate cash through cycles. However, the valuation at 40x trailing P/E gives me pause — I'd want to see earnings growth sustain before declaring this cheap. The ESI deal terms are sensible, but the use of nearly all available cash introduces execution risk. Cautiously constructive, but patient.</p>
+    </div>
+    <div class="card">
+      <h4>Cathie Wood</h4>
+      <p style="font-size:12px;color:var(--text-muted);">ARK Invest</p>
+      <p><strong>Anticipated view:</strong> The AI integration into cloud communications is the disruptive catalyst here. CAIRO represents the convergence of conversational AI and business communications — a space we believe will generate massive value creation. The platform model with 7M users is the distribution advantage. However, the market cap is below our typical threshold for institutional deployment.</p>
+    </div>
+    <div class="card">
+      <h4>Seth Klarman</h4>
+      <p style="font-size:12px;color:var(--text-muted);">Baupost Group</p>
+      <p><strong>Anticipated view:</strong> I'm skeptical of the UCaaS growth narrative at these multiples. The market often extrapolates growth rates that don't materialize for small companies. The concentrated ownership and thin float create unfavorable liquidity dynamics. I'd need a significantly wider margin of safety — perhaps at $4-4.50 where the balance sheet provides a floor.</p>
+    </div>
+    <div class="card">
+      <h4>Bill Ackman</h4>
+      <p style="font-size:12px;color:var(--text-muted);">Pershing Square</p>
+      <p><strong>Anticipated view:</strong> Too small for a concentrated position, but the business quality metrics are compelling: high insider ownership, recurring revenue, expanding margins, and a clear path to scale. If I were a small-cap focused fund, I'd be building a position on weakness. The activist angle would be to push for more aggressive M&A to accelerate the $100M target.</p>
+    </div>
+    <div class="card">
+      <h4>Nassim Taleb</h4>
+      <p style="font-size:12px;color:var(--text-muted);">Universa Investments (advisor)</p>
+      <p><strong>Anticipated view:</strong> The asymmetry is favorable — limited downside with a clean balance sheet, meaningful upside from M&A optionality and international expansion. The barbell approach: pair a position in CXDO with puts on overvalued large-cap UCaaS competitors. The anti-fragile element is that Crexendo benefits from competitor disruption — every time a larger player exits, Crexendo gains.</p>
+    </div>
+    <div class="card">
+      <h4>Terry Smith</h4>
+      <p style="font-size:12px;color:var(--text-muted);">Fundsmith</p>
+      <p><strong>Anticipated view:</strong> I apply three criteria: quality, growth, and valuation. Quality: improving but unproven at scale — the margin trajectory is right but 14% FCF margins are pedestrian. Growth: 12% organic is good, not exceptional. Valuation: reasonable but not cheap on a P/E basis. This doesn't meet my quality bar yet, but it's worth revisiting if margins expand toward 20%+ over the next 2-3 years.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 19: NARRATIVE -->
+<section class="report-section container" id="narrative">
+  <div class="section-label">Section 19</div>
+  <h2>🎭 Narrative, Meme Potential & Short Dynamics</h2>
+
+  <p>Crexendo's narrative is "small-cap SaaS turnaround with a built-in M&A pipeline." That's a genuinely compelling story for retail investors who discover it — but discovery is the problem. With ~165K shares trading daily and minimal social media presence, CXDO is virtually invisible to the Reddit/StockTwits crowd.</p>
+
+  <div class="meme-box">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:4px;">Meme Score</div>
+    <div style="font-family:'JetBrains Mono',monospace;font-size:36px;font-weight:700;color:var(--primary);">18/100</div>
+    <p style="font-size:13px;margin-top:8px;color:var(--text-muted);">Low viral potential. B2B cloud telecom lacks the narrative simplicity of consumer brands. Ticker "CXDO" is unmemorable. No obvious meme angle. Current materialization: &lt;5%. Best slogan potential: "Ride the Cloud" (already trademarked by CXDO — could gain traction if discovered).</p>
+  </div>
+
+  <div class="card" style="margin-top:16px;">
+    <h4>Short Interest & Squeeze Dynamics</h4>
+    <p>Short interest: ~246K shares (1.8% of float). Days to cover: ~1.5 days. This is negligible short interest — there's no squeeze story here. The low short interest is actually a positive signal: bears haven't found a compelling reason to bet against the company.</p>
+    <div style="margin-top:12px;">
+      <span class="mono" style="font-size:11px;color:var(--text-muted);">SHORT SQUEEZE PROBABILITY: </span>
+      <span class="mono" style="font-size:24px;font-weight:700;color:var(--text-muted);">5/100</span>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px;">
+    <h4>Sector Investor Optimism</h4>
+    <p>The telecom services sector is mixed in 2026. Large-cap names like Verizon are range-bound, while small-cap cloud communications names have been volatile. CXDO gained 9.76% on its Q4 earnings day alongside peer strength (RDCM +3.84%, FNGR +5.74%), suggesting sector tailwinds. However, the broader SaaS sell-off in early 2026 has dampened enthusiasm for growth names.</p>
+    <div style="margin-top:12px;">
+      <span class="mono" style="font-size:11px;color:var(--text-muted);">SECTOR OPTIMISM: </span>
+      <span class="mono" style="font-size:24px;font-weight:700;color:var(--accent-orange);">45/100</span>
+    </div>
+  </div>
+
+  <p style="margin-top:16px;"><strong>Cult Stock Probability:</strong> Low (10%). <strong>Coat-tail Potential:</strong> Moderate — if a well-known micro-cap fund manager (like a Kuppy or Ian Cassel type) discovers and champions the stock, the thin float could drive significant price action.</p>
+</section>
+
+<!-- SECTION 20: CATALYSTS -->
+<section class="report-section container" id="catalysts">
+  <div class="section-label">Section 20</div>
+  <h2>📅 Catalyst Calendar</h2>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Date</th><th>Catalyst</th><th>Type</th><th>Impact</th></tr></thead>
+      <tbody>
+        <tr><td>March 2, 2026</td><td>ESI acquisition closed</td><td>Idiosyncratic</td><td>✅ Completed</td></tr>
+        <tr><td>March 3, 2026</td><td>Q4/FY2025 earnings release + call</td><td>Idiosyncratic</td><td>✅ Beat EPS by $0.01</td></tr>
+        <tr><td>May 2026 (est.)</td><td>Q1 2026 earnings — first quarter with partial ESI contribution</td><td>Idiosyncratic</td><td>High</td></tr>
+        <tr><td>Q2 2026</td><td>ESI 8-K with audited financials and pro forma</td><td>Idiosyncratic</td><td>Medium</td></tr>
+        <tr><td>Mid-2026</td><td>$100M revenue run rate milestone (if achieved)</td><td>Idiosyncratic</td><td>High</td></tr>
+        <tr><td>2026 (ongoing)</td><td>CAIRO AI product adoption metrics</td><td>Idiosyncratic</td><td>Medium</td></tr>
+        <tr><td>2026 (ongoing)</td><td>New licensee additions from Cisco/Microsoft migration</td><td>Industry</td><td>Medium</td></tr>
+        <tr><td>2026 (TBD)</td><td>Potential second acquisition from licensee pool</td><td>Idiosyncratic</td><td>High</td></tr>
+        <tr><td>2026</td><td>Gamma Communications international revenue traction</td><td>Idiosyncratic</td><td>Medium</td></tr>
+        <tr><td>Ongoing</td><td>UCaaS market growth (~15-20% CAGR)</td><td>Secular</td><td>Steady</td></tr>
+        <tr><td>Ongoing</td><td>Macro/tariff environment affecting SMB IT spending</td><td>Geopolitical</td><td>Variable</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- SECTION 21: VALUATION -->
+<section class="report-section container" id="valuation">
+  <div class="section-label">Section 21</div>
+  <h2>💎 Valuation & Peer Comparison</h2>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Company</th><th>EV/Rev (LTM)</th><th>EV/EBITDA</th><th>Rev Growth</th><th>Market Cap</th></tr></thead>
+      <tbody>
+        <tr style="background:var(--primary-light);">
+          <td><strong>Crexendo (CXDO)</strong></td><td><strong>2.7x</strong></td><td><strong>~16x</strong></td><td><strong>12%</strong></td><td><strong>~$210M</strong></td>
+        </tr>
+        <tr><td>RingCentral (RNG)</td><td>3.5x</td><td>12x</td><td>9%</td><td>$12B</td></tr>
+        <tr><td>8x8 (EGHT)</td><td>0.9x</td><td>6x</td><td>-1%</td><td>$600M</td></tr>
+        <tr><td>Sangoma (STC.TO)</td><td>0.8x</td><td>5x</td><td>2%</td><td>$200M</td></tr>
+        <tr><td>Bandwidth (BAND)</td><td>2.2x</td><td>18x</td><td>15%</td><td>$1.2B</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p style="margin-top:16px;">Crexendo trades at a modest premium to stagnating peers (8x8, Sangoma) and a discount to growing peers (RingCentral at scale, Bandwidth). The premium to Sangoma/8x8 is justified by Crexendo's superior growth rate (12% vs. flat/declining), GAAP profitability, and cleaner balance sheet. The discount to RingCentral reflects scale differences. Key insight: if Crexendo sustains 12%+ organic growth and expands margins through M&A, a re-rating toward 3.5-4.0x EV/Revenue is plausible — implying $10-12/share on organic revenue alone, or $12-15/share including pro forma ESI.</p>
+
+  <div class="card card-accent" style="margin-top:16px;">
+    <h4>Sum-of-the-Parts Estimate</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Segment</th><th>Revenue</th><th>Multiple</th><th>Value</th></tr></thead>
+        <tbody>
+          <tr><td>Software Solutions (platform)</td><td>$29.7M</td><td>5.0x</td><td>$148.5M</td></tr>
+          <tr><td>Cloud Telecom (retail UCaaS)</td><td>$33.3M</td><td>2.0x</td><td>$66.6M</td></tr>
+          <tr><td>Product Revenue</td><td>$5.2M</td><td>1.0x</td><td>$5.2M</td></tr>
+          <tr><td>ESI (pro forma)</td><td>$26.0M</td><td>2.0x</td><td>$52.0M</td></tr>
+          <tr><td>Net Cash (post ESI)</td><td>—</td><td>—</td><td>$4.0M</td></tr>
+          <tr><td><strong>Total Equity Value</strong></td><td></td><td></td><td><strong>$276.3M</strong></td></tr>
+          <tr><td><strong>Per Share (est. 32M diluted)</strong></td><td></td><td></td><td><strong>$8.63</strong></td></tr>
+          <tr><td><strong>% Upside from $6.72</strong></td><td></td><td></td><td><strong class="alpha">+28%</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 22: DCF SCENARIOS -->
+<section class="report-section container" id="dcf">
+  <div class="section-label">Section 22</div>
+  <h2>📐 Probabilistic DCF & Scenarios</h2>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Scenario</th><th>Key Assumptions</th><th>Probability</th><th>Implied Price</th></tr></thead>
+      <tbody>
+        <tr><td>💀 Black Swan</td><td>Platform breach, major licensee exodus, revenue -20%</td><td>5%</td><td>$2.50</td></tr>
+        <tr><td>🐻 Bear</td><td>ESI integration struggles, growth slows to 5%, no more M&A</td><td>20%</td><td>$4.50</td></tr>
+        <tr><td>⚖️ Base</td><td>10-12% organic growth, ESI integrates, 1 more tuck-in</td><td>45%</td><td>$8.50</td></tr>
+        <tr><td>🐂 Bull</td><td>15%+ organic + 2 acquisitions, margins expand to 18% FCF</td><td>25%</td><td>$12.00</td></tr>
+        <tr><td>🚀 Mega-Bull</td><td>$150M+ revenue by 2028, takeout premium, AI monetization</td><td>5%</td><td>$18.00</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card card-accent" style="margin-top:16px;">
+    <h4>Probability-Weighted Fair Value</h4>
+    <div class="big-num" style="color:var(--primary);">$8.56</div>
+    <p style="font-size:13px;color:var(--text-muted);margin-top:4px;">= (5%×$2.50) + (20%×$4.50) + (45%×$8.50) + (25%×$12.00) + (5%×$18.00)</p>
+    <p style="margin-top:8px;"><strong>Upside from current ($6.72):</strong> <span class="alpha">+27%</span></p>
+  </div>
+
+  <div class="grid-3" style="margin-top:16px;">
+    <div class="card"><h4>12-Month Target</h4><div class="mono" style="font-size:24px;font-weight:700;">$8.00–9.00</div></div>
+    <div class="card"><h4>24-Month Target</h4><div class="mono" style="font-size:24px;font-weight:700;">$10.00–12.00</div></div>
+    <div class="card"><h4>36-Month Target</h4><div class="mono" style="font-size:24px;font-weight:700;">$12.00–15.00</div></div>
+  </div>
+</section>
+
+<!-- SECTION 23: VALUE CHAIN -->
+<section class="report-section container" id="chain">
+  <div class="section-label">Section 23</div>
+  <h2>🔗 Value Chain & Ecosystem Map</h2>
+
+  <div class="process-flow">
+    <div class="process-step" style="background:var(--text);">Infrastructure<br>(OCI, Data Centers)</div>
+    <div class="process-arrow">→</div>
+    <div class="process-step" style="background:var(--primary-dark);">Platform Software<br>(NetSapiens)</div>
+    <div class="process-arrow">→</div>
+    <div class="process-step" style="background:var(--primary);">Service Providers<br>(235+ Licensees)</div>
+    <div class="process-arrow">→</div>
+    <div class="process-step" style="background:var(--secondary);">End Users<br>(7M+ Businesses)</div>
+  </div>
+
+  <p style="margin-top:16px;">Crexendo's pricing power sits squarely in the platform layer — the critical middleware between infrastructure and distribution. Licensees can't easily switch platforms (high switching cost), and end users don't even know Crexendo exists (they interact with the service provider's brand). This invisibility is actually a strength: Crexendo captures value without facing consumer price pressure.</p>
+
+  <p style="margin-top:12px;">The move to acquire licensees like ESI allows Crexendo to vertically integrate into the distribution layer, capturing both platform margin and service margin. This is the strategic insight the market underappreciates: Crexendo is building a vertically integrated cloud telecom company from the platform layer outward.</p>
+</section>
+
+<!-- SECTION 24: OPTIONS -->
+<section class="report-section container" id="options">
+  <div class="section-label">Section 24</div>
+  <h2>📈 Options Plays</h2>
+
+  <p style="margin-bottom:12px;"><strong>Liquidity Assessment:</strong> Very thin. CXDO options exist but trade with extremely low volume and wide bid-ask spreads. Any options strategy must account for significant illiquidity risk. Verify pricing before trading.</p>
+
+  <p style="margin-bottom:16px;">Current IV is likely elevated post-earnings. Historical volatility runs ~40-50% annualized given the 0.91 beta and thin float.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th colspan="5">Cash-Secured Puts (Income Strategy)</th></tr>
+      <tr><th>Strike</th><th>Expiry</th><th>Est. Premium</th><th>Effective Cost Basis</th><th>Ann. Yield</th></tr></thead>
+      <tbody>
+        <tr><td>$5.00</td><td>Jun 2026</td><td>~$0.30</td><td>$4.70</td><td>~24%</td></tr>
+        <tr><td>$5.00</td><td>Sep 2026</td><td>~$0.55</td><td>$4.45</td><td>~22%</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th colspan="6">Bull Call Spreads</th></tr>
+      <tr><th>Long Strike</th><th>Short Strike</th><th>Expiry</th><th>Est. Cost</th><th>Max Profit</th><th>R/R</th></tr></thead>
+      <tbody>
+        <tr><td>$7.50</td><td>$10.00</td><td>Sep 2026</td><td>~$0.60</td><td>$1.90</td><td>3.2:1</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th colspan="5">Covered Calls (If Holding Shares)</th></tr>
+      <tr><th>Strike</th><th>Expiry</th><th>Est. Premium</th><th>Upside Captured</th><th>Ann. Income</th></tr></thead>
+      <tbody>
+        <tr><td>$7.50</td><td>Jun 2026</td><td>~$0.25</td><td>$7.50 (+12%)</td><td>~15%</td></tr>
+        <tr><td>$10.00</td><td>Sep 2026</td><td>~$0.15</td><td>$10.00 (+49%)</td><td>~9%</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p style="margin-top:12px;font-size:12px;color:var(--text-muted);">⚠️ Illiquidity warning: CXDO options have very thin markets. Spreads may be 30-50% of the option value. Use limit orders only. Key dates: Q1 earnings ~May 2026, ESI 8-K filing (TBD). Options data is time-sensitive — verify before trading. Not a recommendation.</p>
+</section>
+
+<!-- SECTION 25: IMPLEMENTATION -->
+<section class="report-section container" id="implementation">
+  <div class="section-label">Section 25</div>
+  <h2>🎯 Implementation & Portfolio Construction</h2>
+
+  <div class="verdict-banner" style="background:linear-gradient(90deg,var(--primary-dark),var(--primary));border-radius:10px;color:#fff;">
+    🎯 VERDICT: LONG CXDO — 74% Conviction | Target: $8.50–10.00 (12-24 months) | Risk/Reward: ~2:1
+  </div>
+
+  <p style="margin-top:16px;"><strong>Is This Binary?</strong> No. The business generates cash, has a clean balance sheet, and serves a growing market. Downside is capped by the asset base and cash flow. This is not a biotech coin flip — it's a quality small-cap compounder with M&A optionality.</p>
+
+  <h4 style="margin:20px 0 12px;">Phased Entry Strategy</h4>
+  <p>Given the thin float, we recommend building a position over 3-4 weeks to avoid moving the stock. Entry zones: <strong>Tranche 1</strong> (33%) at current levels ($6.50-6.80); <strong>Tranche 2</strong> (33%) on any pullback to $5.80-6.20 (post-ESI cash concerns); <strong>Tranche 3</strong> (34%) after Q1 2026 earnings confirm ESI integration traction.</p>
+
+  <h4 style="margin:20px 0 12px;">Conviction Assessment: 74%</h4>
+  <p>What strengthened conviction: management's track record of turnaround execution (from -$100K/month to $9.3M FCF), the fishing pond M&A strategy proving out with ESI, 44% insider ownership ensuring alignment, clean balance sheet, and multiple independent growth vectors (organic, M&A, AI, international). What held conviction back: thin float limiting institutional participation, software solutions margin compression in Q4 (needs monitoring), macro uncertainty affecting SMB spending cycles, and the Mihaylo estate overhang. Net assessment: favorable asymmetry with genuine catalysts on a 12-24 month horizon.</p>
+
+  <h4 style="margin:20px 0 12px;">Kelly Criterion Sizing</h4>
+  <p>With estimated win probability of 68%, average win of +35%, and average loss of -20%: Kelly fraction = (0.68 × 0.35 - 0.32 × 0.20) / 0.35 = <strong>0.50 (50% Kelly)</strong>. Half-Kelly (more appropriate for concentrated small-caps with liquidity risk) suggests a <strong>~5-7% portfolio allocation</strong> for an aggressive small-cap strategy, or <strong>2-3%</strong> for a diversified portfolio.</p>
+
+  <h4 style="margin:20px 0 12px;">Exit Triggers</h4>
+  <p><strong>Positive exits:</strong> Take partial profit at $9.00 (1/3), $11.00 (1/3), trail remainder. Re-evaluate fully at $15+.<br>
+  <strong>Negative exits:</strong> Cut position if: (1) organic revenue growth declines below 5% for two consecutive quarters; (2) net dollar retention falls below 90%; (3) management announces dilutive equity raise above 15% of shares outstanding; (4) Mihaylo files Schedule 13D amendment indicating intent to sell &gt;5% of holding.</p>
+</section>
+
+<!-- SECTION 26: CONFIDENCE -->
+<section class="report-section container" id="confidence">
+  <div class="section-label">Final Section</div>
+  <h2>🏁 Thesis Confidence & Monitoring</h2>
+
+  <div class="card" style="border:2px solid var(--primary);background:var(--primary-light);">
+    <h3 style="text-align:center;margin-bottom:8px;">Thesis Confidence</h3>
+    <div style="text-align:center;" class="mono big-num">74%</div>
+    <div class="progress-bar"><div class="progress-fill" style="width:74%;"></div></div>
+  </div>
+
+  <div class="card" style="margin-top:16px;">
+    <h4>Single Biggest Risk</h4>
+    <p>The ESI acquisition consuming $27.3M in cash leaves the balance sheet thin during integration. If integration stumbles AND organic growth decelerates simultaneously, the company has limited financial flexibility for 2-3 quarters until cash flow rebuilds. A macro downturn compounding this scenario is the realistic worst case.</p>
+  </div>
+
+  <div class="grid-2" style="margin-top:16px;">
+    <div class="card card-bear">
+      <h4>Kill Signals (Sell/Reduce)</h4>
+      <p>1. Organic revenue growth below 5% for 2 consecutive quarters<br>
+      2. Net dollar retention falls below 90%<br>
+      3. Software solutions gross margin compression continues below 60%<br>
+      4. Mihaylo files to sell &gt;5% of holding<br>
+      5. Significant new entrant in wholesale UCaaS platform space</p>
+    </div>
+    <div class="card card-bull">
+      <h4>Accelerate Signals (Add)</h4>
+      <p>1. Pro forma revenue run rate exceeds $100M<br>
+      2. Second licensee acquisition announced at accretive terms<br>
+      3. CAIRO AI generates $1M+ quarterly revenue<br>
+      4. Institutional ownership increases above 20%<br>
+      5. Software solutions margins recover above 70%<br>
+      6. International revenue exceeds 10% of total</p>
+    </div>
+  </div>
+</section>
+
+<!-- TEAR SHEET -->
+<section class="report-section container">
+  <div class="tear-sheet">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;margin-bottom:20px;border-bottom:1px solid var(--border);padding-bottom:12px;">
+      <h3 style="margin:0;">Crexendo (CXDO) | NASDAQ | $6.72 | March 6, 2026</h3>
+    </div>
+    <div class="tear-sheet-grid">
+      <div>
+        <p style="margin-bottom:12px;"><strong>Thesis:</strong> Crexendo is a dual-engine cloud communications platform (wholesale + retail) with a proven M&A playbook of acquiring its own licensees at accretive multiples. The ESI deal validates the "fishing pond" strategy. With 12% organic growth, 44% insider ownership, and a path to $100M revenue, the stock offers favorable asymmetry at 2.7x EV/Revenue.</p>
+        <div style="font-size:13px;line-height:2;">
+          <strong>Market Cap:</strong> ~$210M | <strong>EV:</strong> ~$180M | <strong>Revenue (FY2025):</strong> $68.2M<br>
+          <strong>Rev Growth:</strong> 12% | <strong>Adj. EBITDA Margin:</strong> ~16% | <strong>Net Cash:</strong> $31M (pre-ESI)<br>
+          <strong>RPO (Backlog):</strong> $89.1M | <strong>FCF:</strong> $9.3M (14% margin)
+        </div>
+        <div style="margin-top:12px;font-size:13px;">
+          <strong>Price Targets:</strong> 🐻 Bear $4.50 | ⚖️ Base $8.50 | 🐂 Bull $12.00<br>
+          <strong>Top 3 Catalysts:</strong> ESI integration → $100M revenue; CAIRO AI monetization; 2nd acquisition<br>
+          <strong>Top 3 Risks:</strong> ESI execution + cash depletion; Mihaylo estate overhang; UCaaS commoditization
+        </div>
+      </div>
+      <div style="padding-left:20px;border-left:1px solid var(--border);">
+        <div style="text-align:center;margin-bottom:16px;">
+          <div class="mono" style="font-size:11px;color:var(--text-muted);text-transform:uppercase;">Verdict</div>
+          <div class="mono" style="font-size:28px;font-weight:700;color:var(--accent-green);">LONG</div>
+          <div class="mono" style="font-size:14px;">74% Conviction</div>
+        </div>
+        <div style="font-size:13px;line-height:2.2;">
+          <strong>Prob-Weighted FV:</strong> $8.56 (+27%)<br>
+          <strong>Meme Score:</strong> 18/100<br>
+          <strong>Short Squeeze:</strong> 5/100<br>
+          <strong>Sector Optimism:</strong> 45/100<br>
+          <strong>Insider Alignment:</strong> <span class="alpha">YES</span>
+        </div>
+        <div style="margin-top:16px;padding:12px;background:var(--bg-alt);border-radius:8px;font-size:12px;">
+          <strong>In one sentence:</strong> A GAAP-profitable, 44%-insider-owned cloud platform company with a unique licensee acquisition flywheel and a clear path to doubling revenue.
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:16px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-muted);text-align:center;border-top:1px solid var(--border);padding-top:12px;">
+      Solid Peer Research | Sko · March 6, 2026 · Not financial advice
+    </div>
+  </div>
+</section>
+
+<!-- SOURCES -->
+<section class="report-section container sources-section">
+  <div class="section-label">Sources</div>
+  <h2>📚 Sources</h2>
+
+  <h4 style="margin:16px 0 8px;">Company Filings</h4>
+  <a href="https://last10k.com/sec-filings/cxdo" target="_blank">Crexendo 10-K Annual Report (FY2024) — SEC Filing via Last10K</a>
+  <a href="https://www.stocktitan.net/sec-filings/CXDO/10-k-crexendo-inc-files-annual-report-410ab5ce8f91.html" target="_blank">Crexendo 10-K (FY2025) — SEC Filing via Stock Titan — March 2026</a>
+  <a href="https://www.stocktitan.net/sec-filings/CXDO/" target="_blank">Crexendo SEC Filings Overview — Stock Titan</a>
+
+  <h4 style="margin:16px 0 8px;">Earnings Transcripts</h4>
+  <a href="https://www.investing.com/news/transcripts/earnings-call-transcript-crexendo-q4-2025-beats-eps-forecast-stock-rises-93CH-4539398" target="_blank">Crexendo Q4 2025 Earnings Call Transcript — March 3, 2026 — Investing.com</a>
+  <a href="https://www.investing.com/news/transcripts/earnings-call-transcript-crexendo-q3-2025-revenue-rises-stock-dips-93CH-4332302" target="_blank">Crexendo Q3 2025 Earnings Call Transcript — November 4, 2025 — Investing.com</a>
+  <a href="https://www.tickerreport.com/banking-finance/13366279/crexendo-q4-earnings-call-highlights.html" target="_blank">Crexendo Q4 Earnings Call Highlights — Ticker Report — March 2026</a>
+
+  <h4 style="margin:16px 0 8px;">News & Press</h4>
+  <a href="https://www.netsapiens.com/crexendo-completes-highly-accretive-acquisition-of-estech-systems/" target="_blank">Crexendo Completes ESI Acquisition — NetSapiens — March 2, 2026</a>
+  <a href="https://www.stocktitan.net/news/CXDO/" target="_blank">Crexendo News Hub — Stock Titan (CAIRO launch, partnerships, awards)</a>
+  <a href="https://www.netsapiens.com/crexendo-and-gamma-communications-partner-to-help-service-providers-drive-growth/" target="_blank">Crexendo-Gamma Partnership — October 27, 2025</a>
+  <a href="https://www.pressrelease.com/news/crexendo-announces-strong-fourth-quarter-and-fiscal-year-2025-results" target="_blank">Crexendo FY2025 Results Press Release — March 3, 2026</a>
+  <a href="https://www.crexendo.com/blog/crexendo-appoints-jeffrey-g-korn-as-chief-executive-officer/" target="_blank">Jeff Korn Appointed CEO — Crexendo Blog — March 14, 2023</a>
+  <a href="https://www.netsapiens.com/crexendo-earns-two-ai-awards/" target="_blank">Crexendo Earns Two 2026 CVAI Awards — NetSapiens — March 2026</a>
+
+  <h4 style="margin:16px 0 8px;">Analyst / Research</h4>
+  <a href="https://www.tipranks.com/stocks/cxdo/forecast" target="_blank">Crexendo Analyst Ratings & Price Targets — TipRanks</a>
+  <a href="https://www.investing.com/news/analyst-ratings/needham-reiterates-crexendo-stock-rating-on-q4-results-esi-deal-93CH-4540629" target="_blank">Needham Reiterates Buy, $9 PT — March 2026</a>
+  <a href="https://www.benzinga.com/quote/CXDO/analyst-ratings" target="_blank">Crexendo Analyst Ratings — Benzinga</a>
+
+  <h4 style="margin:16px 0 8px;">Industry Data</h4>
+  <a href="https://www.mordorintelligence.com/industry-reports/unified-communication-as-a-service-ucaas-market" target="_blank">UCaaS Market Size & Forecast — Mordor Intelligence</a>
+  <a href="https://www.fortunebusinessinsights.com/industry-reports/unified-communication-as-a-service-ucaas-market-101934" target="_blank">UCaaS Market Report — Fortune Business Insights</a>
+  <a href="https://www.frost.com/wp-content/uploads/2024/01/Crexendo-Final-Award-Write-up.pdf" target="_blank">Crexendo/NetSapiens Analysis — Frost & Sullivan Award Write-Up</a>
+  <a href="https://www.channelfutures.com/unified-communications/2025-top-ucaas-providers-ringcentral-vonage-8x8" target="_blank">Top UCaaS Providers 2025 — Channel Futures</a>
+
+  <h4 style="margin:16px 0 8px;">Ownership & Structure</h4>
+  <a href="https://www.dcfmodeling.com/blogs/history/cxdo-history-mission-ownership" target="_blank">Crexendo History, Mission & Ownership — DCF Modeling</a>
+  <a href="https://simplywall.st/stocks/us/software/nasdaq-cxdo/crexendo/news/recent-11-pullback-would-hurt-crexendo-inc-nasdaqcxdo-inside" target="_blank">Crexendo Insider Ownership Analysis — Simply Wall St</a>
+  <a href="https://www.wallstreetzen.com/stocks/us/nasdaq/cxdo/ownership" target="_blank">CXDO Ownership Breakdown — Wall Street Zen</a>
+  <a href="https://www.crexendo.com/why-crexendo/board/" target="_blank">Board of Directors — Crexendo Official Site</a>
+
+  <h4 style="margin:16px 0 8px;">Other</h4>
+  <a href="https://tenichols94.substack.com/p/crexendo-cxdo-small-player-big-potential" target="_blank">Crexendo: Small Player, Big Potential — Capital Curiosity Substack</a>
+  <a href="https://finance.yahoo.com/news/crexendo-inc-cxdo-bull-case-213730332.html" target="_blank">Crexendo Bull Case Theory — Insider Monkey via Yahoo Finance</a>
+</section>
+
+<!-- SIGNATURE & FOOTER -->
+<div class="report-footer">
+  <canvas id="footerCanvas"></canvas>
+  <div class="container" style="text-align:center;">
+    <div class="footer-sig">Solid Peer Research | Sko</div>
+    <div class="footer-tagline">Where the fishing pond meets the cloud. · March 6, 2026</div>
+    <div class="footer-disclaimer">
+      Not financial advice. For informational and entertainment purposes only. Do your own research. Verify all figures. Author may have exposure to discussed securities and may trade at any time without notice. All data sourced from public filings, earnings transcripts, and reputable news sources. Estimates are author's own and may differ from consensus.<br><br>
+      © 2026 Solid Peer Research | Sko
+    </div>
+  </div>
+</div>
+
+<script>
+/* ===== HERO CANVAS ANIMATION ===== */
+(function(){
+  var c = document.getElementById('heroCanvas');
+  if(!c) return;
+  var ctx = c.getContext('2d');
+  function resize(){ c.width=c.offsetWidth; c.height=c.offsetHeight; }
+  resize(); window.addEventListener('resize',resize);
+
+  var particles=[];
+  for(var i=0;i<60;i++){
+    particles.push({
+      x:Math.random()*c.width,
+      y:Math.random()*c.height,
+      vx:(Math.random()-0.5)*0.4,
+      vy:(Math.random()-0.5)*0.4,
+      r:Math.random()*2+1,
+      pulse:Math.random()*Math.PI*2
+    });
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,c.width,c.height);
+    var t=Date.now()*0.001;
+    for(var i=0;i<particles.length;i++){
+      var p=particles[i];
+      p.x+=p.vx; p.y+=p.vy;
+      if(p.x<0)p.x=c.width; if(p.x>c.width)p.x=0;
+      if(p.y<0)p.y=c.height; if(p.y>c.height)p.y=0;
+      var alpha=0.3+0.3*Math.sin(t+p.pulse);
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle='rgba(59,130,246,'+alpha+')';
+      ctx.fill();
+      // Draw connections
+      for(var j=i+1;j<particles.length;j++){
+        var q=particles[j];
+        var dx=p.x-q.x, dy=p.y-q.y;
+        var dist=Math.sqrt(dx*dx+dy*dy);
+        if(dist<120){
+          ctx.beginPath();
+          ctx.moveTo(p.x,p.y);
+          ctx.lineTo(q.x,q.y);
+          ctx.strokeStyle='rgba(59,130,246,'+(0.15*(1-dist/120))+')';
+          ctx.lineWidth=0.5;
+          ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+/* ===== FOOTER CANVAS ANIMATION ===== */
+(function(){
+  var c = document.getElementById('footerCanvas');
+  if(!c) return;
+  var ctx = c.getContext('2d');
+  function resize(){ c.width=c.offsetWidth; c.height=c.offsetHeight; }
+  resize(); window.addEventListener('resize',resize);
+
+  var waves=[];
+  for(var i=0;i<5;i++){
+    waves.push({
+      y:c.height*0.3+i*20,
+      amplitude:8+i*3,
+      frequency:0.008-i*0.001,
+      speed:0.02+i*0.005,
+      phase:i*1.2
+    });
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,c.width,c.height);
+    var t=Date.now()*0.001;
+    for(var i=0;i<waves.length;i++){
+      var w=waves[i];
+      ctx.beginPath();
+      for(var x=0;x<=c.width;x+=3){
+        var y=w.y+Math.sin(x*w.frequency+t*w.speed+w.phase)*w.amplitude;
+        if(x===0) ctx.moveTo(x,y);
+        else ctx.lineTo(x,y);
+      }
+      ctx.strokeStyle='rgba(37,99,235,'+(0.08+i*0.03)+')';
+      ctx.lineWidth=1.5;
+      ctx.stroke();
+    }
+
+    // Data packets
+    for(var i=0;i<8;i++){
+      var px=((t*30+i*140)%c.width);
+      var py=c.height*0.5+Math.sin(px*0.02+t)*15;
+      ctx.beginPath();
+      ctx.arc(px,py,2,0,Math.PI*2);
+      ctx.fillStyle='rgba(59,130,246,0.4)';
+      ctx.fill();
+    }
+
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+/* ===== CLICK ANIMATIONS ===== */
+var lastClick=0, clickTimer=null;
+document.addEventListener('click', function(e){
+  var now=Date.now();
+  if(now-lastClick<300){
+    clearTimeout(clickTimer);
+    bigBoom(e.clientX,e.clientY);
+    lastClick=0;
+  } else {
+    lastClick=now;
+    clickTimer=setTimeout(function(){ smallBoom(e.clientX,e.clientY); },300);
+  }
+});
+document.addEventListener('dblclick', function(e){ e.preventDefault(); });
+
+function smallBoom(x,y){
+  var box=document.createElement('div');
+  box.style.cssText='position:fixed;left:'+x+'px;top:'+y+'px;width:0;height:0;pointer-events:none;z-index:9999;';
+  document.body.appendChild(box);
+
+  // Cloud communication packets radiating outward
+  for(var i=0;i<14;i++){
+    var el=document.createElement('div');
+    var angle=(i/14)*Math.PI*2;
+    var dist=40+Math.random()*30;
+    var size=3+Math.random()*4;
+    var colors=['#2563EB','#3B82F6','#60A5FA','#059669','#34D399'];
+    el.style.cssText='position:absolute;width:'+size+'px;height:'+size+'px;border-radius:50%;background:'+colors[i%5]+';left:-'+(size/2)+'px;top:-'+(size/2)+'px;';
+    box.appendChild(el);
+    el.animate([
+      {transform:'translate(0,0) scale(1)',opacity:1},
+      {transform:'translate('+Math.cos(angle)*dist+'px,'+Math.sin(angle)*dist+'px) scale(0)',opacity:0}
+    ],{duration:500,fill:'forwards',easing:'cubic-bezier(0,0,0.2,1)'});
+  }
+
+  // Signal wave rings
+  for(var r=0;r<3;r++){
+    var ring=document.createElement('div');
+    var sz=20+r*25;
+    ring.style.cssText='position:absolute;width:'+sz+'px;height:'+sz+'px;border:2px solid rgba(37,99,235,0.4);border-radius:50%;left:-'+(sz/2)+'px;top:-'+(sz/2)+'px;';
+    box.appendChild(ring);
+    ring.animate([
+      {transform:'scale(0.5)',opacity:0.8},
+      {transform:'scale(2)',opacity:0}
+    ],{duration:500,fill:'forwards',delay:r*80});
+  }
+
+  setTimeout(function(){ if(box.parentNode) box.parentNode.removeChild(box); },700);
+}
+
+function bigBoom(x,y){
+  var box=document.createElement('div');
+  box.style.cssText='position:fixed;left:'+x+'px;top:'+y+'px;width:0;height:0;pointer-events:none;z-index:9999;';
+  document.body.appendChild(box);
+
+  // Network nodes forming and connecting
+  var nodes=[];
+  for(var i=0;i<12;i++){
+    var el=document.createElement('div');
+    var angle=(i/12)*Math.PI*2;
+    var dist=60+Math.random()*50;
+    var nx=Math.cos(angle)*dist;
+    var ny=Math.sin(angle)*dist;
+    el.style.cssText='position:absolute;width:8px;height:8px;border-radius:50%;background:#2563EB;left:-4px;top:-4px;';
+    box.appendChild(el);
+    nodes.push({el:el,x:nx,y:ny});
+    el.animate([
+      {transform:'translate(0,0) scale(0)',opacity:0},
+      {transform:'translate('+nx+'px,'+ny+'px) scale(1)',opacity:1},
+      {transform:'translate('+nx+'px,'+ny+'px) scale(0.5)',opacity:0}
+    ],{duration:900,fill:'forwards',easing:'ease-out'});
+  }
+
+  // Connection lines between nodes
+  for(var i=0;i<nodes.length;i++){
+    for(var j=i+1;j<Math.min(i+3,nodes.length);j++){
+      var line=document.createElement('div');
+      var dx=nodes[j].x-nodes[i].x;
+      var dy=nodes[j].y-nodes[i].y;
+      var len=Math.sqrt(dx*dx+dy*dy);
+      var ang=Math.atan2(dy,dx)*180/Math.PI;
+      line.style.cssText='position:absolute;height:1px;background:rgba(37,99,235,0.4);transform-origin:0 0;left:0;top:0;width:'+len+'px;transform:translate('+nodes[i].x+'px,'+nodes[i].y+'px) rotate('+ang+'deg);';
+      box.appendChild(line);
+      line.animate([
+        {opacity:0,width:'0px'},
+        {opacity:0.6,width:len+'px'},
+        {opacity:0,width:len+'px'}
+      ],{duration:800,fill:'forwards',delay:200});
+    }
+  }
+
+  // Central pulse
+  var pulse=document.createElement('div');
+  pulse.style.cssText='position:absolute;width:30px;height:30px;border-radius:50%;background:radial-gradient(circle,rgba(37,99,235,0.6),transparent);left:-15px;top:-15px;';
+  box.appendChild(pulse);
+  pulse.animate([
+    {transform:'scale(0)',opacity:1},
+    {transform:'scale(4)',opacity:0}
+  ],{duration:700,fill:'forwards'});
+
+  // Data packets streaming outward
+  for(var i=0;i<20;i++){
+    var pkt=document.createElement('div');
+    var a=(i/20)*Math.PI*2+Math.random()*0.3;
+    var d=80+Math.random()*60;
+    pkt.style.cssText='position:absolute;width:3px;height:3px;border-radius:50%;background:#60A5FA;left:-1.5px;top:-1.5px;';
+    box.appendChild(pkt);
+    pkt.animate([
+      {transform:'translate(0,0)',opacity:0.8},
+      {transform:'translate('+Math.cos(a)*d+'px,'+Math.sin(a)*d+'px)',opacity:0}
+    ],{duration:600+Math.random()*300,fill:'forwards',delay:100+Math.random()*200});
+  }
+
+  setTimeout(function(){ if(box.parentNode) box.parentNode.removeChild(box); },1100);
+}
+
+/* ===== SMOOTH SCROLL ===== */
+document.querySelectorAll('.toc-bar a').forEach(function(a){
+  a.addEventListener('click',function(e){
+    e.preventDefault();
+    var target=document.querySelector(this.getAttribute('href'));
+    if(target) target.scrollIntoView({behavior:'smooth',block:'start'});
+  });
+});
+</script>
+</body>
+</html>
