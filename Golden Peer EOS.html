@@ -1,0 +1,1524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solid Peer Research | Sko — EOS: Photons, Precision & the Physics of Drone Defeat</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f6f3ee;
+  --bg-alt: #eee9e0;
+  --surface: #faf8f4;
+  --surface-raised: #f0ece4;
+  --text: #1a1a1a;
+  --text-muted: #6b6560;
+  --primary: #c62828;
+  --primary-light: #fce4e4;
+  --primary-dark: #8e0000;
+  --secondary: #1565c0;
+  --secondary-dark: #0d47a1;
+  --accent-red: #d32f2f;
+  --accent-green: #2e7d32;
+  --accent-orange: #e65100;
+  --border: #d6cfc5;
+  --border-light: #e8e2d8;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;font-size:16px;}
+h1,h2,h3{font-family:'Playfair Display',serif;font-weight:700;line-height:1.2;}
+h1{font-size:clamp(2rem,5vw,3.4rem);}
+h2{font-size:clamp(1.5rem,3vw,2rem);margin-bottom:20px;}
+h3{font-size:clamp(1.1rem,2vw,1.4rem);margin-bottom:12px;}
+h4{font-family:'Inter',sans-serif;font-weight:700;font-size:1.05rem;margin-bottom:8px;}
+p{margin-bottom:1em;}
+a{color:var(--primary);text-decoration:none;}
+a:hover{color:var(--primary-dark);}
+.container{max-width:1100px;margin:0 auto;padding:0 24px;}
+.mono{font-family:'JetBrains Mono',monospace;}
+.alpha{color:var(--accent-green);font-weight:600;}
+.shock{color:var(--accent-red);font-weight:600;}
+.primary-text{color:var(--primary);font-weight:600;}
+
+/* Hero */
+.hero{position:relative;overflow:hidden;background:linear-gradient(135deg,#1a0a0a 0%,#2d0f0f 20%,#1a1a2e 50%,#0d1b2a 80%,#0a0a1a 100%);color:#fff;padding:80px 0 40px;min-height:auto;}
+.hero canvas{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0.35;}
+.hero .container{position:relative;z-index:2;}
+.hero-brand{font-family:'JetBrains Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:2px;color:rgba(255,255,255,0.5);margin-bottom:6px;}
+.hero-companion{font-family:'Inter',sans-serif;font-size:12px;color:rgba(255,255,255,0.35);margin-bottom:24px;}
+.hero h1{color:#fff;margin-bottom:12px;text-shadow:0 2px 20px rgba(0,0,0,0.5);}
+.hero-hook{font-family:'Inter',sans-serif;font-size:clamp(1rem,2vw,1.2rem);color:rgba(255,255,255,0.7);font-weight:300;max-width:750px;margin-bottom:28px;line-height:1.6;}
+.tech-banner{background:linear-gradient(90deg,var(--primary-dark),var(--primary),#d32f2f);padding:12px 24px;border-radius:8px;display:inline-block;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.5px;margin-bottom:0;color:#fff;}
+.hero-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:8px;}
+.hero-stat{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:18px 16px;backdrop-filter:blur(8px);text-align:center;}
+.hero-stat-label{font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,0.4);margin-bottom:6px;}
+.hero-stat-value{font-family:'JetBrains Mono',monospace;font-size:clamp(1.4rem,3vw,2rem);font-weight:700;color:#fff;line-height:1;}
+.hero-stat-detail{font-family:'Inter',sans-serif;font-size:11px;color:rgba(255,255,255,0.45);margin-top:6px;}
+
+/* TOC Bar */
+.toc-bar{width:100%;position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:2px solid var(--primary);overflow-x:auto;white-space:nowrap;text-align:center;padding:14px 24px;box-sizing:border-box;-webkit-overflow-scrolling:touch;}
+.toc-bar::-webkit-scrollbar{height:4px;}
+.toc-bar::-webkit-scrollbar-thumb{background:var(--primary-dark);border-radius:2px;}
+.toc-bar::-webkit-scrollbar-track{background:transparent;}
+.toc-bar a{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px;padding:4px 14px;color:var(--text-muted);text-decoration:none;border-right:1px solid var(--border);}
+.toc-bar a:last-child{border-right:none;}
+.toc-bar a:hover{color:var(--primary);}
+@media(max-width:480px){.toc-bar{display:none;}}
+
+/* Section Spacing */
+.report-section{padding:30px 0;}
+.report-section + .report-section{border-top:1px solid var(--border-light);}
+.section-label{font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:2px;color:var(--primary);margin-bottom:8px;}
+.report-section h2{margin-top:0;margin-bottom:20px;}
+
+/* Cards */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:24px;margin-bottom:16px;}
+.card-accent{border-left:4px solid var(--primary);}
+.card-green{border-left:4px solid var(--accent-green);}
+.card-orange{border-left:4px solid var(--accent-orange);}
+.card-red{border-left:4px solid var(--accent-red);background:#fef5f5;}
+
+/* Science Explainer Boxes */
+.science-box{background:linear-gradient(135deg,#fce4e4 0%,#faf0e8 100%);border:1px solid #e8c4c4;border-left:5px solid var(--primary);border-radius:10px;padding:24px;margin:24px 0;}
+.science-box h4{font-family:'Playfair Display',serif;color:var(--primary-dark);font-size:1.15rem;margin-bottom:12px;}
+.science-box .analogy{background:rgba(255,255,255,0.6);border-radius:8px;padding:12px 16px;margin-top:12px;font-style:italic;border-left:3px solid var(--secondary);}
+
+/* Tables */
+.table-wrap{overflow-x:auto;margin:16px 0;}
+table{width:100%;border-collapse:collapse;font-size:14px;}
+thead th{background:var(--primary-dark);color:#fff;padding:10px 14px;text-align:left;font-family:'JetBrains Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;}
+tbody td{padding:10px 14px;border-bottom:1px solid var(--border-light);}
+tbody tr:nth-child(odd){background:var(--bg);}
+tbody tr:nth-child(even){background:var(--bg-alt);}
+tbody tr:hover{background:var(--surface-raised);}
+
+/* Process Flow */
+.process-flow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;margin:20px 0;padding:20px 0;}
+.process-step{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px;text-align:center;min-width:120px;max-width:160px;flex:1;}
+.process-step .step-icon{font-size:24px;margin-bottom:6px;}
+.process-step .step-label{font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--primary);margin-bottom:4px;}
+.process-step .step-desc{font-size:12px;color:var(--text-muted);line-height:1.4;}
+.process-arrow{font-size:20px;color:var(--primary);font-weight:bold;}
+
+/* Spec Cards */
+.spec-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:20px 0;}
+.spec-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px;text-align:center;border-top:3px solid var(--primary);}
+.spec-card .spec-label{font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-muted);margin-bottom:6px;}
+.spec-card .spec-value{font-family:'JetBrains Mono',monospace;font-size:1.8rem;font-weight:700;color:var(--primary-dark);line-height:1;}
+.spec-card .spec-unit{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text-muted);margin-top:2px;}
+.spec-card .spec-context{font-size:11px;color:var(--text-muted);margin-top:6px;line-height:1.4;}
+
+/* Limitation Box */
+.limitation-box{background:linear-gradient(135deg,#fff3e0,#fef9f0);border:1px solid #ffe0b2;border-left:5px solid var(--accent-orange);border-radius:10px;padding:20px 24px;margin:20px 0;}
+.limitation-box h4{color:var(--accent-orange);}
+
+/* Blockquote */
+blockquote{background:var(--bg-alt);border-left:4px solid var(--primary);padding:16px 20px;margin:16px 0;border-radius:0 8px 8px 0;font-style:italic;}
+blockquote cite{display:block;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-muted);margin-top:8px;font-style:normal;}
+
+/* Grids */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
+@media(max-width:768px){.grid-2,.grid-3,.hero-stats{grid-template-columns:1fr;}}
+
+/* Visual Diagrams */
+.diagram-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;margin:20px 0;text-align:center;}
+.diagram-title{font-family:'JetBrains Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-muted);margin-bottom:16px;}
+
+/* Product Taxonomy */
+.taxonomy{display:flex;flex-direction:column;gap:16px;margin:20px 0;}
+.taxonomy-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;}
+.taxonomy-label{font-family:'JetBrains Mono',monospace;font-size:11px;background:var(--primary-dark);color:#fff;padding:6px 14px;border-radius:6px;min-width:140px;text-align:center;}
+.taxonomy-items{display:flex;flex-wrap:wrap;gap:8px;}
+.taxonomy-item{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 14px;font-size:13px;position:relative;}
+.taxonomy-item .badge{font-family:'JetBrains Mono',monospace;font-size:8px;padding:2px 6px;border-radius:4px;margin-left:6px;vertical-align:middle;}
+.badge-active{background:#e8f5e9;color:#2e7d32;}
+.badge-new{background:#e3f2fd;color:#1565c0;}
+.badge-rd{background:#f3e5f5;color:#7b1fa2;}
+
+/* Scale Bars */
+.scale-bar-container{margin:16px 0;}
+.scale-bar-row{display:flex;align-items:center;margin-bottom:8px;gap:12px;}
+.scale-bar-label{font-family:'JetBrains Mono',monospace;font-size:11px;min-width:120px;text-align:right;color:var(--text-muted);}
+.scale-bar{height:24px;border-radius:4px;position:relative;transition:width 0.5s ease;}
+.scale-bar-value{font-family:'JetBrains Mono',monospace;font-size:11px;position:absolute;right:8px;top:50%;transform:translateY(-50%);color:#fff;font-weight:600;}
+
+/* Interactive Slider */
+.slider-container{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;margin:20px 0;}
+.slider-label{font-family:'JetBrains Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:8px;}
+.slider-value-display{font-family:'JetBrains Mono',monospace;font-size:2rem;font-weight:700;color:var(--primary-dark);text-align:center;margin:12px 0;}
+input[type="range"]{width:100%;accent-color:var(--primary);margin:8px 0;}
+.slider-output{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px;}
+.slider-output-card{background:var(--bg-alt);border-radius:8px;padding:14px;text-align:center;}
+.slider-output-label{font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);}
+.slider-output-value{font-family:'JetBrains Mono',monospace;font-size:1.4rem;font-weight:700;color:var(--text);}
+
+/* Supply Chain Flag */
+.supply-flag{border-radius:10px;padding:20px 24px;margin:16px 0;display:flex;align-items:flex-start;gap:16px;}
+.supply-flag-icon{font-size:2rem;}
+.supply-flag-orange{background:#fff3e0;border-left:5px solid #e65100;}
+.supply-flag-text h4{margin-bottom:6px;}
+
+/* Tear Sheet */
+.tear-sheet{background:var(--surface);border:2px solid var(--primary);border-radius:12px;padding:28px;margin:40px 0;}
+.tear-sheet-header{display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid var(--border);padding-bottom:12px;margin-bottom:20px;flex-wrap:wrap;gap:8px;}
+.tear-sheet-title{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;}
+.tear-sheet-meta{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;}
+.tear-cols{display:grid;grid-template-columns:55% 45%;gap:24px;}
+@media(max-width:768px){.tear-cols{grid-template-columns:1fr;}}
+.verdict-card{background:var(--bg-alt);border-radius:8px;padding:12px;margin-bottom:8px;}
+.verdict-name{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;}
+.verdict-rating{font-size:13px;margin-top:4px;}
+
+/* Sources */
+.sources-section{padding:30px 0;}
+.sources-section h3{font-size:1.1rem;margin:16px 0 8px;color:var(--primary-dark);}
+.sources-section a{display:block;font-size:13px;color:var(--secondary);margin-bottom:4px;word-break:break-all;}
+
+/* Footer */
+footer{background:linear-gradient(135deg,#0a0a1a 0%,#1a0a0a 50%,#1a1a2e 100%);color:rgba(255,255,255,0.5);padding:60px 0 30px;position:relative;overflow:hidden;}
+footer canvas{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0.3;}
+footer .container{position:relative;z-index:2;}
+.footer-sig{font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--primary);margin-bottom:8px;}
+.footer-tagline{font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,0.35);margin-bottom:20px;}
+.footer-disclaimer{font-size:11px;color:rgba(255,255,255,0.25);line-height:1.6;max-width:800px;}
+
+/* Demand visual */
+.demand-gauge{display:flex;align-items:center;gap:16px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;margin:16px 0;}
+.gauge-bar{flex:1;height:20px;background:linear-gradient(90deg,#bbdefb,#42a5f5,#ff9800,#f44336,#fff);border-radius:10px;position:relative;}
+.gauge-marker{position:absolute;top:-6px;width:4px;height:32px;background:var(--text);border-radius:2px;}
+.gauge-labels{display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text-muted);margin-top:4px;}
+
+/* Zoom-in panel */
+.zoom-panel{background:var(--surface);border:2px dashed var(--primary);border-radius:10px;padding:20px;margin:16px 0;position:relative;}
+.zoom-label{position:absolute;top:-10px;left:20px;background:var(--primary);color:#fff;font-family:'JetBrains Mono',monospace;font-size:10px;padding:2px 10px;border-radius:4px;}
+
+/* Pipeline */
+.pipeline{display:flex;flex-wrap:wrap;gap:4px;margin:16px 0;}
+.pipeline-stage{flex:1;min-width:100px;text-align:center;padding:12px 8px;border-radius:8px;font-size:12px;}
+.pipeline-concept{background:#f3e5f5;border:1px solid #ce93d8;}
+.pipeline-dev{background:#e3f2fd;border:1px solid #90caf9;}
+.pipeline-test{background:#fff3e0;border:1px solid #ffcc80;}
+.pipeline-prelaunch{background:#e8f5e9;border:1px solid #a5d6a7;}
+.pipeline-deployed{background:#e8f5e9;border:2px solid #2e7d32;}
+.pipeline-stage .stage-name{font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);}
+.pipeline-stage .stage-product{font-weight:600;margin-top:4px;}
+
+/* Architecture layers */
+.arch-layers{margin:20px 0;}
+.arch-layer{padding:14px 20px;border-radius:8px;margin-bottom:6px;font-size:14px;}
+.arch-foundation{background:linear-gradient(90deg,#fce4e4,#f8d7d7);border:1px solid #e8c4c4;}
+.arch-shared{background:linear-gradient(90deg,#e3f2fd,#bbdefb);border:1px solid #90caf9;}
+.arch-product{background:linear-gradient(90deg,#e8f5e9,#c8e6c9);border:1px solid #a5d6a7;}
+.arch-layer-label{font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:4px;}
+
+/* Scenario table */
+.scenario-row{display:flex;align-items:flex-start;gap:16px;padding:14px 0;border-bottom:1px solid var(--border-light);}
+.scenario-emoji{font-size:1.5rem;min-width:36px;text-align:center;}
+.scenario-content{flex:1;}
+.scenario-name{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;}
+
+/* SVG Diagrams */
+.svg-diagram{max-width:100%;margin:16px auto;display:block;}
+
+/* System Architecture Diagram */
+.sys-arch{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin:20px 0;}
+.sys-block{border-radius:10px;padding:14px;text-align:center;font-size:13px;}
+.sys-sense{background:#e3f2fd;border:2px solid #1565c0;}
+.sys-process{background:#e8f5e9;border:2px solid #2e7d32;}
+.sys-effect{background:#fff3e0;border:2px solid #e65100;}
+.sys-control{background:#f3e5f5;border:2px solid #7b1fa2;}
+.sys-block-label{font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}
+.sys-block-name{font-weight:700;font-size:14px;}
+.sys-block-desc{font-size:11px;color:var(--text-muted);margin-top:4px;}
+
+@media(max-width:600px){
+  .process-flow{flex-direction:column;align-items:center;}
+  .process-arrow{transform:rotate(90deg);}
+  .spec-grid{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero" id="top">
+<canvas id="heroCanvas"></canvas>
+<div class="container">
+  <div class="hero-brand">Solid Peer Research | Sko · Technical Deep Dive · 8 March 2026</div>
+  <div class="hero-companion">Companion to the EOS Investment Report</div>
+  <h1>Electro Optic Systems (EOS)</h1>
+  <div class="hero-hook">From Star Wars satellite lasers to drone-killing beams at the speed of light — the 40-year engineering story of how precision optics, fire-control algorithms, and hundred-kilowatt fiber lasers converge in a single Australian company.</div>
+  <div class="tech-banner">🔬 4 Product Families &nbsp;|&nbsp; 2,500+ Systems Delivered &nbsp;|&nbsp; Core Tech: Directed Energy · Precision Optics · Space Photonics</div>
+
+</div>
+</section>
+
+<!-- TOC NAV -->
+<div class="toc-bar">
+  <a href="#vocab">Decoder Ring</a>
+  <a href="#science">Foundation Science</a>
+  <a href="#portfolio">Product Map</a>
+  <a href="#demand">Demand</a>
+  <a href="#apollo">Apollo HELW</a>
+  <a href="#slinger">Slinger C-UAS</a>
+  <a href="#rws">RWS Family</a>
+  <a href="#space">Space Systems</a>
+  <a href="#interceptor">Interceptor-MR</a>
+  <a href="#platform">Shared Platform</a>
+  <a href="#mfg">Manufacturing</a>
+  <a href="#limits">Limitations</a>
+  <a href="#pipeline">Pipeline</a>
+  <a href="#trajectory">Trajectory</a>
+</div>
+
+<!-- SECTION 01: VOCABULARY -->
+<section class="report-section" id="vocab">
+<div class="container">
+  <div class="section-label">Section 01</div>
+  <h2>📖 Technical Vocabulary & Decoder Ring</h2>
+  <p>Before we dive into lasers and gimbals, here's your pocket dictionary. Bookmark this — you'll need it.</p>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Term</th><th>Plain English</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">HEL / HELW</td><td>High Energy Laser (Weapon) — a laser powerful enough to physically damage or destroy a target, typically 50 kW and above</td></tr>
+      <tr><td class="mono">C-UAS / CUAS</td><td>Counter-Unmanned Aircraft System — any technology designed to detect, track, and defeat drones</td></tr>
+      <tr><td class="mono">RWS / RCWS</td><td>Remote Weapon Station / Remotely Controlled Weapon Station — a gun mount on a vehicle that an operator controls from inside the vehicle, under armour</td></tr>
+      <tr><td class="mono">Group 1/2/3 UAS</td><td>US DoD drone size classes. Group 1: small (&lt;9 kg, &lt;370 m altitude). Group 2: medium (&lt;25 kg). Group 3: large (&lt;600 kg, e.g. tactical reconnaissance UAVs)</td></tr>
+      <tr><td class="mono">SDA</td><td>Space Domain Awareness — knowing what's up there: tracking satellites, debris, and anything suspicious in orbit</td></tr>
+      <tr><td class="mono">SLR</td><td>Satellite Laser Ranging — firing a short laser pulse at a satellite and timing the return to measure distance with millimetre precision</td></tr>
+      <tr><td class="mono">Four-axis stabilisation</td><td>A gimbal system where the sensor/sight moves independently of the weapon in both elevation and azimuth, isolating it from vehicle vibration. More axes = smoother tracking</td></tr>
+      <tr><td class="mono">Beam combining</td><td>Merging multiple lower-power laser beams into one higher-power beam. Can be spectral (different wavelengths), coherent (same wavelength, phase-locked), or geometric (overlapping on target)</td></tr>
+      <tr><td class="mono">Dwell time</td><td>How long the laser must hold on a target to achieve the desired effect (burn-through, sensor damage, etc.)</td></tr>
+      <tr><td class="mono">AESA radar</td><td>Active Electronically Scanned Array — a radar that steers its beam electronically (no moving parts), enabling faster scanning and multi-target tracking</td></tr>
+      <tr><td class="mono">Proximity fuze</td><td>An ammunition fuze that detonates the round when it gets close to a target (using radio waves), rather than requiring a direct hit — essential for anti-drone shells</td></tr>
+      <tr><td class="mono">ITAR-free</td><td>Not controlled under US International Traffic in Arms Regulations — meaning EOS can export without US government permission, a major commercial advantage</td></tr>
+      <tr><td class="mono">Coudé path</td><td>An optical path that brings the telescope's light beam down through the mount's axes to a fixed point — critical for routing high-power lasers through a tracking telescope</td></tr>
+      <tr><td class="mono">ISO container</td><td>Standard 20-foot shipping container — Apollo's packaging, allowing rapid transport by truck, rail, ship, or aircraft</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+</section>
+
+<!-- SECTION 02: FOUNDATION SCIENCE -->
+<section class="report-section" id="science">
+<div class="container">
+  <div class="section-label">Section 02</div>
+  <h2>🧬 Foundation Science: The Physics You Need to Know</h2>
+  <p>Everything EOS builds — from drone-killing lasers to telescopes that can track a coin at 36,000 km — rests on a handful of physics principles. Master these, and every product page on their website makes sense.</p>
+
+  <!-- Science Principle 1: Stimulated Emission & Fiber Lasers -->
+  <div class="science-box">
+    <h4>🔬 THE SCIENCE: Stimulated Emission & Fiber Laser Amplification</h4>
+    <svg viewBox="0 0 700 180" class="svg-diagram" style="max-width:650px;">
+      <defs>
+        <marker id="arrowR" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#c62828"/></marker>
+      </defs>
+      <!-- Pump diode -->
+      <rect x="20" y="60" width="90" height="50" rx="8" fill="#e3f2fd" stroke="#1565c0" stroke-width="2"/>
+      <text x="65" y="82" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#1565c0">PUMP DIODE</text>
+      <text x="65" y="98" text-anchor="middle" font-family="Inter" font-size="8" fill="#666">915–976 nm</text>
+      <!-- Arrow -->
+      <line x1="115" y1="85" x2="155" y2="85" stroke="#c62828" stroke-width="2" marker-end="url(#arrowR)"/>
+      <!-- Fiber -->
+      <rect x="160" y="40" width="260" height="90" rx="10" fill="#fce4e4" stroke="#c62828" stroke-width="2"/>
+      <text x="290" y="65" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#8e0000">Yb-DOPED FIBER</text>
+      <text x="290" y="82" text-anchor="middle" font-family="Inter" font-size="9" fill="#666">Ytterbium ions absorb pump photons</text>
+      <text x="290" y="96" text-anchor="middle" font-family="Inter" font-size="9" fill="#666">→ emit stimulated 1070 nm photons</text>
+      <text x="290" y="112" text-anchor="middle" font-family="Inter" font-size="9" fill="#666">Single-mode fiber → near-perfect beam</text>
+      <!-- Arrow -->
+      <line x1="425" y1="85" x2="465" y2="85" stroke="#c62828" stroke-width="2" marker-end="url(#arrowR)"/>
+      <!-- Output -->
+      <rect x="470" y="55" width="100" height="60" rx="8" fill="#ffebee" stroke="#c62828" stroke-width="2"/>
+      <text x="520" y="78" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#c62828">~1–10 kW</text>
+      <text x="520" y="94" text-anchor="middle" font-family="Inter" font-size="8" fill="#666">per fiber module</text>
+      <!-- Combine arrow -->
+      <line x1="575" y1="85" x2="615" y2="85" stroke="#c62828" stroke-width="2" marker-end="url(#arrowR)"/>
+      <rect x="620" y="45" width="65" height="80" rx="8" fill="#c62828" stroke="#8e0000" stroke-width="2"/>
+      <text x="652" y="78" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#fff">COMBINE</text>
+      <text x="652" y="92" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#fff">→100kW+</text>
+      <!-- Labels -->
+      <text x="290" y="155" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="#999">ELECTRICAL → OPTICAL EFFICIENCY: ~30-35%</text>
+    </svg>
+    <p>A laser works by a trick of quantum mechanics called <strong>stimulated emission</strong>: when a photon passes close to an excited atom, it causes that atom to release an identical photon — same wavelength, same direction, same phase. In a fiber laser, this happens inside a glass fiber thinner than a human hair, doped with rare-earth ions (typically ytterbium). Semiconductor diodes pump energy in, and stimulated emission amplifies it into a tightly focused, single-mode beam.</p>
+    <p>The genius of fiber lasers is that the fiber itself acts as the waveguide — it constrains the beam into near-perfect quality (physicists call this <span class="mono">M² ≈ 1</span>). A single fiber module can produce roughly 1–10 kW of continuous power with 30–35% wall-plug efficiency. To get to the 100 kW+ levels EOS needs, you combine many fiber modules. The key relationship: <strong>more fibers combined = more power on target, but beam quality degrades if your combining technique isn't precise.</strong></p>
+    <div class="analogy">💡 <strong>Analogy:</strong> Think of a fiber laser as a garden hose with perfect water pressure. One hose is great; but to fill a swimming pool fast, you need to aim ten hoses at the same spot simultaneously. That's beam combining — and it's harder than it sounds when each hose needs to hit the same square centimetre at 1 km distance.</div>
+  </div>
+
+  <!-- Science Principle 2: Beam Combining & Atmospheric Propagation -->
+  <div class="science-box">
+    <h4>🔬 THE SCIENCE: Beam Combining & Atmospheric Propagation</h4>
+    <svg viewBox="0 0 700 160" class="svg-diagram" style="max-width:650px;">
+      <!-- Spectral combining -->
+      <text x="20" y="20" font-family="JetBrains Mono" font-size="10" fill="#8e0000">SPECTRAL COMBINING</text>
+      <rect x="20" y="30" width="50" height="20" rx="4" fill="#e53935"/><text x="45" y="44" text-anchor="middle" font-size="8" fill="#fff" font-family="mono">λ₁</text>
+      <rect x="20" y="55" width="50" height="20" rx="4" fill="#ff7043"/><text x="45" y="69" text-anchor="middle" font-size="8" fill="#fff" font-family="mono">λ₂</text>
+      <rect x="20" y="80" width="50" height="20" rx="4" fill="#ffa726"/><text x="45" y="94" text-anchor="middle" font-size="8" fill="#fff" font-family="mono">λ₃</text>
+      <line x1="75" y1="40" x2="130" y2="60" stroke="#c62828" stroke-width="1.5"/>
+      <line x1="75" y1="65" x2="130" y2="60" stroke="#c62828" stroke-width="1.5"/>
+      <line x1="75" y1="90" x2="130" y2="60" stroke="#c62828" stroke-width="1.5"/>
+      <polygon points="125,45 145,60 125,75" fill="none" stroke="#1565c0" stroke-width="2"/>
+      <text x="135" y="90" font-size="7" fill="#1565c0" font-family="mono" text-anchor="middle">GRATING</text>
+      <line x1="145" y1="60" x2="210" y2="60" stroke="#c62828" stroke-width="3"/>
+      <text x="178" y="55" font-size="8" fill="#c62828" font-family="mono" text-anchor="middle">COMBINED</text>
+      
+      <!-- Atmospheric effects -->
+      <text x="350" y="20" font-family="JetBrains Mono" font-size="10" fill="#8e0000">ATMOSPHERIC CHALLENGES</text>
+      <rect x="350" y="32" width="320" height="110" rx="8" fill="#fafafa" stroke="#ddd" stroke-width="1"/>
+      <text x="365" y="52" font-family="Inter" font-size="10" fill="#333">🌡️ Thermal blooming — beam heats air, air defocuses beam</text>
+      <text x="365" y="72" font-family="Inter" font-size="10" fill="#333">💨 Turbulence — random refractive index fluctuations</text>
+      <text x="365" y="92" font-family="Inter" font-size="10" fill="#333">🌧️ Absorption — water vapour, dust, rain scatter photons</text>
+      <text x="365" y="112" font-family="Inter" font-size="10" fill="#333">📏 Inverse square: power density ∝ 1/distance²</text>
+      <text x="365" y="132" font-family="Inter" font-size="10" fill="#e65100">⚠️ Double the range → need ~4× the power for same effect</text>
+    </svg>
+    <p>Getting 100 kW of laser light out of a box is only half the battle. The other half is getting that energy <em>to the target</em> through the real atmosphere. Three effects conspire against you:</p>
+    <p><strong>Thermal blooming</strong> happens because the laser heats the air it passes through, lowering its refractive index, which defocuses the beam — like a lens made of hot air working against you. <strong>Atmospheric turbulence</strong> (the same effect that makes stars twinkle) randomly bends the beam, smearing the spot on target. And <strong>absorption and scattering</strong> — particularly from water vapour and aerosols — simply steal photons before they arrive.</p>
+    <p>The fundamental governing relationship is harsh: <strong>power density on target drops with the square of distance.</strong> At twice the range, you need roughly four times the power for the same damage. This is why the jump from 50 kW to 150 kW in Apollo isn't just a marketing number — it directly extends effective engagement range against hardened targets.</p>
+    <div class="analogy">💡 <strong>Analogy:</strong> Imagine trying to focus a flashlight beam on a wall across a gym. Now do it through a room full of steam from a shower, while someone jiggles the flashlight. That's what the atmosphere does to a laser beam at 2 km distance. The engineering challenge is maintaining a tight, intense spot despite all of it.</div>
+  </div>
+
+  <!-- Science Principle 3: Precision Pointing & Tracking -->
+  <div class="science-box">
+    <h4>🔬 THE SCIENCE: Precision Pointing & Gyro-Stabilised Tracking</h4>
+    <svg viewBox="0 0 700 150" class="svg-diagram" style="max-width:650px;">
+      <!-- Gimbal axes -->
+      <circle cx="120" cy="75" r="55" fill="none" stroke="#1565c0" stroke-width="2" stroke-dasharray="4,3"/>
+      <text x="120" y="15" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#1565c0">AZIMUTH (YAW)</text>
+      <ellipse cx="120" cy="75" rx="40" ry="15" fill="none" stroke="#2e7d32" stroke-width="2"/>
+      <text x="195" y="78" font-family="JetBrains Mono" font-size="9" fill="#2e7d32">ELEVATION</text>
+      <rect x="100" y="60" width="40" height="30" rx="4" fill="#fff3e0" stroke="#e65100" stroke-width="2"/>
+      <text x="120" y="78" text-anchor="middle" font-family="JetBrains Mono" font-size="7" fill="#e65100">SENSOR</text>
+      
+      <!-- Arrow showing independence -->
+      <text x="260" y="30" font-family="JetBrains Mono" font-size="10" fill="#8e0000">4-AXIS: SENSOR DECOUPLED FROM GUN</text>
+      <text x="260" y="50" font-family="Inter" font-size="10" fill="#333">Axes 1–2: weapon aims at target (coarse)</text>
+      <text x="260" y="68" font-family="Inter" font-size="10" fill="#333">Axes 3–4: sensor tracks independently (fine)</text>
+      <text x="260" y="86" font-family="Inter" font-size="10" fill="#333">Gyroscopes measure vehicle disturbance</text>
+      <text x="260" y="104" font-family="Inter" font-size="10" fill="#333">Control loops reject vibration at &gt;100 Hz</text>
+      <text x="260" y="130" font-family="Inter" font-size="10" fill="#2e7d32">✓ Result: sub-milliradian pointing, on the move</text>
+    </svg>
+    <p>Whether you're pointing a cannon at a drone or a laser at a satellite, the physics challenge is the same: <strong>keeping an optical axis locked on a moving point in space, from a moving platform, while rejecting every vibration and jolt.</strong></p>
+    <p>EOS's four-axis stabilisation decouples the sensor/sight from the weapon. In a conventional two-axis system, the sensor and gun are bolted together — every time the gun fires (recoil) or the vehicle hits a bump, your picture jumps. In a four-axis system, axes 1 and 2 point the weapon (coarse azimuth and elevation), while axes 3 and 4 independently stabilise the sensor unit. MEMS gyroscopes detect angular rate disturbances; control algorithms compute correction torques; direct-drive motors execute them — all within milliseconds.</p>
+    <p>The result is <strong>sub-milliradian angular precision</strong>, meaning the system can hold a beam or a crosshair steady to less than 0.06° — essential when your target is a drone the size of a pizza box at 1,000 metres, or a satellite 36,000 km away.</p>
+    <div class="analogy">💡 <strong>Analogy:</strong> Imagine trying to keep a laser pointer dot steady on a coin glued to a wall — while you're standing on a moving bus. A two-axis gimbal is like bracing your arm. A four-axis gimbal is like having your eyeball stabilised separately from your hand, each on its own shock absorbers. That's how EOS achieves first-round hits from moving vehicles.</div>
+  </div>
+
+  <!-- Science Principle 4: Satellite Laser Ranging -->
+  <div class="science-box">
+    <h4>🔬 THE SCIENCE: Satellite Laser Ranging — Timing Photons Across Space</h4>
+    <svg viewBox="0 0 700 200" class="svg-diagram" style="max-width:650px;">
+      <!-- Ground station -->
+      <rect x="50" y="140" width="80" height="40" rx="6" fill="#e3f2fd" stroke="#1565c0" stroke-width="2"/>
+      <text x="90" y="164" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#1565c0">GROUND</text>
+      <!-- Laser pulse up -->
+      <line x1="90" y1="140" x2="350" y2="30" stroke="#c62828" stroke-width="2" stroke-dasharray="6,3"/>
+      <text x="200" y="75" font-family="JetBrains Mono" font-size="8" fill="#c62828" transform="rotate(-22 200 75)">LASER PULSE (532 nm)</text>
+      <!-- Satellite -->
+      <circle cx="350" cy="25" r="18" fill="#fff3e0" stroke="#e65100" stroke-width="2"/>
+      <text x="350" y="28" text-anchor="middle" font-family="JetBrains Mono" font-size="7" fill="#e65100">SAT</text>
+      <text x="380" y="18" font-family="Inter" font-size="8" fill="#666">Retroreflectors</text>
+      <!-- Return pulse -->
+      <line x1="350" y1="30" x2="610" y2="140" stroke="#1565c0" stroke-width="2" stroke-dasharray="6,3"/>
+      <text x="500" y="75" font-family="JetBrains Mono" font-size="8" fill="#1565c0" transform="rotate(22 500 75)">RETURN PHOTONS</text>
+      <!-- Detector -->
+      <rect x="570" y="140" width="80" height="40" rx="6" fill="#e8f5e9" stroke="#2e7d32" stroke-width="2"/>
+      <text x="610" y="158" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="#2e7d32">DETECTOR</text>
+      <text x="610" y="170" text-anchor="middle" font-family="JetBrains Mono" font-size="7" fill="#2e7d32">~ps timing</text>
+      <!-- Formula -->
+      <text x="350" y="190" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#333">Distance = c × Δt / 2 &nbsp;&nbsp;→&nbsp;&nbsp; ~1 mm precision</text>
+    </svg>
+    <p>Satellite Laser Ranging is beautifully simple in concept: fire a very short laser pulse at a satellite carrying retroreflectors (corner cubes that bounce light straight back to sender), then measure the time between departure and return. Distance equals the speed of light times half the round-trip time.</p>
+    <p>In practice, it's extraordinarily demanding. The laser fires pulses lasting around 10–200 picoseconds. The beam diverges as it crosses hundreds to thousands of kilometres. Of the roughly 10¹⁷ photons in each pulse, only a handful — sometimes literally single photons — make it back to the detector. The timing electronics must resolve intervals to a few picoseconds (trillionths of a second). Atmospheric refraction introduces path delays that must be modelled and corrected. The result: millimetre-level range measurements to objects moving at kilometres per second.</p>
+    <p>EOS has been doing this since the 1980s, when they partnered with the US government on the Strategic Defense Initiative. That heritage — building telescopes that can track faint, fast-moving objects and fire precision lasers through the atmosphere — is the foundational technology that later enabled their high-energy laser weapons and space domain awareness services.</p>
+    <div class="analogy">💡 <strong>Analogy:</strong> Imagine throwing a ball at a mirror on a speeding train 500 km away, catching the bounce, and from the round-trip time determining the train's position to within the width of a fingernail. That's what SLR does — with photons instead of balls, and timing accurate to trillionths of a second.</div>
+  </div>
+
+  <!-- How These Connect -->
+  <div class="diagram-box">
+    <div class="diagram-title">How These Principles Connect → EOS Products</div>
+    <div class="arch-layers">
+      <div class="arch-layer arch-foundation">
+        <div class="arch-layer-label">Physics Foundation</div>
+        <strong>Stimulated Emission</strong> · <strong>Beam Combining</strong> · <strong>Atmospheric Propagation</strong> · <strong>Precision Pointing</strong> · <strong>Time-of-Flight Ranging</strong>
+      </div>
+      <div class="arch-layer arch-shared">
+        <div class="arch-layer-label">Shared Engineering Platform</div>
+        <strong>Fiber Laser Modules</strong> · <strong>Gyro-Stabilised Gimbals</strong> · <strong>EO/IR Sensors</strong> · <strong>Tracking Algorithms</strong> · <strong>Precision Optics (KiwiStar)</strong> · <strong>Control Software</strong>
+      </div>
+      <div class="arch-layer arch-product">
+        <div class="arch-layer-label">Product Layer</div>
+        <strong>Apollo HELW</strong> · <strong>Slinger C-UAS</strong> · <strong>R-Series RWS</strong> · <strong>Atlas Space Control</strong> · <strong>SDA Telescopes</strong> · <strong>SLR Stations</strong> · <strong>Interceptor-MR</strong>
+      </div>
+    </div>
+    <p style="font-size:13px;color:var(--text-muted);margin-top:12px;">Every EOS product is an assembly of capabilities from the middle layer, which in turn all derive from the same handful of physics principles. A breakthrough in beam-directing optics improves both the Apollo laser weapon <em>and</em> the Atlas space control system. Tracking algorithm refinements flow from space telescopes down to vehicle-mounted weapon stations.</p>
+  </div>
+
+</div>
+</section>
+
+<!-- SECTION 03: PRODUCT PORTFOLIO MAP -->
+<section class="report-section" id="portfolio">
+<div class="container">
+  <div class="section-label">Section 03</div>
+  <h2>🗺️ Product Portfolio Map</h2>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Category</th><th>Product</th><th>Description</th><th>Stage</th></tr></thead>
+    <tbody>
+      <tr><td rowspan="4" class="mono" style="font-weight:700;">🛡️ Counter-Drone</td><td class="mono">Apollo HELW</td><td>50–150 kW high energy laser weapon; 20+ drone kills/min</td><td><span class="alpha">🟢 Active</span></td></tr>
+      <tr><td class="mono">Titanis</td><td>Layered C-UAS system — soft kill, hard kill & HEL integrated</td><td><span class="alpha">🟢 Active</span></td></tr>
+      <tr><td class="mono">Slinger</td><td>Lightweight 30mm kinetic C-UAS on R400 platform</td><td><span class="alpha">🟢 Active</span></td></tr>
+      <tr><td class="mono">Interceptor-MR</td><td>AI-guided kinetic-ram drone interceptor (ex-MARSS)</td><td><span style="color:#7b1fa2;font-weight:600;">🟣 R&D</span></td></tr>
+      <tr><td rowspan="5" class="mono" style="font-weight:700;">🔫 Firepower (RWS)</td><td class="mono">R150</td><td>Ultra-light stabilised RWS; 12.7mm / .50 Cal</td><td><span class="alpha">🟢 Active</span></td></tr>
+      <tr><td class="mono">R400</td><td>Lightweight 30×113mm; backbone platform for Slinger</td><td><span class="alpha">🟢 Active</span></td></tr>
+      <tr><td class="mono">R500</td><td>Next-gen lightweight with enhanced situational awareness</td><td><span style="color:#1565c0;font-weight:600;">🔵 New</span></td></tr>
+      <tr><td class="mono">R600</td><td>Mid-weight 30×113mm; multiple missile options</td><td><span class="alpha">🟢 Active</span></td></tr>
+      <tr><td class="mono">R800</td><td>Heavy 30×173mm Mk44S cannon; turret-level firepower</td><td><span style="color:#1565c0;font-weight:600;">🔵 New</span></td></tr>
+      <tr><td rowspan="5" class="mono" style="font-weight:700;">🔭 Space Systems</td><td class="mono">Atlas Space Control</td><td>Ground-based HEL for satellite deterrence & engagement</td><td><span style="color:#1565c0;font-weight:600;">🔵 New</span></td></tr>
+      <tr><td class="mono">1m / 2.4m Telescopes</td><td>High-speed alt-az telescopes for tracking & beam direction</td><td><span class="alpha">🟢 Active</span></td></tr>
+      <tr><td class="mono">SDA Services</td><td>Space domain awareness — LEO to cislunar, day & night</td><td><span class="alpha">🟢 Active</span></td></tr>
+      <tr><td class="mono">SLR Stations</td><td>Satellite laser ranging — mm-precision orbit determination</td><td><span class="alpha">🟢 Active</span></td></tr>
+      <tr><td class="mono">Observatory Enclosures</td><td>Icestorm II, Tempest, Typhoon dome systems</td><td><span class="alpha">🟢 Active</span></td></tr>
+      <tr><td class="mono" style="font-weight:700;">🔬 Precision Optics</td><td class="mono">KiwiStar Optics</td><td>Large precision lenses (up to 1m+), spectrographs, custom optics</td><td><span class="alpha">🟢 Active</span></td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p>Technically, EOS's portfolio is an inverted pyramid. At the foundation: precision optics and tracking algorithms developed over four decades. From that base: remote weapon stations (the cash engine, over 2,500 delivered). Bolted onto those RWS frames: counter-drone systems (Slinger), which add radar and specialised ammunition. And at the apex: high-energy laser weapons (Apollo, Atlas) and space control — the most technically demanding applications, leveraging every capability below them.</p>
+  <p>The R400 platform is the workhorse: its gimbal, sensors, and control electronics form the mechanical skeleton for both the Slinger C-UAS and standard firepower configurations. Apollo extends the shared pointing and tracking technology to direct a 100 kW laser beam. The space systems share the same optical engineering heritage — just pointed upward instead of across a battlefield.</p>
+</div>
+</section>
+
+<!-- SECTION 03b: DEMAND -->
+<section class="report-section" id="demand">
+<div class="container">
+  <div class="section-label">Section 03b</div>
+  <h2>📈 Sector Demand: Who Needs This Technology & How Badly?</h2>
+  
+  <h3>The Demand Signal</h3>
+  <p>The counter-UAS market is experiencing demand unlike anything the defence sector has seen since the early days of the War on Terror — except this time, the threat is cheap, ubiquitous, and accelerating. Ukraine proved that $500 commercial drones can destroy million-dollar armoured vehicles. Drone incursions over NATO airspace, critical infrastructure, and airports have moved counter-drone from a niche procurement category to a foundational requirement across every Western military. The result: a market estimated at USD 6.6 billion in 2025, projected to reach USD 20.3 billion by 2030 — a compound annual growth rate of 25.1%.</p>
+  <p>Critically, traditional electronic warfare (jamming, spoofing) is becoming less effective as adversary drones shift to fiber-optic tethers, AI autonomous navigation, and inertial guidance that don't rely on GPS or RF links. This is driving demand toward hard-kill (kinetic and directed energy) solutions — exactly where EOS plays. High-energy lasers offer the economics that missiles cannot: approximately $1 per shot versus $150,000+ for a short-range air defence missile.</p>
+
+  <div class="demand-gauge">
+    <div style="min-width:80px;text-align:center;">
+      <div style="font-size:2rem;">🔥</div>
+      <div class="mono" style="font-size:10px;color:var(--accent-red);">WHITE HOT</div>
+    </div>
+    <div style="flex:1;">
+      <div class="gauge-bar"><div class="gauge-marker" style="left:88%;"></div></div>
+      <div class="gauge-labels"><span>Cold</span><span>Warm</span><span>Hot</span><span>White Hot</span></div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;margin-top:8px;color:var(--text);">C-UAS Market: <strong>$6.6B → $20.3B</strong> (2025–2030) | <strong>25.1% CAGR</strong></div>
+    </div>
+  </div>
+
+  <h3>Who's Buying</h3>
+  <div class="grid-3">
+    <div class="card card-accent">
+      <h4>🇪🇺 NATO & European Militaries</h4>
+      <p style="font-size:13px;">Drone incursions into EU airspace, Ukrainian battlefield lessons, and €200B+ European defence spending surges are driving urgent procurement. EOS's first 100 kW HELW export went to the Netherlands.</p>
+    </div>
+    <div class="card card-accent">
+      <h4>🌏 Middle East & Asia-Pacific</h4>
+      <p style="font-size:13px;">Asymmetric drone threats from state and non-state actors. A Korean customer (Goldrone) signed a conditional US$80M agreement for EOS laser weapons. EOS has disclosed negotiations with several Middle Eastern governments on counter-drone opportunities.</p>
+    </div>
+    <div class="card card-accent">
+      <h4>🇦🇺 Australian Defence Force</h4>
+      <p style="font-size:13px;">A$1.3B committed to LAND 156 layered counter-drone architecture. Leidos selected as systems integrator; EOS Slinger included as an effector in initial rapid demonstration, with potential for evaluation quantities and future orders. Sovereign industry requirements favour local producers.</p>
+    </div>
+  </div>
+
+  <h3>Demand Durability</h3>
+  <p>This demand is <strong>structural, not cyclical</strong>. Drones are not going away; they are getting cheaper, smaller, more autonomous, and more lethal every year. The asymmetry is permanent: a $500 drone can threaten a $5M vehicle. Every ground force, naval base, airport, and piece of critical infrastructure will need some form of counter-drone capability. The technology will need continuous updating as threats evolve — driving recurring procurement and upgrade revenue, not one-time purchases. The only realistic demand killer would be a breakthrough in electronic warfare that renders hard-kill obsolete — and the trend is moving in the opposite direction, as drone autonomy makes EW less effective.</p>
+</div>
+</section>
+
+<!-- SECTION 04: APOLLO HELW DEEP DIVE -->
+<section class="report-section" id="apollo">
+<div class="container">
+  <div class="section-label">Section 04</div>
+  <h2>🔬 Apollo — High Energy Laser Weapon</h2>
+
+  <h3>A. What It Is & What It Does</h3>
+  <p>Apollo is a truck-mounted, 100 kW-class fiber laser weapon system packaged in a standard 20-foot shipping container. It detects incoming drones via radar, locks onto them with electro-optical sensors, and burns them out of the sky with a focused beam of infrared light — neutralising over 20 Group 1 drones per minute at ranges up to 3 km for hard kill, and disrupting drone sensors out to 15 km. It is the world's first 100 kW-class laser weapon to secure an export contract.</p>
+
+  <h3>B. The Science in Action</h3>
+  <p>Apollo takes the fiber laser and beam-combining physics from Section 02 and turns them into a field-deployable weapon. The system draws electrical power (from external supply or internal batteries), converts it to laser light through an array of ytterbium-doped fiber laser modules, combines those beams, and directs the resulting 50–150 kW output through a precision telescope/beam director onto a target tracked by the same EOS pointing algorithms that have been refined across four decades of space tracking.</p>
+  <p>The engineering choices are deliberate. EOS chose fiber lasers over chemical or solid-state bulk lasers because fibers are electrically powered (no toxic chemicals), inherently rugged (no precision-aligned mirrors to shake loose), and modular (add more fibers = more power). They chose to keep the system <strong>ITAR-free</strong> — no US-origin components requiring export licences — which is why they can sell freely to NATO allies and allied nations without US State Department approval. This is a significant commercial and strategic decision that constrains their component supply chain but enormously expands their addressable market.</p>
+
+  <div class="science-box">
+    <h4>🔬 THE SCIENCE: Dwell Time & Drone Defeat Mechanisms</h4>
+    <p>A laser doesn't destroy a drone the way a bullet does. Instead, it delivers thermal energy — concentrated heat — to a specific spot on the target's structure. The damage mechanism depends on dwell time (how long the beam stays on one spot) and power density (watts per square centimetre on the surface).</p>
+    <p>Against a Group 1 drone (typically plastic or carbon fibre, ~2–9 kg), a 100 kW beam focused to a few-centimetre spot delivers roughly 10–100 kW/cm². At this intensity, plastic melts in under a second. The drone's battery may rupture. Control surfaces deform. The flight controller overheats and fails. At longer ranges (beyond 3 km), the beam is less concentrated but still powerful enough to blind or damage optical sensors — disrupting the drone's ability to navigate or relay targeting data.</p>
+    <p>The key equation is: <strong>Dwell time ∝ (target hardness × distance²) / laser power.</strong> Doubling laser power halves the required dwell time — which is why scaling from 50 kW to 150 kW is transformative for swarm defence, allowing the system to "move on" to the next target faster.</p>
+    <div class="analogy">💡 <strong>Analogy:</strong> Imagine focusing sunlight through a magnifying glass onto a plastic bottle. It takes a few seconds to burn through. Now imagine a magnifying glass ten thousand times more powerful, focusing the light from the same glass to a much tighter spot. That's Apollo — except the "magnifying glass" is a precision telescope, the "sunlight" is coherent laser light, and the "bottle" is a hostile drone at 1 km.</div>
+  </div>
+
+  <h3>C. How Apollo Works — Step by Step</h3>
+  <div class="process-flow">
+    <div class="process-step">
+      <div class="step-icon">📡</div>
+      <div class="step-label">1. Detect</div>
+      <div class="step-desc">4D AESA radar scans for incoming threats; RF sensors provide passive detection</div>
+    </div>
+    <div class="process-arrow">→</div>
+    <div class="process-step">
+      <div class="step-icon">🎯</div>
+      <div class="step-label">2. Track</div>
+      <div class="step-desc">EO/IR cameras acquire target; video tracking software locks on</div>
+    </div>
+    <div class="process-arrow">→</div>
+    <div class="process-step">
+      <div class="step-icon">🧮</div>
+      <div class="step-label">3. Cue & Aim</div>
+      <div class="step-desc">Algorithms slew beam director to target in &lt;1.5s across 60°</div>
+    </div>
+    <div class="process-arrow">→</div>
+    <div class="process-step">
+      <div class="step-icon">⚡</div>
+      <div class="step-label">4. Fire</div>
+      <div class="step-desc">Fiber laser array energises; combined beam focused on aim point</div>
+    </div>
+    <div class="process-arrow">→</div>
+    <div class="process-step">
+      <div class="step-icon">🔥</div>
+      <div class="step-label">5. Dwell & Defeat</div>
+      <div class="step-desc">Beam holds on target until structural failure, then slews to next</div>
+    </div>
+  </div>
+  <p>The critical bottleneck isn't firing — it's the <strong>slew-to-cue time</strong>. Apollo can rotate its beam director 60° and acquire a new target in less than 1.5 seconds. In a swarm scenario with drones arriving from multiple directions at 3-second intervals, that slew speed — combined with sub-second dwell times at close range — is what enables the 20+ kills-per-minute rate.</p>
+
+  <h3>D. Inside the Machine — System Architecture</h3>
+  <div class="sys-arch">
+    <div class="sys-block sys-sense">
+      <div class="sys-block-label">Sensing</div>
+      <div class="sys-block-name">4D AESA Radar</div>
+      <div class="sys-block-desc">Pulse Doppler, software-defined; detects multiple simultaneous targets</div>
+    </div>
+    <div class="sys-block sys-sense">
+      <div class="sys-block-label">Sensing</div>
+      <div class="sys-block-name">EO/IR Cameras</div>
+      <div class="sys-block-desc">Daylight + thermal imaging for target acquisition and tracking</div>
+    </div>
+    <div class="sys-block sys-process">
+      <div class="sys-block-label">Processing</div>
+      <div class="sys-block-name">C2 / Fire Control</div>
+      <div class="sys-block-desc">Target prioritisation, engagement sequencing, NATO IADS integration</div>
+    </div>
+    <div class="sys-block sys-effect">
+      <div class="sys-block-label">Effector</div>
+      <div class="sys-block-name">Fiber Laser Array</div>
+      <div class="sys-block-desc">50–150 kW combined output, electrically powered</div>
+    </div>
+    <div class="sys-block sys-effect">
+      <div class="sys-block-label">Effector</div>
+      <div class="sys-block-name">Beam Director</div>
+      <div class="sys-block-desc">Precision telescope with fast slew; focuses and steers beam onto target</div>
+    </div>
+    <div class="sys-block sys-control">
+      <div class="sys-block-label">Support</div>
+      <div class="sys-block-name">Power & Cooling</div>
+      <div class="sys-block-desc">~30-35% efficiency means ~200-300 kW electrical for 100 kW optical; rest is heat</div>
+    </div>
+  </div>
+
+  <div class="zoom-panel">
+    <div class="zoom-label">🔍 ZOOM IN: Beam Director</div>
+    <p>The beam director is where EOS's four decades of telescope engineering converge with their laser expertise. It's essentially a precision tracking telescope run in reverse — instead of collecting faint starlight, it's projecting an intense laser beam. The telescope focuses the combined laser output into a tight spot at the target's range. The mount must track with sub-milliradian precision while handling the thermal load of 100+ kW of laser light passing through its optics. Fast steering mirrors inside the system provide final fine-pointing corrections, compensating for atmospheric turbulence in real time. This is the same Coudé-path optical architecture EOS uses in their satellite laser ranging telescopes — just scaled up to handle weapons-grade power levels.</p>
+  </div>
+
+  <h3>E. Key Specifications</h3>
+  <div class="spec-grid">
+    <div class="spec-card">
+      <div class="spec-label">Laser Power</div>
+      <div class="spec-value">50–150</div>
+      <div class="spec-unit">kW</div>
+      <div class="spec-context">Scalable; 100 kW is current export config</div>
+    </div>
+    <div class="spec-card">
+      <div class="spec-label">Hard Kill Range</div>
+      <div class="spec-value">50–3,000</div>
+      <div class="spec-unit">metres</div>
+      <div class="spec-context">Structural defeat of Group 1–3 UAS</div>
+    </div>
+    <div class="spec-card">
+      <div class="spec-label">Sensor Denial</div>
+      <div class="spec-value">15</div>
+      <div class="spec-unit">km</div>
+      <div class="spec-context">Optical sensor disruption at extended range</div>
+    </div>
+    <div class="spec-card">
+      <div class="spec-label">Engagement Rate</div>
+      <div class="spec-value">>20</div>
+      <div class="spec-unit">kills / min</div>
+      <div class="spec-context">Group 1 UAS at typical swarm ranges</div>
+    </div>
+    <div class="spec-card">
+      <div class="spec-label">Slew-to-Cue</div>
+      <div class="spec-value"><1.5</div>
+      <div class="spec-unit">seconds (60°)</div>
+      <div class="spec-context">Time to acquire and engage new target</div>
+    </div>
+    <div class="spec-card">
+      <div class="spec-label">Stowed Kills</div>
+      <div class="spec-value">>200</div>
+      <div class="spec-unit">engagements</div>
+      <div class="spec-context">Internal magazine; unlimited with external power</div>
+    </div>
+    <div class="spec-card">
+      <div class="spec-label">Packaging</div>
+      <div class="spec-value">20′</div>
+      <div class="spec-unit">ISO container</div>
+      <div class="spec-context">Truck-mobile; operational in &lt;2 hours</div>
+    </div>
+    <div class="spec-card">
+      <div class="spec-label">Cost Per Shot</div>
+      <div class="spec-value">~$1</div>
+      <div class="spec-unit">USD (est.)</div>
+      <div class="spec-context">Electricity cost only; vs. $150K+ for missiles</div>
+    </div>
+  </div>
+
+  <h3>F. Putting It in Perspective</h3>
+  <div class="scale-bar-container">
+    <div class="scale-bar-row">
+      <div class="scale-bar-label">Apollo 100kW</div>
+      <div class="scale-bar" style="width:90%;background:linear-gradient(90deg,var(--primary),#f44336);"><div class="scale-bar-value">100,000 W</div></div>
+    </div>
+    <div class="scale-bar-row">
+      <div class="scale-bar-label">Electric kettle</div>
+      <div class="scale-bar" style="width:2.5%;background:#ff9800;min-width:50px;"><div class="scale-bar-value">2.5 kW</div></div>
+    </div>
+    <div class="scale-bar-row">
+      <div class="scale-bar-label">Home heater</div>
+      <div class="scale-bar" style="width:1.5%;background:#ffc107;min-width:50px;"><div class="scale-bar-value">1.5 kW</div></div>
+    </div>
+    <div class="scale-bar-row">
+      <div class="scale-bar-label">Laser pointer</div>
+      <div class="scale-bar" style="width:0.2%;background:#4caf50;min-width:50px;"><div class="scale-bar-value">5 mW</div></div>
+    </div>
+  </div>
+  <p style="font-size:13px;color:var(--text-muted);">Apollo's 100 kW laser outputs roughly 40,000× the power of your electric kettle — focused onto an area smaller than a coin at 1 km distance. To put the energy budget in context: the system draws roughly 300 kW of electrical power to produce 100 kW of laser light; the remaining ~200 kW becomes heat that must be actively managed by the cooling system.</p>
+
+  <h3>G. What It Can't Do — Limitations & Physics Boundaries</h3>
+  <div class="limitation-box">
+    <h4>⚠️ Known Constraints</h4>
+    <p><strong>Weather dependence:</strong> Rain, fog, heavy dust, and smoke scatter and absorb laser energy. In heavy rain, effective range drops dramatically. This is a physics limitation — no engineering fix eliminates it, only mitigates it. Kinetic backup is essential.</p>
+    <p><strong>Hard targets:</strong> Against armoured or metallic Group 3 drones (like Bayraktar-class), 100 kW requires longer dwell times and closer ranges. The 150 kW upgrade path directly addresses this.</p>
+    <p><strong>Thermal management:</strong> The system generates ~200 kW of waste heat during continuous operation. In hot climates (desert deployment), cooling becomes a limiting factor for sustained engagement rates.</p>
+    <p><strong>Power supply:</strong> Standalone (battery) operation limits the magazine to ~200 engagements. Extended operations require connection to external electrical supply — meaning generator logistics.</p>
+    <p><strong>Countermeasures:</strong> Reflective coatings, rapid rotation (spreading the beam's heat), and thermal isolation tactics are being developed by adversaries. Higher power and faster dwell times are the counter to countermeasures.</p>
+  </div>
+
+  <h3>H. Why It's Hard to Build</h3>
+  <p>Building a 100 kW laser is achievable — several companies can do it in a lab. Building one that fits in a shipping container, survives transport on a truck across rough terrain, deploys in under two hours, tracks and destroys 20 drones per minute in field conditions, and does it all without US-controlled components — that's the hard part. The difficulty lies in the integration: managing 200+ kW of waste heat in a confined space, maintaining beam quality through optical paths that vibrate, keeping alignment across temperature swings from -30°C to +50°C, and running sophisticated fire-control software that must sequence targets in real time. EOS's advantage is that their beam-directing optics, tracking algorithms, and gimbal engineering have been maturing since the 1980s SDI program. They didn't start from scratch on Apollo — they applied four decades of space-tracking engineering to a weapons problem.</p>
+
+  <!-- Interactive: Laser Power vs Range slider -->
+  <h3>J. Interactive: Laser Power vs. Effective Range</h3>
+  <div class="slider-container">
+    <div class="slider-label">Adjust Laser Power (kW)</div>
+    <div class="slider-value-display" id="laserPowerDisplay">100 kW</div>
+    <input type="range" min="30" max="200" value="100" id="laserPowerSlider" oninput="updateLaserCalc()">
+    <div class="slider-output">
+      <div class="slider-output-card">
+        <div class="slider-output-label">Est. Hard Kill Range (Group 1)</div>
+        <div class="slider-output-value" id="hardKillRange">~2.5 km</div>
+      </div>
+      <div class="slider-output-card">
+        <div class="slider-output-label">Est. Sensor Denial Range</div>
+        <div class="slider-output-value" id="sensorDenialRange">~12 km</div>
+      </div>
+      <div class="slider-output-card">
+        <div class="slider-output-label">Dwell Time per Kill (est.)</div>
+        <div class="slider-output-value" id="dwellTime">~1.5 s</div>
+      </div>
+      <div class="slider-output-card">
+        <div class="slider-output-label">Wall-Plug Electrical Draw</div>
+        <div class="slider-output-value" id="electricalDraw">~300 kW</div>
+      </div>
+    </div>
+    <p style="font-size:11px;color:var(--text-muted);margin-top:12px;">Note: These are estimated values based on published specifications and physics relationships. Actual performance varies with atmospheric conditions, target type, and engagement geometry.</p>
+  </div>
+
+</div>
+</section>
+
+<!-- SECTION 05: SLINGER -->
+<section class="report-section" id="slinger">
+<div class="container">
+  <div class="section-label">Section 05</div>
+  <h2>🔬 Slinger — Kinetic Counter-Drone System</h2>
+
+  <h3>A. What It Is & What It Does</h3>
+  <p>Slinger is a lightweight, vehicle-mounted weapon station that shoots down drones using a 30mm cannon with proximity-fuzed ammunition. Based on EOS's proven R400 remote weapon station, it adds a 4D AESA radar and specialised anti-drone automation to create a self-contained hard-kill system weighing under 400 kg. It's the kinetic complement to Apollo's laser — effective in weather conditions where lasers struggle, and at a fraction of the cost of missile systems.</p>
+
+  <h3>B. The Science in Action</h3>
+  <div class="science-box">
+    <h4>🔬 THE SCIENCE: Proximity Fuzing — Why You Don't Need a Direct Hit</h4>
+    <p>Hitting a small, manoeuvring drone with a single bullet is extraordinarily difficult. Slinger sidesteps this problem with <strong>proximity-fuzed ammunition</strong>: each 30mm round contains a tiny radio-frequency transmitter and receiver. As the round approaches a target, it emits RF signals and listens for reflections. When the return signal exceeds a threshold — indicating the round is within lethal radius of a target — it detonates, releasing a cloud of high-velocity fragments that shred the drone.</p>
+    <p>The fuze must distinguish between a drone and the ground (which also reflects RF). It must arm only after leaving the barrel (safety distance) and self-destruct if it misses (to prevent collateral damage on the ground). The engineering is in the miniature electronics that survive 30,000+ g launch acceleration and function reliably in milliseconds of flight time.</p>
+    <div class="analogy">💡 <strong>Analogy:</strong> Think of it as a tiny fragmentation grenade that detonates when it "senses" it's close enough to a drone — turning a near-miss into a kill. It's the difference between trying to hit a mosquito with a sewing needle (direct hit) versus swatting it with a newspaper (proximity burst).</div>
+  </div>
+
+  <h3>C. How Slinger Works — Step by Step</h3>
+  <div class="process-flow">
+    <div class="process-step">
+      <div class="step-icon">📡</div>
+      <div class="step-label">1. Detect</div>
+      <div class="step-desc">Echodyne 4D AESA radar detects low-RCS targets beyond 1 km</div>
+    </div>
+    <div class="process-arrow">→</div>
+    <div class="process-step">
+      <div class="step-icon">🔍</div>
+      <div class="step-label">2. Classify</div>
+      <div class="step-desc">AI-aided target recognition (AiTR) classifies threat vs. clutter</div>
+    </div>
+    <div class="process-arrow">→</div>
+    <div class="process-step">
+      <div class="step-icon">🎯</div>
+      <div class="step-label">3. Track</div>
+      <div class="step-desc">EO/IR sight locks on; 4-axis gimbal stabilises on-the-move</div>
+    </div>
+    <div class="process-arrow">→</div>
+    <div class="process-step">
+      <div class="step-icon">💥</div>
+      <div class="step-label">4. Engage</div>
+      <div class="step-desc">30mm airburst rounds; short controlled bursts for ammo conservation</div>
+    </div>
+    <div class="process-arrow">→</div>
+    <div class="process-step">
+      <div class="step-icon">✅</div>
+      <div class="step-label">5. Assess</div>
+      <div class="step-desc">Sensors confirm kill; system transitions to next priority target</div>
+    </div>
+  </div>
+
+  <h3>E. Key Specifications</h3>
+  <div class="spec-grid">
+    <div class="spec-card">
+      <div class="spec-label">Total Weight</div>
+      <div class="spec-value">~376</div>
+      <div class="spec-unit">kg</div>
+      <div class="spec-context">Including weapon, sensors, ammo — lighter than a grand piano</div>
+    </div>
+    <div class="spec-card">
+      <div class="spec-label">Calibre</div>
+      <div class="spec-value">30×113</div>
+      <div class="spec-unit">mm</div>
+      <div class="spec-context">M230LF Bushmaster chain gun</div>
+    </div>
+    <div class="spec-card">
+      <div class="spec-label">Ready Rounds</div>
+      <div class="spec-value">150</div>
+      <div class="spec-unit">rounds</div>
+      <div class="spec-context">Proximity-fuzed HE frag ammunition</div>
+    </div>
+    <div class="spec-card">
+      <div class="spec-label">Effective Range</div>
+      <div class="spec-value">>800</div>
+      <div class="spec-unit">metres</div>
+      <div class="spec-context">Against Group 1 drones; 1 km+ with 30mm</div>
+    </div>
+    <div class="spec-card">
+      <div class="spec-label">Height Above Roof</div>
+      <div class="spec-value">900</div>
+      <div class="spec-unit">mm</div>
+      <div class="spec-context">Low profile for reduced vehicle silhouette</div>
+    </div>
+    <div class="spec-card">
+      <div class="spec-label">Cost Per Engagement</div>
+      <div class="spec-value">$155–1,550</div>
+      <div class="spec-unit">USD</div>
+      <div class="spec-context">vs. $150K+ for VSHORAD missile interceptors</div>
+    </div>
+  </div>
+
+  <h3>F. Putting It in Perspective</h3>
+  <div class="card" style="padding:20px;">
+    <p style="font-size:14px;margin-bottom:0;"><strong>The cost math that matters:</strong> An Iranian Shahed-136 drone costs roughly $31,000. A missile to intercept it costs $150,000–$200,000. Slinger's cost per engagement: $155–$1,550. In a war of attrition — like Ukraine — this cost ratio is the difference between sustainable defence and ammunition bankruptcy. The system itself costs under $1.55M per unit, meaning it pays for itself in 8–10 missile-cost-equivalent engagements.</p>
+  </div>
+
+  <h3>G. What It Can't Do — Limitations</h3>
+  <div class="limitation-box">
+    <h4>⚠️ Known Constraints</h4>
+    <p><strong>Ammunition depth:</strong> 150 ready rounds limits sustained engagement against large swarms. Resupply under fire is an operational challenge.</p>
+    <p><strong>Collateral damage:</strong> Even with airburst rounds, 30mm fragments have a lethal radius. Urban engagement requires careful rules of engagement.</p>
+    <p><strong>Range ceiling:</strong> Effective beyond 800m, but kinetic rounds lose energy rapidly. Fast jets and high-altitude Group 3 drones are beyond its envelope.</p>
+    <p><strong>Acoustic signature:</strong> 30mm cannon fire is loud and reveals position — unlike a laser, which is silent and invisible.</p>
+  </div>
+
+  <h3>H. Why It's Hard to Build</h3>
+  <p>Many companies make remote weapon stations. What makes Slinger hard to replicate is the integration density: fitting a 4D AESA radar, EO/IR sight, 30mm cannon, fire control computer, and 150 rounds of ammunition into a sub-400 kg package that can engage manoeuvring drones from a moving vehicle. The stabilisation algorithms — refined through years of live-fire testing, including battlefield feedback from Ukraine where over 200 EOS systems are active — are embedded institutional knowledge, not easily copied from a spec sheet. EOS claims a 30% accuracy advantage over its nearest competitor (per CEO Dr Schwer, DSEI 2025), a figure derived from decades of gimbal and software iteration.</p>
+
+</div>
+</section>
+
+<!-- SECTION 06: RWS FAMILY -->
+<section class="report-section" id="rws">
+<div class="container">
+  <div class="section-label">Section 06</div>
+  <h2>🔬 R-Series Remote Weapon Stations</h2>
+
+  <h3>A. What They Are</h3>
+  <p>The R-Series is EOS's bread-and-butter product line: a family of remotely operated weapon mounts that allow a vehicle crew to aim, track, and fire weapons from under armour protection. The family spans from the ultra-lightweight R150 (12.7mm, designed for logistics vehicles) to the heavyweight R800 (30×173mm cannon, turret-equivalent firepower). Over 2,500 have been delivered worldwide. They share a common software architecture and control interface — meaning a crew trained on one variant can operate any other.</p>
+
+  <h3>B. The Science in Action</h3>
+  <p>The core technology is the same four-axis gyro-stabilised pointing platform described in Section 02, combined with an integrated ballistic computer. The ballistic computer takes inputs from the weapon type, ammunition data, range (from the laser rangefinder), atmospheric conditions, and vehicle attitude/dynamics — then computes a firing solution in real time. The four-axis gimbal executes that solution while rejecting vehicle vibrations, engine harmonics, and terrain shocks. The result: <strong>high first-round hit probability at ranges up to 2 km, from a moving vehicle.</strong></p>
+
+  <h3>E. Product Family Comparison</h3>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Model</th><th>Class</th><th>Max Calibre</th><th>Weight</th><th>Key Feature</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">R150</td><td>Ultra-Light</td><td>12.7mm / .50 Cal</td><td>~100 kg</td><td>Lightest stabilised RWS; logistics & light vehicles</td></tr>
+      <tr><td class="mono">R400</td><td>Light</td><td>30×113mm</td><td><400 kg</td><td>Backbone platform; Slinger base; R400-M (marine variant)</td></tr>
+      <tr><td class="mono">R500</td><td>Next-Gen Light</td><td>30×113mm</td><td>~450 kg</td><td>Enhanced R400 with improved situational awareness</td></tr>
+      <tr><td class="mono">R600</td><td>Mid-Weight</td><td>30×113mm</td><td>~550 kg</td><td>Multiple missile options; increased armour protection</td></tr>
+      <tr><td class="mono">R800</td><td>Heavy</td><td>30×173mm</td><td>~800 kg</td><td>Mk44S cannon; turret-level firepower; STANAG 2–4</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>G. Limitations</h3>
+  <div class="limitation-box">
+    <h4>⚠️ Constraints Across the RWS Family</h4>
+    <p><strong>Not a turret:</strong> RWS systems sit atop the vehicle — they lack the armour protection of a fully enclosed turret. The R800 partially addresses this with STANAG 2–4 protection options.</p>
+    <p><strong>Recoil coupling:</strong> When the gun fires (especially the 30×173mm), recoil forces couple into the vehicle structure. The four-axis gimbal isolates the sensor from this, but sustained fire can still affect vehicle dynamics.</p>
+    <p><strong>Operator workload:</strong> While automation (AiTR, video tracking) reduces workload, a single operator still manages detection, identification, and engagement — a significant cognitive load during high-intensity engagements.</p>
+  </div>
+
+</div>
+</section>
+
+<!-- SECTION 07: SPACE SYSTEMS -->
+<section class="report-section" id="space">
+<div class="container">
+  <div class="section-label">Section 07</div>
+  <h2>🔬 Space Systems — SDA, SLR & Atlas Space Control</h2>
+
+  <h3>A. What They Are</h3>
+  <p>EOS Space Systems is one of the world's leading providers of ground-based space surveillance. They design, manufacture, and operate observatory systems that track satellites and debris across all orbital regimes — from Low Earth Orbit (300 km) to geostationary (36,000 km) and beyond to cislunar space. Their newest product, Atlas, extends this to active space control: using high-energy lasers to deter, degrade, or disable hostile satellites from the ground.</p>
+
+  <h3>B. The Science in Action</h3>
+  <p>The space systems apply the same precision optics and laser engineering from the defence side, but pointed upward and with different goals. For Space Domain Awareness, the challenge is detecting faint objects moving at ~7.5 km/s against a background of stars. EOS telescopes (1m and 2.4m aperture) use CCD sensors to image these objects, then compute orbits from the positional data. For SLR, they fire short laser pulses and time their return — the technique described in Section 02. For Atlas space control, they direct scalable laser power at on-orbit targets. EOS describes the effects as ranging from deterrence through to active engagement, with operators able to adjust power levels to match mission needs — though the company does not publicly disclose specific power thresholds for each effect tier.</p>
+
+  <div class="science-box">
+    <h4>🔬 THE SCIENCE: Adaptive Optics — Defogging the Atmosphere</h4>
+    <p>To fire a laser through the atmosphere and hit a satellite's sensor package at 36,000 km requires correcting for atmospheric distortion in real time. EOS uses <strong>adaptive optics</strong>: a deformable mirror whose surface shape is adjusted hundreds of times per second to pre-compensate for atmospheric turbulence. A lower-power guide laser measures the turbulence profile; algorithms compute the required mirror deformation; actuators reshape the mirror surface — all within milliseconds. The result: the high-power beam arrives at the satellite as though the atmosphere weren't there.</p>
+    <div class="analogy">💡 <strong>Analogy:</strong> Imagine you're trying to read a sign through a swimming pool. The water's ripples constantly distort your view. Adaptive optics is like wearing magic glasses that reshape themselves 1,000 times per second to cancel out each ripple, giving you a perfectly clear view — and allowing you to project a laser pointer perfectly onto the sign from the other side of the pool.</div>
+  </div>
+
+  <h3>C. Atlas Space Control — How It Works</h3>
+  <div class="process-flow">
+    <div class="process-step">
+      <div class="step-icon">🔭</div>
+      <div class="step-label">1. Detect</div>
+      <div class="step-desc">Telescope + CCD detects and catalogues objects in orbit</div>
+    </div>
+    <div class="process-arrow">→</div>
+    <div class="process-step">
+      <div class="step-icon">📊</div>
+      <div class="step-label">2. Characterise</div>
+      <div class="step-desc">Photometric analysis determines spin, orientation, and type</div>
+    </div>
+    <div class="process-arrow">→</div>
+    <div class="process-step">
+      <div class="step-icon">🎯</div>
+      <div class="step-label">3. Track</div>
+      <div class="step-desc">Precision tracking locks onto target with sub-arcsecond accuracy</div>
+    </div>
+    <div class="process-arrow">→</div>
+    <div class="process-step">
+      <div class="step-icon">⚡</div>
+      <div class="step-label">4. Engage</div>
+      <div class="step-desc">Scaled laser effect: dazzle → degrade → disable, as required</div>
+    </div>
+  </div>
+
+  <h3>E. Key Specifications</h3>
+  <div class="spec-grid">
+    <div class="spec-card">
+      <div class="spec-label">Telescope Aperture</div>
+      <div class="spec-value">1–2.4</div>
+      <div class="spec-unit">metres</div>
+      <div class="spec-context">Custom-built high-speed alt-azimuth designs</div>
+    </div>
+    <div class="spec-card">
+      <div class="spec-label">Tracking Coverage</div>
+      <div class="spec-value">LEO to Cislunar</div>
+      <div class="spec-unit"></div>
+      <div class="spec-context">All orbital regimes, day and night</div>
+    </div>
+    <div class="spec-card">
+      <div class="spec-label">SLR Precision</div>
+      <div class="spec-value">~mm</div>
+      <div class="spec-unit">level</div>
+      <div class="spec-context">Millimetre-accuracy range measurements via photon timing</div>
+    </div>
+    <div class="spec-card">
+      <div class="spec-label">Observatory Deployments</div>
+      <div class="spec-value">8+</div>
+      <div class="spec-unit">sites worldwide</div>
+      <div class="spec-context">Australia, USA, Thailand, Europe, Asia-Pacific</div>
+    </div>
+  </div>
+
+  <h3>G. Limitations</h3>
+  <div class="limitation-box">
+    <h4>⚠️ Constraints</h4>
+    <p><strong>Cloud cover:</strong> Optical systems cannot see through clouds. SDA and SLR are limited to clear skies, requiring distributed networks across multiple sites for coverage continuity.</p>
+    <p><strong>Power scaling for space control:</strong> EOS describes Atlas as offering scalable effects from deterrence to active engagement, but achieving meaningful physical effects on a satellite from ground level — through the full atmosphere, at orbital distances — demands extreme laser power and precision. The engineering challenge increases dramatically as the desired effect moves from temporary sensor disruption to permanent damage.</p>
+    <p><strong>Space law:</strong> Active space engagement raises significant legal and policy questions under the Outer Space Treaty. Operational use of Atlas's offensive capabilities depends on national policy, not just technical readiness.</p>
+  </div>
+
+</div>
+</section>
+
+<!-- SECTION 08: INTERCEPTOR-MR -->
+<section class="report-section" id="interceptor">
+<div class="container">
+  <div class="section-label">Section 08</div>
+  <h2>🔬 Interceptor-MR — AI Drone Interceptor</h2>
+
+  <h3>A. What It Is</h3>
+  <p>Interceptor-MR is an 8 kg, AI-guided drone designed to ram and destroy hostile drones through kinetic impact — no explosives required. Acquired from UK-based MARSS Group in late 2025, it's EOS's entry into the autonomous interceptor category. It launches vertically from a canister, transitions to horizontal flight at up to 288 km/h, and uses an onboard infrared seeker with AI-based guidance to chase down and collide with enemy UAVs at combined closure speeds that can exceed 400 km/h.</p>
+
+  <h3>B. The Science in Action</h3>
+  <p>The physics of kinetic interception are straightforward: kinetic energy = ½mv². An 8 kg interceptor at 80 m/s carries approximately 25,600 joules of kinetic energy — equivalent to the muzzle energy of a rifle bullet — concentrated into a titanium-reinforced carbon fibre nose. When it collides with a ~5 kg drone at a combined velocity of 100+ m/s, the impact energy shatters both airframes. The interceptor's propellers stop and fold just before impact to survive the collision; if the interceptor remains flyable, it can re-engage or return to base for repair.</p>
+
+  <div class="spec-grid">
+    <div class="spec-card">
+      <div class="spec-label">Max Speed</div>
+      <div class="spec-value">288</div>
+      <div class="spec-unit">km/h (80 m/s)</div>
+      <div class="spec-context">Enough to chase down most Group 1–2 drones</div>
+    </div>
+    <div class="spec-card">
+      <div class="spec-label">Engagement Range</div>
+      <div class="spec-value">5+</div>
+      <div class="spec-unit">km</div>
+      <div class="spec-context">Beyond kinetic weapon range</div>
+    </div>
+    <div class="spec-card">
+      <div class="spec-label">Weight</div>
+      <div class="spec-value">~8</div>
+      <div class="spec-unit">kg</div>
+      <div class="spec-context">Electric propulsion, no explosives</div>
+    </div>
+    <div class="spec-card">
+      <div class="spec-label">Hit Probability</div>
+      <div class="spec-value">~90%</div>
+      <div class="spec-unit">(reported)</div>
+      <div class="spec-context">AI-guided IR seeker with 4g manoeuvrability</div>
+    </div>
+  </div>
+
+  <h3>G. Limitations</h3>
+  <div class="limitation-box">
+    <h4>⚠️ Constraints</h4>
+    <p><strong>Still in development:</strong> EOS acquired the technology in late 2025; expect 12–24 months of further development before full commercial availability.</p>
+    <p><strong>Single-use per engagement:</strong> While potentially repairable after impact, each collision damages the airframe. Not a reusable asset in the same way a laser is.</p>
+    <p><strong>Battery endurance:</strong> Electric propulsion limits flight time; the interceptor must reach its target quickly or risk exhausting power.</p>
+  </div>
+</div>
+</section>
+
+<!-- SECTION 09: SHARED TECHNOLOGY PLATFORM -->
+<section class="report-section" id="platform">
+<div class="container">
+  <div class="section-label">Section 09</div>
+  <h2>⚙️ Shared Technology Platform</h2>
+  <div class="arch-layers">
+    <div class="arch-layer arch-product">
+      <div class="arch-layer-label">Product-Specific</div>
+      Apollo laser array · Slinger 30mm + prox ammo · R800 Mk44S cannon · Atlas power scaling · Interceptor-MR AI guidance
+    </div>
+    <div class="arch-layer arch-shared">
+      <div class="arch-layer-label">Shared Subsystems</div>
+      <strong>4-axis gimbal & direct-drive motors</strong> · <strong>EO/IR sensor suite</strong> · <strong>Ballistic/fire-control computer</strong> · <strong>Video tracking algorithms</strong> · <strong>Common control software</strong> · <strong>Plug-and-play interface bus</strong>
+    </div>
+    <div class="arch-layer arch-foundation">
+      <div class="arch-layer-label">Foundation Capabilities</div>
+      <strong>KiwiStar precision optics</strong> · <strong>Proprietary stabilisation algorithms</strong> · <strong>Laser engineering (40yr heritage)</strong> · <strong>Coudé-path beam directors</strong> · <strong>Telescope/dome design & manufacturing</strong>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Shared Component</th><th>Used In</th><th>What It Does</th><th>Proprietary?</th></tr></thead>
+    <tbody>
+      <tr><td>4-axis stabilised gimbal</td><td>All RWS, Slinger, Titanis</td><td>Isolates sensor from platform vibration</td><td>Yes</td></tr>
+      <tr><td>EO/IR sensor unit</td><td>All RWS, Slinger, Titanis, Apollo</td><td>Day/night target acquisition & tracking</td><td>Yes (integration)</td></tr>
+      <tr><td>Video tracking software</td><td>All products</td><td>Automated target lock and pursuit</td><td>Yes</td></tr>
+      <tr><td>Common control interface</td><td>All RWS family</td><td>Plug-and-play between variants</td><td>Yes</td></tr>
+      <tr><td>Beam director optics</td><td>Apollo, Atlas, SLR</td><td>Precision laser pointing through atmosphere</td><td>Yes</td></tr>
+      <tr><td>KiwiStar lenses</td><td>Telescopes, beam directors</td><td>Large precision optics (up to 1m+)</td><td>Yes (subsidiary)</td></tr>
+      <tr><td>Observatory Control System</td><td>All space products</td><td>Automated multi-mission station software</td><td>Yes</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p>The shared platform creates a compounding advantage: improvements in stabilisation algorithms — informed by 200+ systems fighting in Ukraine — flow back into every product. A better beam-director design benefits both Apollo and Atlas. KiwiStar's lens-polishing advances improve both ground telescopes and weapon-system optics. This is not a conglomerate holding disconnected businesses; it's a vertically integrated technology company where capabilities cascade across the portfolio.</p>
+</div>
+</section>
+
+<!-- SECTION 10: MANUFACTURING -->
+<section class="report-section" id="mfg">
+<div class="container">
+  <div class="section-label">Section 10</div>
+  <h2>🏗️ How It Gets Built</h2>
+
+  <div class="process-flow">
+    <div class="process-step" style="border-color:var(--secondary);">
+      <div class="step-icon">🔩</div>
+      <div class="step-label">Components</div>
+      <div class="step-desc">Optics from KiwiStar; radar from Echodyne; cannon from Northrop Grumman; fibers from commercial laser suppliers</div>
+    </div>
+    <div class="process-arrow">→</div>
+    <div class="process-step" style="border-color:var(--secondary);">
+      <div class="step-icon">🔧</div>
+      <div class="step-label">Sub-Assembly</div>
+      <div class="step-desc">Gimbal fabrication; sensor integration; laser module assembly; software loading</div>
+    </div>
+    <div class="process-arrow">→</div>
+    <div class="process-step" style="border-color:var(--secondary);">
+      <div class="step-icon">⚙️</div>
+      <div class="step-label">Integration</div>
+      <div class="step-desc">System-level assembly; alignment; calibration of optics and fire control</div>
+    </div>
+    <div class="process-arrow">→</div>
+    <div class="process-step" style="border-color:var(--secondary);">
+      <div class="step-icon">✅</div>
+      <div class="step-label">Test & QA</div>
+      <div class="step-desc">Live-fire testing; environmental qualification; ISO 9001 / AQAP-2110 certification</div>
+    </div>
+    <div class="process-arrow">→</div>
+    <div class="process-step" style="border-color:var(--secondary);">
+      <div class="step-icon">📦</div>
+      <div class="step-label">Delivery</div>
+      <div class="step-desc">Customer acceptance; installation; training; through-life support</div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card card-green">
+      <h4>Built In-House</h4>
+      <p style="font-size:13px;">Gimbal assemblies, stabilisation algorithms, fire-control software, beam directors, telescope structures, observatory control systems, system integration, KiwiStar precision optics. EOS owns all core IP.</p>
+    </div>
+    <div class="card card-orange">
+      <h4>Sourced Externally</h4>
+      <p style="font-size:13px;">Echodyne AESA radars, Northrop Grumman M230LF cannons, commercial fiber laser modules, thermal cameras, ammunition, power electronics, structural steel/composites.</p>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Certification</th><th>Standard</th><th>What It Means</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">ISO 9001</td><td>Quality Management</td><td>Internationally recognised quality system; required by most defence customers</td></tr>
+      <tr><td class="mono">AQAP-2110</td><td>NATO Quality Assurance</td><td>Defence-specific QA; enables NATO procurement</td></tr>
+      <tr><td class="mono">ITAR-free</td><td>Export Control</td><td>No US-controlled components; free to export without State Dept. approval</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="supply-flag supply-flag-orange">
+    <div class="supply-flag-icon">🟠</div>
+    <div class="supply-flag-text">
+      <h4>Supply Chain Risk: MODERATE</h4>
+      <p style="font-size:13px;">EOS owns its core IP and manufactures critical subsystems in-house, which provides resilience. However, key external dependencies exist: Echodyne (US) for AESA radars, Northrop Grumman (US) for M230LF cannons, and commercial fiber laser diode suppliers concentrated in a limited number of countries. The ITAR-free architecture avoids US export control chokepoints, but does not eliminate geographic supplier concentration. Laser weapons are manufactured at a new Singapore facility, adding geographic diversification but introducing a single-facility risk for HEL production. The biggest vulnerability: commercial fiber laser module supply chains, where a disruption could bottleneck Apollo production.</p>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- SECTION 11: CONSOLIDATED LIMITATIONS -->
+<section class="report-section" id="limits">
+<div class="container">
+  <div class="section-label">Section 11</div>
+  <h2>⚠️ Consolidated Limitations & Physics Boundaries</h2>
+
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Parameter</th><th>Current</th><th>Theoretical Limit</th><th>Gap</th><th>What Would Close It</th></tr></thead>
+    <tbody>
+      <tr><td>Laser power</td><td>150 kW</td><td>~1 MW+ (HELSI target)</td><td>Large</td><td>Better thermal management; higher-power fiber modules; advanced beam combining</td></tr>
+      <tr><td>Laser efficiency</td><td>~30–35%</td><td>~50% (theoretical Yb-fiber)</td><td>Moderate</td><td>Improved pump diode coupling; reduced parasitic losses</td></tr>
+      <tr><td>Tracking precision</td><td>Sub-mrad</td><td>Diffraction limit</td><td>Small</td><td>Already near physical limits for aperture size</td></tr>
+      <tr><td>Atmospheric propagation</td><td>3 km hard-kill</td><td>~10 km (ideal conditions)</td><td>Moderate</td><td>Higher power; adaptive optics; better atmospheric models</td></tr>
+      <tr><td>Drone engagement rate</td><td>20/min (laser)</td><td>~60/min (theoretical)</td><td>Moderate</td><td>Faster slew; shorter dwell times via higher power</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="card card-red">
+    <h4>🔴 The Hard Truth</h4>
+    <p>Lasers are weather-dependent weapons. In clear conditions, they are devastatingly effective and economical. In rain, fog, smoke, or heavy dust — common battlefield conditions — they degrade rapidly. No amount of engineering eliminates this physics constraint. This is why EOS integrates lasers into <em>layered</em> systems (Titanis) alongside kinetic effectors: the laser handles clear-weather volume threats, while Slinger's 30mm cannon provides the all-weather backup. Any assessment of EOS's laser technology must account for this: it is a complement to, not a replacement for, kinetic air defence.</p>
+  </div>
+</div>
+</section>
+
+<!-- SECTION 12: PIPELINE -->
+<section class="report-section" id="pipeline">
+<div class="container">
+  <div class="section-label">Section 12</div>
+  <h2>🔭 What's Coming Next: Pipeline & Hard Problems</h2>
+
+  <div class="pipeline">
+    <div class="pipeline-stage pipeline-concept"><div class="stage-name">Concept</div><div class="stage-product">EMP weapons</div></div>
+    <div class="pipeline-stage pipeline-dev"><div class="stage-name">Development</div><div class="stage-product">Interceptor-MR<br>150 kW Apollo</div></div>
+    <div class="pipeline-stage pipeline-test"><div class="stage-name">Testing</div><div class="stage-product">Atlas Space Control</div></div>
+    <div class="pipeline-stage pipeline-prelaunch"><div class="stage-name">Pre-Launch</div><div class="stage-product">Apollo 100kW (Korea JV)</div></div>
+    <div class="pipeline-stage pipeline-prelaunch"><div class="stage-name">In Fulfilment</div><div class="stage-product">Apollo (Netherlands)<br>2025–2028 delivery</div></div>
+    <div class="pipeline-stage pipeline-deployed"><div class="stage-name">Deployed</div><div class="stage-product">Slinger · R-Series</div></div>
+  </div>
+
+  <h3>The Hard Problems</h3>
+  <div class="grid-2">
+    <div class="card card-accent">
+      <h4>🧩 Swarm Autonomy</h4>
+      <p style="font-size:13px;">As drone swarms become larger and more autonomous, the engagement sequencing problem becomes computationally intense. Prioritising which of 50 simultaneous targets to engage first, routing multiple effectors, and managing ammunition/energy budgets in real time — this is an AI/algorithms challenge as much as a hardware one.</p>
+    </div>
+    <div class="card card-accent">
+      <h4>🧩 Power Scaling to 300 kW+</h4>
+      <p style="font-size:13px;">The US HELSI program is targeting 1 MW+ lasers. Scaling fiber lasers beyond ~150 kW while maintaining beam quality, managing thermal loads, and keeping the system mobile is the central directed-energy engineering challenge of the next decade.</p>
+    </div>
+  </div>
+
+  <blockquote>
+    "We foresee a significant future for our high-energy laser weapon technology, which allows us to defeat drones at greater ranges and with increased efficiency. A single laser is capable of engaging 10–20 drones per minute – something that remote weapon systems cannot achieve. This technology will eventually replace short-range air defence missile systems."
+    <cite>— Dr Andreas Schwer, CEO, EOS · Global Defence Technology, October 2024</cite>
+  </blockquote>
+
+  <blockquote>
+    "EOS has developed its high energy laser weapon to meet the urgent market need and emerging strategic requirement to defend against drone swarm attacks at an economical cost. There is strong international interest in high energy laser weapons, and it is increasingly clear they will play a central role in counter-drone defence."
+    <cite>— Dr Andreas Schwer, CEO, EOS · Apollo launch press release, September 2025</cite>
+  </blockquote>
+</div>
+</section>
+
+<!-- SECTION 13: TECHNOLOGY TRAJECTORY -->
+<section class="report-section" id="trajectory">
+<div class="container">
+  <div class="section-label">Section 13</div>
+  <h2>🔮 Technology Trajectory</h2>
+
+  <div class="scenario-row">
+    <div class="scenario-emoji">🐢</div>
+    <div class="scenario-content">
+      <div class="scenario-name">Incremental</div>
+      <p style="font-size:13px;margin:4px 0 0;">Power creeps up to 200–300 kW over 5 years. Beam quality improves. Costs decline as production scales. RWS family gets AI-enhanced automation. Atlas matures into operational service. EOS captures growing share of the expanding C-UAS market.</p>
+    </div>
+  </div>
+  <div class="scenario-row">
+    <div class="scenario-emoji">⚡</div>
+    <div class="scenario-content">
+      <div class="scenario-name">Step Change</div>
+      <p style="font-size:13px;margin:4px 0 0;">Coherent beam combining breakthrough enables 500 kW+ in current form factor. Effective hard-kill range extends beyond 10 km. Lasers begin replacing missile systems in SHORAD role. EOS's ITAR-free position becomes decisive competitive advantage as NATO demand surges.</p>
+    </div>
+  </div>
+  <div class="scenario-row">
+    <div class="scenario-emoji">🌊</div>
+    <div class="scenario-content">
+      <div class="scenario-name">Platform Shift</div>
+      <p style="font-size:13px;margin:4px 0 0;">Autonomous interceptor drones (like Interceptor-MR) mature to the point where they handle the majority of C-UAS engagements. Lasers become one layer in a fully autonomous, AI-orchestrated defence mesh. The integration platform (C2 software, sensor fusion) becomes more valuable than any individual effector.</p>
+    </div>
+  </div>
+  <div class="scenario-row">
+    <div class="scenario-emoji">💀</div>
+    <div class="scenario-content">
+      <div class="scenario-name">Disruption</div>
+      <p style="font-size:13px;margin:4px 0 0;">A breakthrough in electronic warfare — such as AI-powered adaptive jamming that can defeat autonomous drones reliably — reduces demand for hard-kill C-UAS. Or: adversary countermeasures (reflective coatings, heat-resistant drones) render current-generation lasers ineffective, requiring a fundamentally different approach.</p>
+    </div>
+  </div>
+
+  <p style="margin-top:20px;">The most likely trajectory is <strong>Incremental trending toward Step Change</strong>. Fiber laser power is on a clear scaling curve; multiple government programs (US HELSI, European equivalents) are pushing toward 300 kW–1 MW systems within this decade. The autonomous interceptor layer (Platform Shift) is emerging but is 3–5 years from maturity. The Disruption scenario is the least likely in the near term — the physics of laser-matter interaction is well understood, and adversary countermeasures add cost and weight to drones without eliminating the threat. EOS's position as the first company to secure export orders for ITAR-free 100 kW-class systems gives them a window of advantage that is hard to close quickly.</p>
+</div>
+</section>
+
+<!-- TEAR SHEET -->
+<section class="report-section">
+<div class="container">
+  <div class="tear-sheet">
+    <div class="tear-sheet-header">
+      <div>
+        <div class="tear-sheet-title">Electro Optic Systems | EOS</div>
+        <div class="tear-sheet-meta">Technical Product Brief · 8 March 2026 · Companion to the Investment Report</div>
+      </div>
+      <div class="tear-sheet-meta">ASX: EOS</div>
+    </div>
+    <div class="tear-cols">
+      <div>
+        <p style="font-size:14px;margin-bottom:12px;">EOS is a vertically integrated photonics-to-weapons company built on 40 years of precision optics and laser engineering. Their SDI-era heritage in satellite tracking now powers both space surveillance and battlefield-grade directed-energy weapons — a technical lineage no competitor can replicate quickly.</p>
+        <p style="font-size:13px;"><strong>Product lines:</strong> 4 major families (Counter-Drone, RWS, Space, Optics)</p>
+        <p style="font-size:13px;"><strong>Flagship:</strong> Apollo HELW — 100 kW, >20 drone kills/min, 20′ ISO container</p>
+        <p style="font-size:13px;"><strong>Core technology:</strong> Precision pointing + fiber lasers + tracking algorithms, all ITAR-free</p>
+        <p style="font-size:13px;"><strong>Per-product key spec:</strong></p>
+        <p style="font-size:12px;margin-left:12px;">Apollo: 50–150 kW, 3 km hard kill, 15 km sensor denial<br>Slinger: <400 kg, 30mm prox-fuze, >800 m range<br>R-Series: 2,500+ delivered, sub-mrad precision<br>Space: 8+ global sites, mm-level SLR</p>
+        <p style="font-size:13px;margin-top:12px;"><span class="alpha">✓ Strengths:</span> ITAR-free export; 40-yr heritage; Ukraine combat feedback loop</p>
+        <p style="font-size:13px;"><span class="shock">✗ Limitations:</span> Laser weather dependence; single HEL factory (Singapore); scale-up risk</p>
+      </div>
+      <div>
+        <div class="verdict-card"><div class="verdict-name">Apollo HELW</div><div class="verdict-rating">⭐ Best-in-Class — <span style="font-size:12px;">World's first 100kW-class export order; delivery 2025–2028</span></div></div>
+        <div class="verdict-card"><div class="verdict-name">Slinger C-UAS</div><div class="verdict-rating">⭐ Best-in-Class — <span style="font-size:12px;">Combat-proven in Ukraine; EOS claims 30% accuracy edge</span></div></div>
+        <div class="verdict-card"><div class="verdict-name">R-Series RWS</div><div class="verdict-rating">✅ Competitive — <span style="font-size:12px;">Proven & modular but facing strong competition</span></div></div>
+        <div class="verdict-card"><div class="verdict-name">Space / SDA</div><div class="verdict-rating">⭐ Best-in-Class — <span style="font-size:12px;">Top-10 global tracking; unique laser heritage</span></div></div>
+        <div class="verdict-card"><div class="verdict-name">Interceptor-MR</div><div class="verdict-rating">⚖️ Adequate — <span style="font-size:12px;">Early-stage; promising but unproven at scale</span></div></div>
+        <div style="margin-top:16px;">
+          <p style="font-size:12px;"><strong>Technology Maturity:</strong> Mature (RWS, Space) / Frontier (HEL, Space Control)</p>
+          <p style="font-size:12px;"><strong>Engineering Difficulty:</strong> Extreme (HEL, Space Control) / High (C-UAS, RWS)</p>
+          <p style="font-size:12px;"><strong>Pipeline Strength:</strong> Strong</p>
+        </div>
+        <div class="card" style="background:var(--primary-light);border:1px solid var(--primary);margin-top:12px;padding:12px;">
+          <p style="font-size:13px;font-weight:600;margin:0;"><em>In one sentence:</em> EOS is the only ITAR-free provider offering both a fielded 100 kW-class export laser weapon and ground-based space surveillance — built on the same four-decade heritage in precision photonics.</p>
+        </div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:16px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-muted);">Solid Peer Research | Sko · Technical Deep Dive · 8 March 2026</div>
+  </div>
+</div>
+</section>
+
+<!-- SOURCES -->
+<section class="sources-section">
+<div class="container">
+  <h2>📚 Sources</h2>
+  <h3>Company Technical Sources</h3>
+  <a href="https://eos-aus.com/defence/high-energy-laser-weapon/apollo/" target="_blank">EOS Apollo HELW Product Page</a>
+  <a href="https://eos-aus.com/defence/counter-drone-systems/slinger/" target="_blank">EOS Slinger Counter-Drone Product Page</a>
+  <a href="https://eos-aus.com/defence/firepower-systems/r400/" target="_blank">EOS R400 Remote Weapon Station Product Page</a>
+  <a href="https://eos-aus.com/defence/firepower-systems/r800/" target="_blank">EOS R800 Remote Weapon Station Product Page</a>
+  <a href="https://eos-aus.com/space/optical-tracking-systems/" target="_blank">EOS Optical Tracking Systems — Space</a>
+  <a href="https://eos-aus.com/space/space-domain-awareness/" target="_blank">EOS Space Domain Awareness Services</a>
+  <a href="https://eos-aus.com/space/satellite-laser-ranging/" target="_blank">EOS Satellite Laser Ranging</a>
+  <a href="https://eos-aus.com/defence/counter-drone-systems/interceptor-mr/" target="_blank">EOS Interceptor-MR Product Page</a>
+  <a href="https://www.eosdsusa.com/products/" target="_blank">EOS Defense Systems USA — Products Overview</a>
+  <a href="https://kiwistaroptics.com/" target="_blank">KiwiStar Optics — Precision Optics Subsidiary</a>
+
+  <h3>Press Releases & Contracts</h3>
+  <a href="https://eos-aus.com/news/official-press-release-eos-secures-order-for-high-energy-laser-weapon-for-counter-drone-warfare/" target="_blank">EOS HELW €71.4M Netherlands Contract — August 2025</a>
+  <a href="https://eos-aus.com/news/eos-unveils-apollo-as-the-name-of-its-high-energy-laser-weapon/" target="_blank">EOS Apollo Naming & DSEI 2025 — September 2025</a>
+  <a href="https://eos-aus.com/news/eos-unveils-atlas-space-control-capability-at-iac-2025/" target="_blank">EOS Atlas Space Control Launch — IAC 2025, September 2025</a>
+  <a href="https://eos-aus.com/news/eos-enters-into-conditional-high-energy-laser-contract/" target="_blank">EOS Korea Conditional HEL Contract US$80M — December 2025</a>
+  <a href="https://eos-aus.com/news/acquisition-of-new-interceptor-capability/" target="_blank">EOS Interceptor-MR Acquisition from MARSS — November 2025</a>
+
+  <h3>Interviews & Presentations</h3>
+  <a href="https://eos-aus.com/news/dr-schwer-no-one-kills-drones-like-eos/" target="_blank">Dr Schwer Interview: "No one kills drones like EOS" — December 2025</a>
+  <a href="https://defence.nridigital.com/global_defence_technology_oct24/electro_optic_systems_company_insight" target="_blank">Global Defence Technology: EOS Company Insight — October 2024</a>
+  <a href="https://eos-aus.com/news/frontline-tv-eos-ceo-dsei-2025/" target="_blank">Frontline TV DSEI 2025 Interview — September 2025</a>
+  <a href="https://defence-industry.eu/eos-ceo-outlines-battlefield-informed-approach-to-countering-modern-drone-threats/" target="_blank">Defence Industry EU: CEO on Battlefield-Informed Counter-Drone — August 2025</a>
+
+  <h3>Scientific & Academic</h3>
+  <a href="https://en.wikipedia.org/wiki/Satellite_laser_ranging" target="_blank">Satellite Laser Ranging — Wikipedia</a>
+  <a href="https://space-geodesy.nasa.gov/techniques/SLR.html" target="_blank">NASA Space Geodesy: Satellite Laser Ranging</a>
+  <a href="https://physicstoday.aip.org/features/the-new-laser-weapons" target="_blank">Physics Today: The New Laser Weapons — October 2025</a>
+  <a href="https://www.rp-photonics.com/beam_combining.html" target="_blank">RP Photonics: Beam Combining Encyclopedia Entry</a>
+  <a href="https://en.wikipedia.org/wiki/Laser_weapon" target="_blank">Laser Weapon — Wikipedia</a>
+
+  <h3>Industry & Technical Media</h3>
+  <a href="https://www.armyrecognition.com/news/aerospace-news/2025/u-s-production-of-upgraded-slinger-anti-drone-weapon-signals-new-counter-uas-phase" target="_blank">Army Recognition: Slinger US Production — 2025</a>
+  <a href="https://en.wikipedia.org/wiki/Slinger_(weapon_system)" target="_blank">Slinger Weapon System — Wikipedia</a>
+  <a href="https://en.wikipedia.org/wiki/MARSS_Interceptor" target="_blank">MARSS Interceptor — Wikipedia</a>
+  <a href="https://www.aerotime.aero/articles/marss-interceptor-mr-drone-hunter" target="_blank">AeroTime: The Designer Behind the Interceptor-MR — October 2025</a>
+  <a href="https://www.marketsandmarkets.com/PressReleases/counter-cuas-systems.asp" target="_blank">MarketsandMarkets: C-UAS Market $20.31B by 2030</a>
+  <a href="https://asiapacificdefencereporter.com/eos-laser-weapon-system-counter-drone-order/" target="_blank">APDR: EOS Laser Weapon Counter-Drone Order — August 2025</a>
+</div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+<canvas id="footerCanvas"></canvas>
+<div class="container">
+  <div class="footer-sig">Solid Peer Research | Sko</div>
+  <div class="footer-tagline">"Where precision optics meet directed energy — the physics of modern defence"</div>
+  <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,0.3);margin-bottom:16px;">8 March 2026</div>
+  <div class="footer-disclaimer">For informational and educational purposes only. Technical specifications described herein are based on publicly available information and may not reflect the most current product versions or classified capabilities. Verify all technical details with the manufacturer directly. This is a companion to the Solid Peer Research investment report. © 2026 Solid Peer Research | Sko</div>
+</div>
+</footer>
+
+<script>
+// === HERO CANVAS ANIMATION ===
+(function(){
+  var c=document.getElementById('heroCanvas');
+  if(!c)return;
+  var ctx=c.getContext('2d');
+  function resize(){c.width=c.offsetWidth;c.height=c.offsetHeight;}
+  resize();window.addEventListener('resize',resize);
+  var particles=[];
+  for(var i=0;i<60;i++){
+    particles.push({x:Math.random()*2000,y:Math.random()*800,vx:(Math.random()-0.5)*0.3,vy:(Math.random()-0.5)*0.2,r:Math.random()*2+0.5,a:Math.random()*0.4+0.1});
+  }
+  // Laser sweep lines
+  var sweepAngle=0;
+  function draw(){
+    ctx.clearRect(0,0,c.width,c.height);
+    // Particles (stars/debris)
+    for(var i=0;i<particles.length;i++){
+      var p=particles[i];
+      p.x+=p.vx;p.y+=p.vy;
+      if(p.x<0)p.x=c.width;if(p.x>c.width)p.x=0;
+      if(p.y<0)p.y=c.height;if(p.y>c.height)p.y=0;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle='rgba(198,40,40,'+p.a+')';ctx.fill();
+    }
+    // Laser sweep from bottom-left
+    sweepAngle+=0.003;
+    var sx=c.width*0.15,sy=c.height*0.85;
+    for(var j=0;j<3;j++){
+      var a=sweepAngle+j*0.8;
+      var ex=sx+Math.cos(a)*c.width*0.7;
+      var ey=sy-Math.sin(a)*c.height*0.6;
+      ctx.beginPath();ctx.moveTo(sx,sy);ctx.lineTo(ex,ey);
+      var grad=ctx.createLinearGradient(sx,sy,ex,ey);
+      grad.addColorStop(0,'rgba(198,40,40,0.3)');grad.addColorStop(1,'rgba(198,40,40,0)');
+      ctx.strokeStyle=grad;ctx.lineWidth=1.5;ctx.stroke();
+    }
+    // Tracking reticle
+    var rx=c.width*0.65+Math.sin(Date.now()*0.001)*30;
+    var ry=c.height*0.35+Math.cos(Date.now()*0.0013)*20;
+    ctx.beginPath();ctx.arc(rx,ry,12,0,Math.PI*2);
+    ctx.strokeStyle='rgba(198,40,40,0.25)';ctx.lineWidth=1;ctx.stroke();
+    ctx.beginPath();ctx.moveTo(rx-18,ry);ctx.lineTo(rx+18,ry);
+    ctx.moveTo(rx,ry-18);ctx.lineTo(rx,ry+18);
+    ctx.strokeStyle='rgba(198,40,40,0.15)';ctx.stroke();
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// === FOOTER CANVAS ===
+(function(){
+  var c=document.getElementById('footerCanvas');
+  if(!c)return;
+  var ctx=c.getContext('2d');
+  function resize(){c.width=c.offsetWidth;c.height=c.offsetHeight;}
+  resize();window.addEventListener('resize',resize);
+  var dots=[];
+  for(var i=0;i<40;i++){
+    dots.push({x:Math.random()*2000,y:Math.random()*400,vx:Math.random()*0.5+0.1,vy:(Math.random()-0.5)*0.15,r:Math.random()*1.5+0.5});
+  }
+  function draw(){
+    ctx.clearRect(0,0,c.width,c.height);
+    for(var i=0;i<dots.length;i++){
+      var d=dots[i];
+      d.x+=d.vx;d.y+=d.vy;
+      if(d.x>c.width)d.x=0;
+      if(d.y<0||d.y>c.height)d.vy*=-1;
+      ctx.beginPath();ctx.arc(d.x,d.y,d.r,0,Math.PI*2);
+      ctx.fillStyle='rgba(198,40,40,0.2)';ctx.fill();
+      // Connect nearby dots
+      for(var j=i+1;j<dots.length;j++){
+        var dx=dots[j].x-d.x,dy=dots[j].y-d.y;
+        var dist=Math.sqrt(dx*dx+dy*dy);
+        if(dist<120){
+          ctx.beginPath();ctx.moveTo(d.x,d.y);ctx.lineTo(dots[j].x,dots[j].y);
+          ctx.strokeStyle='rgba(198,40,40,'+(0.1*(1-dist/120))+')';
+          ctx.lineWidth=0.5;ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// === CLICK ANIMATIONS ===
+var lastClick=0,clickTimer=null;
+document.addEventListener('click',function(e){
+  var now=Date.now();
+  if(now-lastClick<300){
+    clearTimeout(clickTimer);
+    bigEffect(e.clientX,e.clientY);
+    lastClick=0;
+  }else{
+    lastClick=now;
+    clickTimer=setTimeout(function(){smallEffect(e.clientX,e.clientY);},300);
+  }
+});
+document.addEventListener('dblclick',function(e){e.preventDefault();});
+
+function smallEffect(x,y){
+  var box=document.createElement('div');
+  box.style.cssText='position:fixed;left:'+x+'px;top:'+y+'px;width:0;height:0;pointer-events:none;z-index:9999;';
+  document.body.appendChild(box);
+  // Laser beam traces
+  for(var i=0;i<15;i++){
+    var el=document.createElement('div');
+    var angle=Math.random()*Math.PI*2;
+    var dist=30+Math.random()*50;
+    el.style.cssText='position:absolute;width:2px;height:'+( 8+Math.random()*16)+'px;background:rgba(198,40,40,0.7);border-radius:1px;left:0;top:0;transform-origin:center center;transform:rotate('+(angle*180/Math.PI)+'deg);';
+    box.appendChild(el);
+    el.animate([
+      {transform:'rotate('+(angle*180/Math.PI)+'deg) translateY(0)',opacity:0.8},
+      {transform:'rotate('+(angle*180/Math.PI)+'deg) translateY(-'+dist+'px)',opacity:0}
+    ],{duration:400+Math.random()*200,fill:'forwards'});
+  }
+  setTimeout(function(){if(box.parentNode)box.parentNode.removeChild(box);},700);
+}
+
+function bigEffect(x,y){
+  var box=document.createElement('div');
+  box.style.cssText='position:fixed;left:'+x+'px;top:'+y+'px;width:0;height:0;pointer-events:none;z-index:9999;';
+  document.body.appendChild(box);
+  // Central flash
+  var flash=document.createElement('div');
+  flash.style.cssText='position:absolute;width:6px;height:6px;background:#fff;border-radius:50%;left:-3px;top:-3px;';
+  box.appendChild(flash);
+  flash.animate([{transform:'scale(1)',opacity:1,boxShadow:'0 0 20px #c62828'},{transform:'scale(8)',opacity:0,boxShadow:'0 0 60px transparent'}],{duration:500,fill:'forwards'});
+  // Laser rays + tracking circles
+  for(var i=0;i<20;i++){
+    var el=document.createElement('div');
+    var angle=(i/20)*Math.PI*2;
+    var dist=40+Math.random()*80;
+    el.style.cssText='position:absolute;width:1.5px;height:'+(12+Math.random()*20)+'px;background:linear-gradient(rgba(198,40,40,0.9),transparent);border-radius:1px;left:0;top:0;';
+    box.appendChild(el);
+    el.animate([
+      {transform:'rotate('+(angle*180/Math.PI)+'deg) translateY(0)',opacity:1},
+      {transform:'rotate('+(angle*180/Math.PI)+'deg) translateY(-'+dist+'px)',opacity:0}
+    ],{duration:600+Math.random()*300,fill:'forwards'});
+  }
+  // Tracking reticle rings
+  for(var j=0;j<3;j++){
+    var ring=document.createElement('div');
+    var size=20+j*25;
+    ring.style.cssText='position:absolute;width:'+size+'px;height:'+size+'px;border:1px solid rgba(198,40,40,0.6);border-radius:50%;left:-'+(size/2)+'px;top:-'+(size/2)+'px;';
+    box.appendChild(ring);
+    ring.animate([
+      {transform:'scale(0.5)',opacity:0.8},
+      {transform:'scale(2)',opacity:0}
+    ],{duration:700+j*150,delay:j*100,fill:'forwards'});
+  }
+  // Debris particles
+  for(var k=0;k<12;k++){
+    var p=document.createElement('div');
+    var px=(Math.random()-0.5)*120;
+    var py=(Math.random()-0.5)*120;
+    p.style.cssText='position:absolute;width:3px;height:3px;background:rgba(255,'+Math.floor(100+Math.random()*100)+',0,0.8);border-radius:50%;left:0;top:0;';
+    box.appendChild(p);
+    p.animate([
+      {transform:'translate(0,0)',opacity:1},
+      {transform:'translate('+px+'px,'+py+'px)',opacity:0}
+    ],{duration:500+Math.random()*400,fill:'forwards'});
+  }
+  setTimeout(function(){if(box.parentNode)box.parentNode.removeChild(box);},1100);
+}
+
+// === LASER POWER SLIDER ===
+function updateLaserCalc(){
+  var power=parseInt(document.getElementById('laserPowerSlider').value);
+  document.getElementById('laserPowerDisplay').textContent=power+' kW';
+  // Rough physics-based estimates (illustrative, not exact)
+  var baseRange=2.5; // km at 100 kW
+  var range=baseRange*Math.sqrt(power/100);
+  var sensorRange=12*Math.sqrt(power/100);
+  var dwell=1.5*(100/power);
+  var electrical=power/0.33;
+  document.getElementById('hardKillRange').textContent='~'+range.toFixed(1)+' km';
+  document.getElementById('sensorDenialRange').textContent='~'+sensorRange.toFixed(0)+' km';
+  document.getElementById('dwellTime').textContent='~'+dwell.toFixed(1)+' s';
+  document.getElementById('electricalDraw').textContent='~'+Math.round(electrical)+' kW';
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,1401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solid Peer Research | Sko — EOS: The Laser That Burns Through Europe's Drone Problem</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f5f2ec;
+  --bg-alt: #ede9e0;
+  --surface: #faf8f4;
+  --surface-raised: #f0ece4;
+  --text: #1a1f2e;
+  --text-muted: #6b7280;
+  --primary: #3d6b4f;
+  --primary-light: rgba(61,107,79,0.08);
+  --primary-dark: #2a4a37;
+  --secondary: #c49b2a;
+  --secondary-dark: #a17f1e;
+  --accent-red: #b33a3a;
+  --accent-green: #2d7a4f;
+  --accent-orange: #c47f2a;
+  --border: rgba(42,74,55,0.15);
+  --border-light: rgba(42,74,55,0.08);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;font-size:15px;}
+h1,h2,h3{font-family:'Playfair Display',serif;font-weight:700;line-height:1.25;}
+h1{font-size:2.8rem;}
+h2{font-size:1.7rem;position:relative;padding-left:18px;}
+h2::before{content:'';position:absolute;left:0;top:4px;bottom:4px;width:4px;background:var(--primary);border-radius:2px;}
+h3{font-size:1.2rem;margin-bottom:10px;}
+h4{font-family:'Inter',sans-serif;font-weight:600;font-size:1rem;margin-bottom:8px;}
+p{margin-bottom:14px;}
+a{color:var(--primary);text-decoration:none;}
+a:hover{color:var(--primary-dark);text-decoration:underline;}
+.container{max-width:1100px;margin:0 auto;padding:0 24px;}
+.mono{font-family:'JetBrains Mono',monospace;}
+.alpha{color:var(--accent-green);font-weight:600;}
+.shock{color:var(--accent-red);font-weight:600;}
+.primary-text{color:var(--primary);font-weight:600;}
+
+/* HERO */
+.hero{position:relative;background:linear-gradient(135deg,#0f1a14 0%,#1a2e22 25%,#243b2e 50%,#2a4a37 75%,#1a3528 100%);color:#fff;padding:80px 0 50px;overflow:hidden;min-height:420px;}
+.hero .container{position:relative;z-index:2;}
+.hero-brand{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:24px;}
+.hero h1{font-size:3rem;color:#fff;margin-bottom:10px;font-weight:800;}
+.hero-hook{font-family:'Inter',sans-serif;font-size:1.1rem;color:rgba(255,255,255,0.7);margin-bottom:28px;max-width:700px;font-weight:300;}
+.verdict-banner{background:linear-gradient(90deg,var(--primary-dark),var(--primary),var(--secondary-dark));border-radius:8px;padding:16px 24px;margin-bottom:30px;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.5px;color:#fff;line-height:1.6;}
+.hero-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:10px;}
+.hero-stat{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:18px 16px;text-align:center;backdrop-filter:blur(4px);}
+.hero-stat .label{font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,0.5);margin-bottom:6px;}
+.hero-stat .value{font-family:'JetBrains Mono',monospace;font-size:1.6rem;font-weight:700;color:var(--secondary);}
+.hero-stat .detail{font-size:11px;color:rgba(255,255,255,0.45);margin-top:4px;}
+#heroCanvas{position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;opacity:0.35;}
+
+/* NAV */
+.toc-bar{width:100%;position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:2px solid var(--primary);overflow-x:auto;white-space:nowrap;text-align:center;padding:14px 24px;box-sizing:border-box;-webkit-overflow-scrolling:touch;}
+.toc-bar::-webkit-scrollbar{height:4px;}
+.toc-bar::-webkit-scrollbar-thumb{background:var(--primary-dark);border-radius:2px;}
+.toc-bar::-webkit-scrollbar-track{background:transparent;}
+.toc-bar a{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px;padding:4px 14px;color:var(--text-muted);text-decoration:none;border-right:1px solid var(--border);}
+.toc-bar a:last-child{border-right:none;}
+.toc-bar a:hover{color:var(--primary);}
+
+/* SECTIONS */
+.report-section{padding:30px 0;}
+.report-section + .report-section{border-top:1px solid var(--border-light);}
+.section-label{font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:2px;color:var(--text-muted);margin-bottom:8px;}
+.report-section h2{margin-top:0;margin-bottom:20px;}
+
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:22px;margin-bottom:16px;}
+.card-accent{border-left:4px solid var(--primary);}
+.card-bull{background:rgba(45,122,79,0.04);border-left:4px solid var(--accent-green);}
+.card-bear{background:rgba(179,58,58,0.04);border-left:4px solid var(--accent-red);}
+.card-title{font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;margin-bottom:8px;}
+
+/* TABLES */
+.table-wrap{overflow-x:auto;margin-bottom:16px;border-radius:10px;border:1px solid var(--border);}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+thead th{background:var(--primary-dark);color:#fff;padding:10px 14px;text-align:left;font-family:'JetBrains Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;font-weight:500;}
+tbody td{padding:10px 14px;border-bottom:1px solid var(--border-light);}
+tbody tr:nth-child(odd){background:var(--bg);}
+tbody tr:nth-child(even){background:var(--bg-alt);}
+tbody tr:hover{background:var(--surface-raised);}
+
+/* GRIDS */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+
+/* BLOCKQUOTE */
+blockquote{border-left:4px solid var(--primary);background:var(--bg-alt);padding:16px 20px;margin:16px 0;border-radius:0 8px 8px 0;font-style:italic;}
+blockquote cite{display:block;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-muted);margin-top:8px;font-style:normal;}
+
+/* BADGES */
+.badge{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:1px;padding:3px 10px;border-radius:20px;font-weight:600;}
+.badge-bull{background:rgba(45,122,79,0.12);color:var(--accent-green);}
+.badge-bear{background:rgba(179,58,58,0.12);color:var(--accent-red);}
+.badge-neutral{background:rgba(107,114,128,0.12);color:var(--text-muted);}
+
+/* PROGRESS BAR */
+.progress-bar{background:var(--bg-alt);border-radius:6px;height:12px;overflow:hidden;margin:8px 0;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--primary-dark),var(--primary));border-radius:6px;transition:width 1s ease;}
+
+/* SIGNAL CARDS */
+.signal-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px;margin-bottom:14px;}
+.signal-card .signal-meta{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-muted);margin-top:10px;display:flex;gap:16px;}
+
+/* DISCLAIMER */
+.disclaimer{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-muted);line-height:1.6;font-style:italic;margin-bottom:20px;padding:12px;background:var(--bg-alt);border-radius:6px;}
+
+/* TEAR SHEET */
+.tear-sheet{border:2px solid var(--primary);border-radius:14px;background:var(--surface);padding:30px;margin:30px 0;}
+.tear-sheet-header{display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid var(--border);padding-bottom:14px;margin-bottom:20px;flex-wrap:wrap;gap:10px;}
+.tear-cols{display:grid;grid-template-columns:60% 40%;gap:24px;}
+
+/* FOOTER */
+.footer{background:linear-gradient(135deg,#0f1a14 0%,#1a2e22 50%,#0f1a14 100%);color:rgba(255,255,255,0.5);padding:50px 0 30px;position:relative;overflow:hidden;}
+.footer .sig{font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--secondary);margin-bottom:6px;}
+.footer .tagline{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--primary);letter-spacing:1px;margin-bottom:20px;}
+.footer .legal{font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(255,255,255,0.3);line-height:1.8;max-width:800px;}
+#footerCanvas{position:absolute;top:0;left:0;width:100%;height:100%;z-index:0;opacity:0.3;}
+.footer .container{position:relative;z-index:1;}
+
+/* SOURCES */
+.sources-section a{display:block;font-size:12px;margin-bottom:6px;word-break:break-all;}
+.sources-section h4{color:var(--primary);margin-top:16px;margin-bottom:8px;}
+
+/* PROCESS CHAIN */
+.process-chain{display:flex;align-items:center;gap:0;margin:20px 0;flex-wrap:wrap;}
+.process-step{background:var(--primary-light);border:1px solid var(--border);padding:12px 18px;text-align:center;font-size:12px;font-weight:600;border-radius:8px;min-width:110px;}
+.process-arrow{font-size:20px;color:var(--primary);padding:0 6px;}
+
+/* VALUE CHAIN */
+.value-chain{display:flex;align-items:stretch;gap:4px;margin:20px 0;flex-wrap:wrap;}
+.chain-link{flex:1;min-width:120px;background:var(--surface);border:1px solid var(--border);padding:14px 10px;text-align:center;font-size:11px;border-radius:8px;display:flex;flex-direction:column;justify-content:center;}
+.chain-link strong{display:block;font-size:13px;color:var(--primary);margin-bottom:4px;}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .grid-2,.grid-3,.grid-4,.hero-stats,.tear-cols{grid-template-columns:1fr;}
+  .hero h1{font-size:2rem;}
+  .hero-stat .value{font-size:1.2rem;}
+  .process-chain{flex-direction:column;align-items:stretch;}
+  .process-arrow{transform:rotate(90deg);text-align:center;}
+  .value-chain{flex-direction:column;}
+}
+@media(max-width:480px){
+  .toc-bar{display:none;}
+}
+
+/* MEME BOX */
+.meme-box{background:linear-gradient(135deg,var(--primary-light),rgba(196,155,42,0.06));border:2px solid var(--secondary);border-radius:12px;padding:22px;margin:16px 0;}
+.meme-score{font-family:'JetBrains Mono',monospace;font-size:2rem;font-weight:700;color:var(--secondary);}
+
+/* COUNCIL CARD */
+.council-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px;margin-bottom:12px;}
+.council-card .name{font-family:'Playfair Display',serif;font-weight:700;font-size:1rem;color:var(--primary-dark);}
+.council-card .role{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-muted);margin-bottom:8px;}
+
+/* CATALYST TABLE DATE */
+.catalyst-type{font-family:'JetBrains Mono',monospace;font-size:10px;padding:2px 8px;border-radius:10px;white-space:nowrap;}
+.type-idio{background:rgba(61,107,79,0.1);color:var(--primary);}
+.type-industry{background:rgba(196,155,42,0.1);color:var(--secondary-dark);}
+.type-secular{background:rgba(107,114,128,0.1);color:var(--text-muted);}
+.type-geo{background:rgba(179,58,58,0.1);color:var(--accent-red);}
+
+/* SCENARIO EMOJI */
+.scenario-label{font-size:14px;white-space:nowrap;}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero" id="top">
+<canvas id="heroCanvas"></canvas>
+<div class="container">
+<div class="hero-brand">Solid Peer Research | Sko · 8 March 2026</div>
+<h1>Electro Optic Systems (ASX:EOS)</h1>
+<div class="hero-hook">The only company on Earth that exports 100kW laser weapons — and Europe's entire drone-defense gap is its order book.</div>
+<div class="verdict-banner">
+🎯 INVESTMENT RATING: <strong>LONG</strong> — 72% Conviction | Expected 3-yr annualized return: ~28% vs S&P/ASX 200 est. ~8% | P(outperform): 68%
+</div>
+<div class="hero-stats">
+<div class="hero-stat">
+<div class="label">Share Price</div>
+<div class="value">A$9.48</div>
+<div class="detail">52wk: A$1.00–11.20</div>
+</div>
+<div class="hero-stat">
+<div class="label">Market Cap</div>
+<div class="value">A$1.83B</div>
+<div class="detail">192.95M shares</div>
+</div>
+<div class="hero-stat">
+<div class="label">Order Book</div>
+<div class="value">A$459M</div>
+<div class="detail">+237% YoY</div>
+</div>
+<div class="hero-stat">
+<div class="label">Cash / Debt</div>
+<div class="value">A$107M / 0</div>
+<div class="detail">+ A$100M facility</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- NAV -->
+<div class="toc-bar">
+<a href="#overview">Overview</a>
+<a href="#industry">Industry</a>
+<a href="#vocab">Vocab</a>
+<a href="#howitworks">How It Works</a>
+<a href="#products">Products</a>
+<a href="#subs">Subs & M&A</a>
+<a href="#alpha">Alpha Signals</a>
+<a href="#thesis">Thesis</a>
+<a href="#bear">Bear Cases</a>
+<a href="#structure">Structure</a>
+<a href="#balance">Balance Sheet</a>
+<a href="#mgmt">Management</a>
+<a href="#growth">Growth</a>
+<a href="#moat">Moat</a>
+<a href="#tailwinds">Tailwinds</a>
+<a href="#headwinds">Headwinds</a>
+<a href="#earnings">Earnings Alpha</a>
+<a href="#council">Council</a>
+<a href="#narrative">Narrative</a>
+<a href="#catalysts">Catalysts</a>
+<a href="#valuation">Valuation</a>
+<a href="#dcf">DCF</a>
+<a href="#valuechain">Value Chain</a>
+<a href="#options">Options</a>
+<a href="#implementation">Implementation</a>
+<a href="#confidence">Confidence</a>
+</div>
+
+<!-- SECTION 01: COMPANY OVERVIEW -->
+<div class="container">
+<section class="report-section" id="overview">
+<div class="section-label">Section 01</div>
+<h2>🏢 Company Overview</h2>
+<p>Electro Optic Systems was founded in 1983 in Canberra, Australia, by Dr Ben Greene, a research scientist who had directed Australia's space program. For three decades it was a niche supplier of optical telescopes, dome enclosures, and laser satellite tracking systems — interesting but obscure. That changed when the company pivoted hard into defence, developing remote weapon systems (RWS) that used its precision electro-optics heritage to deliver extraordinary fire-control accuracy against moving targets.</p>
+<p>Today, under CEO Dr Andreas Schwer (appointed August 2022, ex-Rheinmetall and Airbus), EOS operates two segments: <strong>Defence Systems</strong> (remote weapon stations, high-energy laser weapons, counter-drone C2 systems) and <strong>Space Systems</strong> (space domain awareness, space control/anti-satellite laser platforms). The company is headquartered in Symonston, ACT, with facilities in Singapore, the Netherlands, France, UK, Germany, and the United States. It employs 436 people.</p>
+<p>FY2025 was a year of strategic transition. Revenue fell to A$128.5M (from A$176.6M) after EOS divested its EM Solutions communications business for A$36M cash upfront and repaid all debt. But underneath the headline, the business was transforming: gross margin jumped to 63%, the order book exploded to A$459M (from A$136M), and EOS signed the world's first 100kW-class laser weapon export contract — a EUR 71M deal with the Netherlands. The company ended the year with A$107M cash, zero debt, and a A$100M committed credit facility.</p>
+
+<div class="table-wrap">
+<table>
+<thead><tr><th>Metric</th><th>FY2022</th><th>FY2023</th><th>FY2024</th><th>FY2025</th></tr></thead>
+<tbody>
+<tr><td>Revenue (A$M)</td><td>~140</td><td>~149</td><td>176.6</td><td>128.5</td></tr>
+<tr><td>Gross Margin</td><td>~30%</td><td>~38%</td><td>~48%</td><td>63%</td></tr>
+<tr><td>EBITDA (A$M)</td><td>Negative</td><td>Negative</td><td>Negative</td><td>-24 (underlying)</td></tr>
+<tr><td>Order Book (A$M)</td><td>~120</td><td>~100</td><td>136</td><td>459</td></tr>
+<tr><td>Cash (A$M)</td><td>~35</td><td>~40</td><td>~50</td><td>107</td></tr>
+<tr><td>Debt (A$M)</td><td>~48</td><td>~48</td><td>~48</td><td>0</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<!-- SECTION 02: INDUSTRY -->
+<section class="report-section" id="industry">
+<div class="section-label">Section 02</div>
+<h2>🌍 Industry</h2>
+<p>EOS sits at the intersection of three converging defence megatrends: the counter-drone revolution, the directed-energy weapons breakout, and the weaponisation of space. Each of these markets is early-stage, rapidly growing, and driven by structural demand rather than cyclical budgets.</p>
+<div class="grid-2">
+<div class="card card-accent">
+<div class="card-title">Counter-UAS Market</div>
+<p>Valued at US$6.6B in 2025, projected to reach US$20.3B by 2030 (25.1% CAGR). Ukraine proved that cheap drones can destroy multi-million-dollar tanks. Every army on Earth is now scrambling for layered counter-drone solutions. EOS offers the broadest hard-kill portfolio globally: remote weapon stations, interceptor drones, high-energy lasers, rockets, and missiles — all integrated via AI-enabled C2.</p>
+</div>
+<div class="card card-accent">
+<div class="card-title">Directed Energy Weapons</div>
+<p>The DEW market is estimated at US$9–12B in 2025 and projected to reach US$25–58B by 2030–2033 depending on the source. The high-energy laser segment is the fastest-growing subset. Europe has zero operational HEL systems above 50kW. EOS is the only non-US company that has signed a 100kW export contract. Israel's Iron Beam (100kW) was deployed in December 2025, but is not available for export. Rheinmetall has demonstrated only 20kW.</p>
+</div>
+</div>
+<p>The key dynamic: European defence spending is in a structural super-cycle. NATO nations are racing to reach 2–3% of GDP on defence. Germany alone has committed to a EUR 100B special fund. This money must be spent, and domestic European industry cannot absorb it all — creating an enormous opening for capable foreign suppliers willing to localise production. EOS, with its full IP ownership and willingness to license local manufacturing, is uniquely positioned to exploit this gap.</p>
+</section>
+
+<!-- SECTION 03: VOCAB -->
+<section class="report-section" id="vocab">
+<div class="section-label">Section 03</div>
+<h2>📖 Vocabulary & Lore</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Term</th><th>Definition</th></tr></thead>
+<tbody>
+<tr><td><strong>RWS</strong></td><td>Remote Weapon System — a stabilised, electronically controlled weapon station mounted on vehicles, ships, or fixed positions. Operated remotely to keep the gunner under armour.</td></tr>
+<tr><td><strong>C-UAS / CUAS</strong></td><td>Counter-Unmanned Aircraft System — any system designed to detect, track, and defeat drones.</td></tr>
+<tr><td><strong>HEL / HELW</strong></td><td>High-Energy Laser (Weapon) — a directed-energy weapon that concentrates photons to destroy targets at the speed of light. EOS's Apollo product line operates at 50–150kW.</td></tr>
+<tr><td><strong>C2 / C4ISR</strong></td><td>Command & Control / Command, Control, Communications, Computers, Intelligence, Surveillance, Reconnaissance. The "brain" of a military system. MARSS's NiDAR platform provides AI-enabled C2.</td></tr>
+<tr><td><strong>Hard Kill vs Soft Kill</strong></td><td>Hard kill = physically destroying the drone (bullets, lasers, interceptors). Soft kill = jamming/spoofing its signals. Soft kill is becoming less effective as drones are hardened.</td></tr>
+<tr><td><strong>ATLAS</strong></td><td>EOS's space warfare product family. Fixed or mobile laser systems that can blind satellite sensors, disable satellites, or cause atmospheric re-entry of space debris.</td></tr>
+<tr><td><strong>Apollo</strong></td><td>EOS's high-energy laser weapon product line for counter-drone and C-RAM applications (50–150kW scalable).</td></tr>
+<tr><td><strong>Slinger (R400)</strong></td><td>EOS's flagship remote weapon station, known for exceptional accuracy against drones at long range. Selected for the US M1A3 Abrams tank.</td></tr>
+<tr><td><strong>C-RAM</strong></td><td>Counter-Rocket, Artillery, Mortar. Systems that intercept incoming projectiles. EOS's planned 300kW laser would address this market.</td></tr>
+<tr><td><strong>NiDAR</strong></td><td>MARSS's AI-driven command-and-control platform that integrates multiple sensors and effectors into a unified counter-drone system.</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<!-- SECTION 04: HOW IT WORKS -->
+<section class="report-section" id="howitworks">
+<div class="section-label">Section 04</div>
+<h2>🔬 How It Actually Works</h2>
+
+<h3>The Core Process</h3>
+<p>At its simplest, EOS builds machines that point things at moving objects with extreme precision. Whether the "thing" is a camera lens, a gun barrel, or a laser beam, the core challenge is the same: you need to detect a small, fast-moving target (a drone buzzing at 100 km/h, a satellite orbiting at 7 km/s), calculate exactly where it will be in the next fraction of a second, and aim your effector at that point with sub-milliradian accuracy — all while your platform is bouncing around on a vehicle or ship.</p>
+<p>The company's 40 years of building precision telescope tracking systems — originally designed to follow satellites through the atmosphere — gave it a deep understanding of adaptive optics, real-time servo control, and atmospheric compensation. This heritage is why their remote weapon stations are considered the most accurate in the world for engaging small aerial targets, and why they were able to build a 100kW laser weapon when European defence primes with 10x their budget could not.</p>
+
+<h3>Visual Diagram</h3>
+<div class="process-chain">
+<div class="process-step">🔍 <strong>DETECT</strong><br><span style="font-size:10px">Radar, RF, EO/IR sensors identify incoming drone</span></div>
+<div class="process-arrow">→</div>
+<div class="process-step">🧠 <strong>CLASSIFY</strong><br><span style="font-size:10px">AI algorithms (NiDAR C2) determine threat type & priority</span></div>
+<div class="process-arrow">→</div>
+<div class="process-step">🎯 <strong>TRACK</strong><br><span style="font-size:10px">Electro-optic gimbal locks on target with sub-mrad precision</span></div>
+<div class="process-arrow">→</div>
+<div class="process-step">⚡ <strong>ENGAGE</strong><br><span style="font-size:10px">Selects effector: laser / gun / interceptor / missile</span></div>
+<div class="process-arrow">→</div>
+<div class="process-step">💥 <strong>DEFEAT</strong><br><span style="font-size:10px">Hard kill at speed of light (laser) or kinetic impact</span></div>
+</div>
+
+<h3>Why It's Hard to Copy</h3>
+<p>Building a high-energy laser weapon isn't just about the laser. It's about the beam-directing optics, the adaptive compensation for atmospheric turbulence, the thermal management of dumping 100kW+ of waste heat, the precision tracking system that keeps a focused beam on a moving target long enough to burn through it, and the systems integration to make all of this work reliably in harsh field conditions. EOS owns <em>all</em> of this IP in-house — the laser source, the beam director, the tracking system, the fire-control software. This is unique. Competitors like Rheinmetall and MBDA buy components from multiple suppliers and integrate them, which limits their ability to customise, scale, or localise production. EOS can offer a turnkey solution and can license local manufacturing anywhere — a decisive advantage in European markets obsessed with sovereignty.</p>
+
+<div class="card card-accent">
+<div class="card-title">The Key Metric That Matters</div>
+<p><strong>Cost per engagement: ~US$1–10 vs US$100,000+ for a missile.</strong> A 100kW laser can defeat a US$500 drone for the cost of the electricity to fire it. This is the economic breakthrough that makes directed energy inevitable — and makes EOS's first-mover advantage worth defending.</p>
+</div>
+</section>
+
+<!-- SECTION 05: PRODUCTS -->
+<section class="report-section" id="products">
+<div class="section-label">Section 05</div>
+<h2>Product & Service Portfolio</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Product</th><th>Category</th><th>Description</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td><strong>R400 Slinger</strong></td><td>RWS</td><td>Flagship weapon station; world-leading accuracy for C-UAS. Selected for M1A3 Abrams.</td><td>Production / Export</td></tr>
+<tr><td><strong>R800</strong></td><td>RWS</td><td>Larger calibre weapon station, anti-drone configuration nearing completion.</td><td>Late development</td></tr>
+<tr><td><strong>R150</strong></td><td>RWS</td><td>Lightweight system for German UTF tender (3,000+ units, EUR 1B+ potential).</td><td>Production / Bidding</td></tr>
+<tr><td><strong>Apollo HEL 100kW</strong></td><td>Laser Weapon</td><td>50–150kW scalable laser weapon system. First export contract: Netherlands EUR 71M.</td><td>Production / Delivery 2027</td></tr>
+<tr><td><strong>Apollo HEL 300kW</strong></td><td>Laser Weapon</td><td>Planned C-RAM capable system; anti-missile/rocket/artillery and high-orbit space control.</td><td>Funded development (negotiating)</td></tr>
+<tr><td><strong>ATLAS (Fixed)</strong></td><td>Space Control</td><td>Fixed-installation space surveillance and anti-satellite laser. ~A$100M per copy.</td><td>Available now (Mt Stromlo prototype)</td></tr>
+<tr><td><strong>ATLAS (Mobile)</strong></td><td>Space Control</td><td>Containerised mobile version for field deployment.</td><td>Prototype by end 2027/2028</td></tr>
+<tr><td><strong>NiDAR C2</strong></td><td>Software / C2</td><td>AI-enabled command-and-control platform (via MARSS acquisition). Integrates sensors/effectors.</td><td>Operational (60+ deployments)</td></tr>
+<tr><td><strong>Interceptor Drones</strong></td><td>C-UAS</td><td>Reusable hard-kill interceptor drones for commercial/homeland security applications.</td><td>Acquired Nov 2025</td></tr>
+</tbody>
+</table>
+</div>
+<div class="card card-accent">
+<div class="card-title">Crown Jewel: Apollo 100kW High-Energy Laser</div>
+<p>The Apollo system is a fibre laser scaled between 50–150kW, mounted on a multi-carrier platform. It can defeat drones, loitering munitions, and small fixed-wing UAVs at ranges that soft-kill systems cannot match. The system was commercialised in August 2025 when the Netherlands signed the world's first 100kW laser weapon export contract (EUR 71M). EOS opened its Singapore laser manufacturing facility in February 2026 — the first dedicated HEL serial production facility globally — with capacity for 20 units/year, expandable to 40. The company is in active discussions with 10+ governments: Germany, France, Italy, Turkey, Saudi Arabia, UAE, India, Korea, Australia, and the United States.</p>
+</div>
+</section>
+
+<!-- SECTION 06: SUBSIDIARIES -->
+<section class="report-section" id="subs">
+<div class="section-label">Section 06</div>
+<h2>🏗️ Subsidiaries & Acquisitions</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Entity / Deal</th><th>Type</th><th>Year</th><th>Economics</th></tr></thead>
+<tbody>
+<tr><td>EM Solutions</td><td>Divestiture</td><td>Jan 2025</td><td>A$36M upfront cash + earn-out. Gain on sale: A$91M. Proceeds used to repay all debt.</td></tr>
+<tr><td>SpaceLink</td><td>Divestiture</td><td>2022–2023</td><td>Non-core asset disposal during strategic review.</td></tr>
+<tr><td>MARSS Group</td><td>Acquisition</td><td>Jan 2026 (announced)</td><td>A$36M upfront + earn-out in shares/cash. AI-enabled C2/NiDAR platform. 60+ systems fielded globally.</td></tr>
+<tr><td>Interceptor Drone Business</td><td>Asset Purchase</td><td>Nov 2025</td><td>EUR 5.5M (~A$10M). Reusable hard-kill interceptor drone technology from MARSS subsidiary.</td></tr>
+<tr><td>EOS USA</td><td>Subsidiary</td><td>Established</td><td>US operations supporting General Dynamics / Abrams programme.</td></tr>
+<tr><td>EOS Singapore</td><td>Facility</td><td>Feb 2026</td><td>HEL manufacturing facility (20,000 sq ft). 20 units/year, expandable to 40.</td></tr>
+<tr><td>EOS Europe</td><td>Offices</td><td>2025–2026</td><td>Netherlands, France, UK, Germany. Supporting NATO market penetration.</td></tr>
+</tbody>
+</table>
+</div>
+<div class="card card-accent">
+<div class="card-title">Key Acquisition: MARSS Group</div>
+<p>MARSS provides the "brain" that EOS was missing. Its NiDAR command-and-control platform uses AI to integrate heterogeneous sensors (radar, RF, EO/IR, acoustic) and automatically allocate the optimal effector to each threat in a drone swarm scenario. With MARSS, EOS can offer complete turnkey counter-drone solutions to military, homeland security, and commercial clients (airports, critical infrastructure). The deal was structured with A$36M upfront and performance-linked earn-outs funded from incoming order cash flows — a disciplined approach that limits dilution risk.</p>
+</div>
+</section>
+
+<!-- SECTION 07: ALPHA SIGNALS -->
+<section class="report-section" id="alpha">
+<div class="section-label">Section 07</div>
+<h2>⚡ Non-Consensus Alpha Signals</h2>
+
+<div class="signal-card">
+<span class="badge badge-bull">🟢 BULL</span>
+<h4>1. M1A3 Abrams: The US$3B Trojan Horse</h4>
+<p>Consensus treats the General Dynamics contract as a small initial order. The market underestimates its significance. EOS has been selected as the sole provider of the R400 Slinger weapon station for the next-generation Abrams tank. The US Army operates thousands of Abrams; allied armies operate thousands more. Management estimates a US$3B 15-year addressable market from this single integration. The initial slice is small but it embeds EOS into the US Army supply chain — an almost impossible moat for an Australian company to have achieved.</p>
+<div class="signal-meta"><span>Impact: 25%+ revenue upside</span><span>Conviction: 65%</span><span>Timeline: 2–5 years</span></div>
+</div>
+
+<div class="signal-card">
+<span class="badge badge-bull">🟢 BULL</span>
+<h4>2. German UTF Tender: 3,000+ Systems, EUR 1B+</h4>
+<p>EOS (with partner Diehl) has been down-selected to the final 3 bidders for Germany's massive Universal-Turm-Fernbedienbar (UTF) remote weapon station procurement. If won, this is a generational contract — 3,000+ weapon stations worth over EUR 1B. Decision expected 2027, but the signal that EOS made the final shortlist against established European primes tells you something about product competitiveness that the market has not priced.</p>
+<div class="signal-meta"><span>Impact: 40%+ revenue uplift</span><span>Conviction: 45%</span><span>Timeline: 2–4 years</span></div>
+</div>
+
+<div class="signal-card">
+<span class="badge badge-bull">🟢 BULL</span>
+<h4>3. Germany Paused Rheinmetall's EUR 500M Laser Programme — To Talk to EOS</h4>
+<p>This is the alpha signal most investors missed. The German parliament became aware that EOS delivered twice the laser power (100kW vs 50kW) for less than half the price in half the time compared to Rheinmetall's subsidised programme. They stopped the EUR 500M sole-source procurement and are now evaluating EOS. If EOS wins this, it validates the entire European laser strategy and could trigger a cascade of follow-on orders across NATO.</p>
+<div class="signal-meta"><span>Impact: 30%+ revenue + massive credibility</span><span>Conviction: 50%</span><span>Timeline: 1–2 years</span></div>
+</div>
+
+<div class="signal-card">
+<span class="badge badge-bull">🟢 BULL</span>
+<h4>4. Full IP Ownership = Unlimited Licensing Optionality</h4>
+<p>EOS owns 100% of its laser weapon IP. No other company in the 100kW class can offer this. European governments want sovereign production. EOS can license manufacturing in-country — the only competitor that can. This creates a recurring royalty-like revenue stream on top of initial system sales, plus deep customer lock-in.</p>
+<div class="signal-meta"><span>Impact: Margin expansion + recurring revenue</span><span>Conviction: 80%</span><span>Timeline: 2–5 years</span></div>
+</div>
+
+<div class="signal-card">
+<span class="badge badge-bull">🟢 BULL</span>
+<h4>5. Space Control: A Market of One</h4>
+<p>Outside the US, EOS is the only company offering operational space control / anti-satellite laser capability. The fixed ATLAS system can be duplicated for ~A$100M per installation. The mobile version (prototype 2027–2028) opens an even larger market. Space forces worldwide are visiting Mt Stromlo. This is a sleeper revenue stream that could become enormous if geopolitical tensions escalate further.</p>
+<div class="signal-meta"><span>Impact: A$200M+ addressable per year at scale</span><span>Conviction: 55%</span><span>Timeline: 3–7 years</span></div>
+</div>
+
+<div class="signal-card">
+<span class="badge badge-bull">🟢 BULL</span>
+<h4>6. European Relocation = Valuation Re-Rating</h4>
+<p>CEO Schwer told Reuters in January 2026 that a move to Europe is "very likely." The board later denied formal plans, but the CEO's statements to a major wire service carry weight. If EOS lists on a European exchange (Frankfurt, Amsterdam), it would likely trade at a significant premium to its ASX valuation — European defence stocks trade at 15–25x EV/EBITDA vs the discount applied to Australian small-caps.</p>
+<div class="signal-meta"><span>Impact: 30–50% valuation re-rating</span><span>Conviction: 40%</span><span>Timeline: 1–2 years</span></div>
+</div>
+
+<div class="signal-card">
+<span class="badge badge-bull">🟢 BULL</span>
+<h4>7. Homeland Security / Commercial C-UAS is Untapped</h4>
+<p>Airports, power plants, government buildings, stadiums — none of these are currently protected against drones. With MARSS + interceptor drones, EOS can serve this market without requiring military export licenses. This could be a massive second growth curve that the market is ignoring.</p>
+<div class="signal-meta"><span>Impact: New addressable market >US$5B</span><span>Conviction: 50%</span><span>Timeline: 2–5 years</span></div>
+</div>
+
+<div class="signal-card">
+<span class="badge badge-bear">🔴 BEAR</span>
+<h4>8. Korean Contract Opacity — Grizzly Has a Point</h4>
+<p>Grizzly Research identified the Korean counterparty as Goldrone Co., a tiny agricultural drone company. EOS has excluded this conditional US$80M contract from its order book and says conditions must be met, but the original announcement drove a 100% stock rally. Management's refusal to name the counterparty, combined with the Grizzly revelations, raises legitimate governance questions even if the rest of the business is solid.</p>
+<div class="signal-meta"><span>Impact: Reputational risk</span><span>Conviction: 60%</span><span>Timeline: Now</span></div>
+</div>
+
+<div class="signal-card">
+<span class="badge badge-bear">🔴 BEAR</span>
+<h4>9. Revenue Lumpiness is Structural, Not Temporary</h4>
+<p>Defence contracts are inherently lumpy. Revenue can swing 30–50% between halves depending on delivery timing and customer acceptance. The A$128.5M FY2025 revenue versus the A$459M backlog illustrates the gap between "signed" and "recognised." Analysts assuming smooth conversion will be disappointed.</p>
+<div class="signal-meta"><span>Impact: Quarterly volatility</span><span>Conviction: 85%</span><span>Timeline: Ongoing</span></div>
+</div>
+
+<div class="signal-card">
+<span class="badge badge-bear">🔴 BEAR</span>
+<h4>10. ASIC Fine Signals Historical Governance Issues</h4>
+<p>EOS agreed to pay A$4M for failing to disclose a revenue forecast downgrade in 2022 under the previous CEO. While this was pre-Schwer management, it signals that institutional governance is still maturing. The Grizzly report compounds this concern.</p>
+<div class="signal-meta"><span>Impact: Institutional investor hesitancy</span><span>Conviction: 70%</span><span>Timeline: Fading</span></div>
+</div>
+
+<div class="signal-card">
+<span class="badge badge-neutral">⚪ NEUTRAL</span>
+<h4>11. Iron Beam Deployment Changes the Competitive Narrative</h4>
+<p>Israel's Rafael deployed the first operational 100kW laser (Iron Beam) in December 2025. While not available for export, it validates the technology and may accelerate government procurement decisions — benefiting EOS. But it also means EOS can no longer claim to be the only company with a 100kW system, even if it is the only one exporting.</p>
+<div class="signal-meta"><span>Impact: Neutral to slightly positive</span><span>Conviction: 60%</span><span>Timeline: Ongoing</span></div>
+</div>
+
+<div class="signal-card">
+<span class="badge badge-bull">🟢 BULL</span>
+<h4>12. Roketsan Partnership = Turkish / Export Market Access</h4>
+<p>EOS signed a strategic partnership with Turkey's Roketsan to co-develop integrated drone-defence systems. Turkey is a major defence exporter (Bayraktar drones). Access to Turkish markets and Turkish export networks could be transformative for HEL volume.</p>
+<div class="signal-meta"><span>Impact: New geography + volume</span><span>Conviction: 45%</span><span>Timeline: 2–4 years</span></div>
+</div>
+</section>
+
+<!-- SECTION 08: THESIS -->
+<section class="report-section" id="thesis">
+<div class="section-label">Section 08</div>
+<h2>🎯 Synthesized Investment Thesis</h2>
+<div class="card card-bull">
+<div class="card-title">The Bull Case</div>
+<p>EOS is a rare beast: a small-cap company with a genuine technological monopoly in a market experiencing explosive structural growth. It is the only company on Earth that can export a 100kW laser weapon system, the only non-US provider of space control laser capability, and one of the most accurate remote weapon system makers globally. It has built this position on 40 years of precision electro-optics heritage, and it owns all its own IP — an advantage that cannot be replicated by writing a bigger cheque.</p>
+<p>The opportunity set is extraordinary. Europe has no operational high-energy lasers above 50kW. Every NATO country needs counter-drone capability yesterday. The US Army has selected EOS for the Abrams tank. The German parliament just paused a EUR 500M Rheinmetall programme to evaluate EOS instead. Ten governments are in active discussions for laser weapon procurement. The order book has tripled to A$459M. Cash is A$107M with zero debt.</p>
+<p>Under CEO Schwer — a career defence industry operator from Rheinmetall and Airbus — the company has executed a disciplined turnaround: divesting non-core assets, cleaning up the balance sheet, expanding into Europe, and acquiring MARSS to complete the counter-drone solution stack. The business is approaching EBITDA breakeven at ~A$200M revenue; management guides 40–50% of the A$459M backlog to be realised in 2026, implying A$180–230M in revenue before new orders.</p>
+</div>
+
+<div class="card" style="border:2px solid var(--primary);margin-top:20px;">
+<h4>Market prices in: A small Australian defence company with lumpy revenue and historical governance issues.</h4>
+<h4>We believe: EOS is a European defence super-cycle beneficiary with monopolistic positioning in high-energy lasers, 70% probability it delivers A$200M+ revenue in FY2026, and 50% probability it secures at least one additional major HEL contract before year-end — because: (A) it is the only company that can export 100kW+ laser weapons, (B) European governments are desperate and EOS has already proven it can deliver, and (C) the Abrams integration anchors a multi-decade US revenue stream.</h4>
+</div>
+</section>
+
+<!-- SECTION 09: BEAR CASES -->
+<section class="report-section" id="bear">
+<div class="section-label">Section 09</div>
+<h2>🐻 Proposed Ironclad Bear Cases</h2>
+
+<div class="card card-bear">
+<div class="card-title">🐻 Bear Case #1: Execution Risk at Scale</div>
+<p>EOS has never delivered A$200M+ in revenue from its continuing business. Converting a A$459M order book into recognised revenue requires delivering complex weapons systems on time, managing long-lead-time supply chains, and satisfying demanding military acceptance criteria across multiple countries simultaneously. The company has 436 employees — can it scale headcount and processes fast enough? The H1 FY2025 revenue of A$44M (annualised A$88M) suggests delivery capacity is still ramping.</p>
+<p><strong>Possible Debunk:</strong> Management has guided 40–50% backlog realisation in 2026 (A$180–230M), suggesting they have line-of-sight on delivery schedules. The Singapore facility adds manufacturing capacity. The A$100M credit facility provides working capital buffer. But the risk is real — execution is everything in defence contracting.</p>
+</div>
+
+<div class="card card-bear">
+<div class="card-title">🐻 Bear Case #2: The Korean Contract is Vapourware</div>
+<p>Grizzly Research's February 2026 report identified the counterparty to EOS's US$80M conditional Korean laser contract as Goldrone Co., a small agricultural drone company. While EOS excluded this contract from its A$459M order book and the conditions (A$18M deposit, letter of credit) have not been met, the original announcement drove a massive stock rally. If this contract never materialises, it validates the short thesis and damages management credibility — potentially triggering a broader re-evaluation of the order book's quality.</p>
+<p><strong>Possible Debunk:</strong> EOS management stated they are also in parallel discussions with the Korean government directly. The conditional contract is explicitly excluded from the unconditional order book. EOS has instructed lawyers to pursue Grizzly for potential market manipulation. But the reputational damage is done regardless of the legal outcome.</p>
+</div>
+
+<div class="card card-bear">
+<div class="card-title">🐻 Bear Case #3: Valuation Has Run Ahead of Fundamentals</div>
+<p>At A$9.48, EOS trades at ~14x trailing revenue and negative earnings. The stock is up ~850% from its 52-week low of A$1.00. Morningstar's fair value estimate is A$6.66. Even bullish analysts target A$11–13. At this price, EOS needs to execute near-perfectly on every contract, win several new laser deals, and convert the entire order book — any stumble could trigger a sharp correction given the elevated multiples and retail-heavy shareholder base.</p>
+<p><strong>Possible Debunk:</strong> Trailing revenue is depressed by the EM Solutions divestment. Forward revenue (A$200M+ guided for 2026) puts the EV/Revenue multiple closer to 9x, which is expensive but not absurd for a high-growth defence company with monopolistic technology. European defence peers trade at 20–30x earnings.</p>
+</div>
+
+<div class="card card-bear">
+<div class="card-title">🐻 Bear Case #4: Geopolitical Détente Kills the Narrative</div>
+<p>If the Ukraine war ends quickly with a ceasefire and European defence spending commitments are rolled back, the entire demand thesis collapses. EOS is a pure-play bet on elevated geopolitical tension. A world where NATO budgets revert to 1.5% of GDP is a world where EOS's order pipeline dries up.</p>
+<p><strong>Possible Debunk:</strong> European defence spending commitments are structural, not cyclical. The drone threat exists independent of Ukraine — airports, critical infrastructure, and homeland security will still need protection. But the urgency premium would certainly diminish.</p>
+</div>
+
+<div class="table-wrap" style="margin-top:20px;">
+<table>
+<thead><tr><th>Pre-Mortem Failure Path</th><th>Probability</th><th>Price Impact</th></tr></thead>
+<tbody>
+<tr><td>Backlog conversion falls below 30% in 2026; revenue misses badly</td><td>20%</td><td>-35% to -45%</td></tr>
+<tr><td>Korean contract collapses + second governance scandal emerges</td><td>15%</td><td>-40% to -50%</td></tr>
+<tr><td>Geopolitical détente + defence budget cuts across NATO</td><td>10%</td><td>-50% to -60%</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Combined bear probability: ~35%.</strong> However, the asymmetry favours longs: downside in the realistic bear case is -35% to -45% (stock reverts to A$5–6), while the bull case implies 50–80% upside over 2 years if execution holds.</p>
+</section>
+
+<!-- SECTION 10: SHARE STRUCTURE -->
+<section class="report-section" id="structure">
+<div class="section-label">Section 10</div>
+<h2>📊 Share Structure & Microstructure</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Metric</th><th>Value</th></tr></thead>
+<tbody>
+<tr><td>Shares Outstanding</td><td>192.95M</td></tr>
+<tr><td>Market Cap</td><td>A$1.83B</td></tr>
+<tr><td>Enterprise Value</td><td>A$1.82B (net cash ~A$107M, offset by MARSS earn-out obligations)</td></tr>
+<tr><td>52-Week Range</td><td>A$1.00 – A$11.20</td></tr>
+<tr><td>All-Time High</td><td>A$11.20 (13 Jan 2026)</td></tr>
+<tr><td>Beta</td><td>2.72 (high volatility relative to ASX 200)</td></tr>
+<tr><td>Average Volume</td><td>~4M shares/day</td></tr>
+<tr><td>OTC (US)</td><td>EOPSF</td></tr>
+<tr><td>German Listing</td><td>Trades on German exchanges</td></tr>
+</tbody>
+</table>
+</div>
+
+<h4>Soros Reflexivity Loop</h4>
+<p>EOS is caught in a powerful reflexivity loop: rising share price → increased institutional visibility and credibility → easier to win European government contracts (who want financially stable suppliers) → larger order book → higher share price. CEO Schwer's Reuters interview about a European listing was itself a reflexive signal — by publicly stating Europe is "very likely," he made it more likely that European governments would view EOS as a committed partner. The Grizzly short report temporarily broke this loop by attacking credibility, but the FY2025 results (real order book, real cash, real contracts) re-established it.</p>
+
+<h4>Marathon Capital Cycle Positioning</h4>
+<p>The directed-energy weapons market is in the very early stages of its capital cycle. Capacity is severely constrained — EOS's Singapore facility is literally the first dedicated HEL production plant on Earth. Competitors (Rheinmetall, MBDA) are 3–5 years behind in technology. New entrants face enormous barriers: decades of optics heritage, classified IP, and the need for export licences. This is the ideal Marathon positioning: a supply-constrained market with growing demand and no near-term capacity response from competitors.</p>
+</section>
+
+<!-- SECTION 11: BALANCE SHEET -->
+<section class="report-section" id="balance">
+<div class="section-label">Section 11</div>
+<h2>💰 Balance Sheet Deep Dive</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Item</th><th>FY2025</th><th>Notes</th></tr></thead>
+<tbody>
+<tr><td>Cash at Bank</td><td>A$107M</td><td>Highest ever. Includes EM Solutions proceeds.</td></tr>
+<tr><td>Restricted Cash (Bank Guarantees)</td><td>~A$20M</td><td>Reduced during year as contracts completed.</td></tr>
+<tr><td>Total Debt</td><td>A$0</td><td>Repaid in full Jan 2025.</td></tr>
+<tr><td>Committed Credit Facility</td><td>A$100M</td><td>Undrawn. Docs being finalised.</td></tr>
+<tr><td>Customer Advance Payments</td><td>A$42M</td><td>Record level, up A$18M YoY. Positive cash discipline.</td></tr>
+<tr><td>Net Cash Position</td><td>~A$107M</td><td>Before MARSS acquisition costs.</td></tr>
+<tr><td>MARSS Acquisition Cost</td><td>A$36M upfront</td><td>+ earn-out linked to order intake cash flows.</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Going Concern:</strong> Not an issue. With A$107M cash, zero debt, a A$100M credit facility, and A$42M in customer advance payments, EOS has more than enough liquidity to fund operations through the backlog conversion period. Break-even is at ~A$200M revenue, which management expects to approach in 2026.</p>
+<p><strong>Hidden Asset:</strong> EOS owns all its laser weapon IP. This is not reflected on the balance sheet. If EOS were acquired, the IP alone — the only export-capable 100kW laser weapon technology outside the US and Israel — would command a significant premium. Lockheed, Rheinmetall, or Thales would pay billions for this capability.</p>
+</section>
+
+<!-- SECTION 12: MANAGEMENT -->
+<section class="report-section" id="mgmt">
+<div class="section-label">Section 12</div>
+<h2>👔 Management, Incentives & Alignment</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Name</th><th>Title</th><th>Tenure</th><th>Background</th></tr></thead>
+<tbody>
+<tr><td><strong>Dr Andreas Schwer</strong></td><td>MD & CEO</td><td>Since Aug 2022</td><td>PhD aerospace engineering. 14 years at Airbus, 5 years at Rheinmetall (Chairman/CEO of Combat Systems Division). CEO of Saudi SAMI. Deep NATO market expertise.</td></tr>
+<tr><td><strong>Clive Cuthell</strong></td><td>CFO & COO</td><td>Since mid-2022</td><td>Financial discipline; focus on cash management, customer advance payments, and cost control.</td></tr>
+<tr><td><strong>Garry Hounsell</strong></td><td>Non-Exec Chairman</td><td>Since Nov 2022</td><td>Former EY Senior Partner, Arthur Andersen CEO. Boards: Qantas, Orica, Nufarm, Myer.</td></tr>
+<tr><td><strong>Dr Ben Greene</strong></td><td>Head of Innovation</td><td>Founded 1983</td><td>Founder. Stepped down as CEO Jul 2022. Subject of ASIC director's duties proceedings.</td></tr>
+<tr><td><strong>Lee Kormany</strong></td><td>Head of Defence Systems Australia</td><td>Recent hire</td><td>New addition to the US/Australia leadership team.</td></tr>
+</tbody>
+</table>
+</div>
+
+<h4>Incentive Alignment</h4>
+<p>EOS adopted a minimum shareholding policy effective January 2026. Under this policy, the CEO must accumulate shares equal to 4x fixed annual remuneration within three years. The CFO/COO must hold 3x fixed remuneration. Non-executive directors must hold shares equal to their annual base fee within three years. Existing incumbents (Schwer, Cuthell) are immediately subject to the highest thresholds. This is a strong alignment signal — management is being required to have meaningful skin in the game.</p>
+<p>Recent insider activity has been limited in public disclosures. Directors were reported purchasing shares on-market between July and August 2025 in the A$3.05–$5.00 range, which contributed to the share price inflection in that period.</p>
+<p><strong>Verdict: Aligned — PARTIALLY (trending to YES).</strong> The new shareholding policy is a clear positive signal. However, we cannot yet verify full compliance as the policy only took effect in January 2026. The ASIC proceedings against founder Dr Greene (for pre-Schwer governance failures) are a lingering negative, though they relate to the prior management era. No evidence of related-party transactions or repricing under current leadership.</p>
+
+<h4>CEO Quotes</h4>
+<blockquote>"We have been selected by the US government and by General Dynamics to become their sole partner, to put our R400 Slinger weapon station in a very autonomous version on top of the Abrams tank... the total market potential just for this type of integration will add up over the next 15 years to up to $3 billion."<cite>— Dr Andreas Schwer, FY2025 Earnings Call, 23 Feb 2026</cite></blockquote>
+<blockquote>"The German parliament and the government has decided to stop the further procurement in a sole source mode with Rheinmetall, but to have a detailed look instead on the EOS capability... You can get twice the power for less than half the price in half the time."<cite>— Dr Andreas Schwer, FY2025 Earnings Call, 23 Feb 2026</cite></blockquote>
+<blockquote>"EOS is one of the very, very few bidders on the markets to offer turnkey solution to any client in the military, in the homeland security, and in the civil/commercial context."<cite>— Dr Andreas Schwer, FY2025 Earnings Call, 23 Feb 2026</cite></blockquote>
+
+<h4>New Talent & Growth</h4>
+<p>Since Schwer took over, EOS has significantly expanded its European sales force, added Lee Kormany to lead Defence Systems Australia, and brought on board the MARSS team — adding AI and software engineering capability the company previously lacked. The employee count has grown to 436, though management emphasises they remain "extremely sensitive" about adding indirect costs.</p>
+</section>
+
+<!-- SECTION 13: GROWTH -->
+<section class="report-section" id="growth">
+<div class="section-label">Section 13</div>
+<h2>📈 Growth Analysis</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Year</th><th>Revenue (A$M)</th><th>Order Book (A$M)</th><th>Order Intake (A$M)</th><th>Contracts</th></tr></thead>
+<tbody>
+<tr><td>FY2023</td><td>~149</td><td>~100</td><td>—</td><td>—</td></tr>
+<tr><td>FY2024</td><td>176.6</td><td>136</td><td>~70</td><td>6</td></tr>
+<tr><td>FY2025</td><td>128.5</td><td>459</td><td>420</td><td>18</td></tr>
+<tr><td>FY2026E</td><td>200–250</td><td>~450–550 (est.)</td><td>Est. 300–500</td><td>TBD</td></tr>
+<tr><td>FY2028E (analyst consensus)</td><td>~253</td><td>—</td><td>—</td><td>—</td></tr>
+</tbody>
+</table>
+</div>
+
+<p><strong>Backlog Analysis:</strong> Management guides 40–50% of the A$459M unconditional backlog to convert to revenue in FY2026, implying A$183–230M. This excludes new orders won during the year. Given the strong pipeline (German UTF, additional laser contracts, MARSS-enabled C2 deals), additional orders in the range of A$200–400M are plausible in 2026. Revenue growth of 60–80% YoY is achievable if delivery execution holds.</p>
+
+<div class="grid-3">
+<div class="card card-accent">
+<div class="card-title">Near-Term TAM</div>
+<p>RWS + C-UAS contracts from existing customers and pipeline. Addressable: A$500M–1B over 3 years.</p>
+</div>
+<div class="card card-accent">
+<div class="card-title">Medium-Term TAM</div>
+<p>HEL exports to 10+ governments + German UTF + Abrams programme. Addressable: A$2–5B over 5 years.</p>
+</div>
+<div class="card card-accent">
+<div class="card-title">Long-Term TAM</div>
+<p>Space control (ATLAS), 300kW C-RAM laser, homeland security C-UAS. Addressable: A$5–20B over 10 years.</p>
+</div>
+</div>
+</section>
+
+<!-- SECTION 14: MOAT -->
+<section class="report-section" id="moat">
+<div class="section-label">Section 14</div>
+<h2>🏰 Moat Analysis</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Dimension</th><th>Strength</th><th>Evidence</th></tr></thead>
+<tbody>
+<tr><td>Technology</td><td><strong class="alpha">Strong</strong></td><td>Only non-US 100kW export-capable laser. 40 years of precision optics heritage. Full IP ownership. 3–5 year lead over Rheinmetall.</td></tr>
+<tr><td>Switching Costs</td><td><strong class="alpha">Moderate-High</strong></td><td>Weapon systems integrate deeply into military platforms (Abrams, IFVs). Once embedded, switching is extremely costly and risky.</td></tr>
+<tr><td>Regulatory / Export</td><td><strong class="alpha">Strong</strong></td><td>Defence exports require government-to-government agreements, export licences, and end-user certificates. Enormous barrier for new entrants.</td></tr>
+<tr><td>Scale</td><td><strong class="primary-text">Moderate</strong></td><td>Small by global defence standards, but first-mover in HEL manufacturing (Singapore facility). Scaling faster than competitors.</td></tr>
+<tr><td>Network Effects</td><td><strong class="primary-text">Emerging</strong></td><td>Partnership network (KNDS, Diehl, MSI, Roketsan, Calidus, General Dynamics) creates mutual dependency and market access.</td></tr>
+<tr><td>Monopoly Position</td><td><strong class="alpha">Strong (niche)</strong></td><td>Monopoly in 100kW+ laser weapon exports. Sole non-US provider of space control lasers. Near-monopoly in certain RWS accuracy segments.</td></tr>
+</tbody>
+</table>
+</div>
+
+<h4>Key Competitor Comparison</h4>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Company</th><th>Market Cap</th><th>HEL Capability</th><th>Export Available</th><th>Full IP Ownership</th></tr></thead>
+<tbody>
+<tr><td><strong>EOS (ASX:EOS)</strong></td><td>A$1.83B</td><td>100kW (50–150kW scalable)</td><td>Yes (Netherlands contract signed)</td><td>Yes</td></tr>
+<tr><td>Rheinmetall (ETR:RHM)</td><td>~EUR 40B</td><td>20kW demonstrated; 50kW in development</td><td>Not yet</td><td>No (multi-supplier)</td></tr>
+<tr><td>Rafael (Israel, private)</td><td>Private</td><td>100kW (Iron Beam, deployed Dec 2025)</td><td>No (Israeli export restrictions)</td><td>Yes</td></tr>
+<tr><td>Lockheed Martin (NYSE:LMT)</td><td>~US$130B</td><td>60kW+ HELIOS (naval)</td><td>US domestic / ITAR restricted</td><td>Yes</td></tr>
+<tr><td>MBDA (Airbus/BAE/Leonardo JV)</td><td>Private</td><td>20kW naval demo</td><td>Not yet</td><td>No</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<!-- SECTION 15: TAILWINDS -->
+<section class="report-section" id="tailwinds">
+<div class="section-label">Section 15</div>
+<h2>💨 Tailwinds & Opportunities</h2>
+<div class="grid-2">
+<div class="card card-bull">
+<div class="card-title">European Defence Super-Cycle</div>
+<p>NATO nations are racing to 2–3% GDP defence spending. Germany's EUR 100B special fund, France's defence budget increase, UK's commitment to 2.5% — all create massive procurement budgets. European domestic capacity cannot absorb this spending, creating import demand for capable suppliers like EOS.</p>
+</div>
+<div class="card card-bull">
+<div class="card-title">Drone Warfare Revolution</div>
+<p>Ukraine has permanently changed military doctrine. Cheap drones destroy expensive tanks. Every military must now have layered C-UAS capability. This is structural, not cyclical — the drone threat persists regardless of individual conflicts.</p>
+</div>
+<div class="card card-bull">
+<div class="card-title">Cost Economics of Lasers</div>
+<p>A laser engagement costs pennies in electricity vs US$100K+ for a missile. As drone swarms grow larger, only directed energy offers economically sustainable defence. This makes laser weapons inevitable, not optional.</p>
+</div>
+<div class="card card-bull">
+<div class="card-title">US Army Integration (Abrams)</div>
+<p>Selection as sole provider for the M1A3 Abrams weapon station opens a multi-decade, multi-billion-dollar relationship with the world's largest military. This is extremely rare for a non-US company and provides a revenue anchor.</p>
+</div>
+</div>
+</section>
+
+<!-- SECTION 16: HEADWINDS -->
+<section class="report-section" id="headwinds">
+<div class="section-label">Section 16</div>
+<h2>⚠️ Headwinds & Risks</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Risk</th><th>Severity</th><th>Probability</th><th>Mitigation</th></tr></thead>
+<tbody>
+<tr><td>Execution failure on A$459M backlog conversion</td><td><span class="shock">High</span></td><td>20%</td><td>A$100M credit facility; Singapore manufacturing ramp; management has line-of-sight on delivery schedules.</td></tr>
+<tr><td>Korean contract / Grizzly reputational damage</td><td><span class="shock">Medium-High</span></td><td>30%</td><td>Contract excluded from order book; EOS pursuing legal action against Grizzly; FY2025 results independently validated the business.</td></tr>
+<tr><td>Geopolitical détente reduces European urgency</td><td><span class="shock">High</span></td><td>15%</td><td>Structural spending commitments (NATO 2%+ GDP targets); drone threat exists independent of Ukraine; homeland security market grows regardless.</td></tr>
+<tr><td>Supply chain delays on long-lead laser components</td><td><span class="accent-orange">Medium</span></td><td>40%</td><td>Selective inventory investment; customer-funded CapEx; Singapore facility reduces dependency on Australian production.</td></tr>
+<tr><td>Share price correction from elevated multiples</td><td><span class="accent-orange">Medium</span></td><td>50%</td><td>Stock has risen 850% from lows. Any execution miss could trigger sharp pullback. Phased entry recommended.</td></tr>
+<tr><td>Competitor catch-up (Rheinmetall, MBDA)</td><td><span class="primary-text">Low-Medium</span></td><td>25%</td><td>3–5 year technology lead; competitors lack full IP ownership for export licensing; EOS already has production facility.</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<!-- SECTION 17: EARNINGS CALL ALPHA -->
+<section class="report-section" id="earnings">
+<div class="section-label">Section 17</div>
+<h2>📞 Earnings Call Alpha</h2>
+<p>Based on the FY2025 full-year results call (23 February 2026) and recent investor presentations.</p>
+
+<blockquote>"We aim to realize about half of this order book value by revenue in 2026, plus all revenue coming in by new orders taken on board over the next few months."
+<cite>— Dr Andreas Schwer, FY2025 Earnings Call, 23 Feb 2026</cite></blockquote>
+<p><strong>Why this matters:</strong> This is the most concrete revenue guidance management has given. 40–50% of A$459M = A$183–230M. Add new order contributions and FY2026 revenue could exceed A$250M — approaching EBITDA breakeven (~A$200M). Most analysts have not modelled this aggressively enough.</p>
+<p><strong>Alpha angle:</strong> Management is sandbagging by not issuing formal revenue guidance. The order book realisation range (40–50%) is deliberately wide. If they hit the high end plus new orders, the street will be forced to upgrade.</p>
+
+<blockquote>"In many cases, it's either direct sale or it's a partnering model with local producers. In many cases, it's governmentally owned companies."
+<cite>— Dr Andreas Schwer, on Middle East go-to-market strategy, FY2025 Earnings Call</cite></blockquote>
+<p><strong>Why this matters:</strong> The Middle East go-to-market model is partnership-based, reducing execution risk and allowing faster scaling. MARSS's home market is the Middle East — its integration accelerates this channel immediately.</p>
+
+<blockquote>"We expect to be able to have a [mobile ATLAS] prototype ready by end 2027, 2028."
+<cite>— Dr Andreas Schwer, FY2025 Earnings Call, 23 Feb 2026</cite></blockquote>
+<p><strong>Why this matters:</strong> The fixed ATLAS system sells for ~A$100M per installation and is available now. The mobile version opens military markets (field-deployable space control). This is a multi-hundred-million-dollar addressable market that is barely discussed by analysts.</p>
+
+<h4>Tone Assessment</h4>
+<p>Management's tone on the FY2025 call was notably more confident than prior periods. Schwer used strong language: "extremely positive outlook," "superb market conditions," "extremely promising." CFO Cuthell was more measured, emphasising cash discipline and noting that some analyst consensus estimates assume unrealistically high order-to-revenue conversion. The dynamic suggests a confident but commercially disciplined management team — bullish on strategy, pragmatic on timing.</p>
+</section>
+
+<!-- SECTION 18: STRATEGIC ADVISORY COUNCIL -->
+<section class="report-section" id="council">
+<div class="section-label">Section 18</div>
+<h2>🧠 Strategic Advisory Council</h2>
+<div class="disclaimer">Note: The views below are anticipated opinions based on each investor's known philosophy, public statements, and investment style. These are not real quotes and do not represent actual positions or endorsements by these individuals.</div>
+
+<div class="grid-3">
+<div class="council-card">
+<div class="name">Peter Lynch</div>
+<div class="role">Fidelity Magellan Fund (retired)</div>
+<p><strong>Anticipated view:</strong> "This is a 'buy what the military can't do without' story. The order book is real, the product is demonstrably superior, and the customer base is sovereign governments. I'd want to see two more quarters of revenue conversion before getting fully invested — but the setup is compelling."</p>
+</div>
+<div class="council-card">
+<div class="name">Howard Marks</div>
+<div class="role">Oaktree Capital Management</div>
+<p><strong>Anticipated view:</strong> "The valuation concerns me. At 14x trailing revenue with negative earnings, the market is pricing in a great deal of future success. Defence contracts are inherently lumpy and political. I'd wait for a pullback — perhaps after a missed quarter — to enter at a more reasonable margin of safety."</p>
+</div>
+<div class="council-card">
+<div class="name">Cathie Wood</div>
+<div class="role">ARK Invest</div>
+<p><strong>Anticipated view:</strong> "EOS sits at the convergence of AI-enabled autonomy, directed energy, and space technology. The economic disruption of laser weapons — near-zero marginal cost per engagement — is analogous to the software-eating-hardware thesis. I'd be accumulating aggressively on any weakness."</p>
+</div>
+<div class="council-card">
+<div class="name">Jim Chanos</div>
+<div class="role">Chanos & Company (short seller)</div>
+<p><strong>Anticipated view:</strong> "The Korean contract opacity is a serious red flag. When management refuses to name a counterparty on an $80M deal, and a short seller identifies it as a tiny agricultural drone company, you need to question what else might be overstated. The 850% rally from the lows creates a fragile shareholder base that will panic at the first real disappointment."</p>
+</div>
+<div class="council-card">
+<div class="name">Stanley Druckenmiller</div>
+<div class="role">Duquesne Family Office</div>
+<p><strong>Anticipated view:</strong> "The European defence super-cycle is the macro trade. EOS is a levered play on that theme with monopolistic positioning in high-energy lasers. The setup reminds me of early defence primes in the Reagan build-up — you're paying for the future, but the future is being ordered today. Size modestly, add on execution."</p>
+</div>
+<div class="council-card">
+<div class="name">David Einhorn</div>
+<div class="role">Greenlight Capital</div>
+<p><strong>Anticipated view:</strong> "I find the governance history troubling — the ASIC fine, the unnamed Korean counterparty, the CEO's freelance comments about European relocation that the board then denied. These are yellow flags. The technology may be real, but the gap between promise and delivery in small-cap defence stocks is where investors get hurt."</p>
+</div>
+<div class="council-card">
+<div class="name">François Rochon</div>
+<div class="role">Giverny Capital</div>
+<p><strong>Anticipated view:</strong> "The quality of the franchise is evident in the 63% gross margin and the IP ownership model. If this company executes on its backlog and secures two more major laser contracts, it could compound revenue at 30%+ for five years. The question is whether small-cap Australian governance can support that growth trajectory."</p>
+</div>
+<div class="council-card">
+<div class="name">Sir Michael Hintze</div>
+<div class="role">CQS (Australia-born hedge fund)</div>
+<p><strong>Anticipated view:</strong> "As an Australian-born investor with deep defence sector knowledge, I see EOS as the most interesting Australian defence company in a generation. The European pivot is strategically sound — you must be where the money is. But execution risk at this scale, with this few employees, is not to be underestimated."</p>
+</div>
+<div class="council-card">
+<div class="name">Ray Dalio</div>
+<div class="role">Bridgewater Associates (retired)</div>
+<p><strong>Anticipated view:</strong> "We're in a period of rising geopolitical conflict and great-power competition. Defence spending is entering a structural upcycle. EOS is positioned at the technological frontier of this cycle. The risk-reward at current prices depends entirely on execution and political continuity — both of which are uncertain but trending favourably."</p>
+</div>
+</div>
+</section>
+
+<!-- SECTION 19: NARRATIVE -->
+<section class="report-section" id="narrative">
+<div class="section-label">Section 19</div>
+<h2>🎭 Narrative, Meme Potential & Short Dynamics</h2>
+<p>EOS occupies a uniquely powerful narrative position: "Australian company builds laser weapons to shoot down drones." It combines defence spending hype, directed-energy sci-fi appeal, space warfare, and geopolitical urgency into a single stock. The ticker is short, memorable, and trades on a major exchange. The CEO gives colourful quotes about shooting down satellites. The product literally burns things with light.</p>
+
+<div class="meme-box">
+<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+<div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);">Meme Score</div>
+<div class="meme-score">72/100</div>
+</div>
+<div style="font-size:13px;max-width:500px;">
+<strong>Factors:</strong> Laser weapons = inherently memeable. "Pew pew" retail appeal. Stock up 850% = momentum narrative. Grizzly short report = "us vs them" tribal energy. Potential European listing = "international intrigue."<br>
+<strong>Current materialization:</strong> ~40%. Active on HotCopper; growing Seeking Alpha coverage; limited Twitter/Reddit presence outside Australia. Low-hanging slogans: "Laser-focused growth," "The future is bright (and 100kW)."
+</div>
+</div>
+</div>
+
+<h4>Short Interest & Squeeze Dynamics</h4>
+<p>Grizzly Research disclosed a short position in February 2026. Exact short interest data for ASX stocks is reported with a delay. Given the Grizzly attack and the subsequent 44% pullback from the January highs, some shorts likely covered on the post-earnings recovery. The stock's high beta (2.72) and retail-heavy shareholder base create conditions for sharp moves in both directions, but a classic "squeeze" setup requires higher short interest than is likely present.</p>
+<p><strong>Short Squeeze Probability Score: 25/100</strong> — Low. Short interest is likely moderate and the float is large enough (193M shares) to absorb covering without a violent squeeze. The bigger risk is a "narrative squeeze" where positive catalysts force bears to cover into a rising price.</p>
+
+<h4>Sector Investor Optimism</h4>
+<p><strong>Sector Optimism Score: 82/100.</strong> Global defence stocks are experiencing their strongest inflows in decades. European defence ETFs (e.g., VanEck Defense, HANetf NATO) have seen record subscriptions. Australian defence stocks (EOS, DRO, BRN) have all significantly outperformed the ASX 200. Analyst coverage is expanding — EOS is now covered by 9 analysts (up from 3–4 two years ago). The macro environment is about as favourable for defence as it has been since the Cold War.</p>
+</section>
+
+<!-- SECTION 20: CATALYSTS -->
+<section class="report-section" id="catalysts">
+<div class="section-label">Section 20</div>
+<h2>📅 Catalyst Calendar</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Date (Est.)</th><th>Catalyst</th><th>Type</th><th>Impact</th></tr></thead>
+<tbody>
+<tr><td>Q1 2026</td><td>Korean contract conditions conclusion (deposit/LC)</td><td><span class="catalyst-type type-idio">Idiosyncratic</span></td><td>High — resolves or kills the Grizzly narrative</td></tr>
+<tr><td>Q1–Q2 2026</td><td>MARSS acquisition completion</td><td><span class="catalyst-type type-idio">Idiosyncratic</span></td><td>Medium — unlocks integrated C-UAS sales pipeline</td></tr>
+<tr><td>H1 2026</td><td>European listing/relocation decision</td><td><span class="catalyst-type type-idio">Idiosyncratic</span></td><td>Very High — potential 30–50% valuation re-rating</td></tr>
+<tr><td>H1 2026</td><td>Additional HEL export contract(s)</td><td><span class="catalyst-type type-idio">Idiosyncratic</span></td><td>Very High — validates laser weapon demand</td></tr>
+<tr><td>2026</td><td>German HEL evaluation outcome</td><td><span class="catalyst-type type-idio">Idiosyncratic</span></td><td>Extremely High — potential EUR 500M+ programme</td></tr>
+<tr><td>2026</td><td>M1A3 Abrams next order slice</td><td><span class="catalyst-type type-idio">Idiosyncratic</span></td><td>High — confirms multi-year US revenue stream</td></tr>
+<tr><td>Aug 2026</td><td>H1 FY2026 results</td><td><span class="catalyst-type type-idio">Idiosyncratic</span></td><td>High — first results showing backlog conversion</td></tr>
+<tr><td>2027</td><td>German UTF final decision (3,000+ systems)</td><td><span class="catalyst-type type-idio">Idiosyncratic</span></td><td>Extremely High — EUR 1B+ programme</td></tr>
+<tr><td>Ongoing</td><td>European defence budget increases / NATO summit commitments</td><td><span class="catalyst-type type-secular">Secular</span></td><td>Medium — sector-wide tailwind</td></tr>
+<tr><td>Ongoing</td><td>Ukraine conflict developments</td><td><span class="catalyst-type type-geo">Geopolitical</span></td><td>High — drives urgency for C-UAS procurement</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<!-- SECTION 21: VALUATION -->
+<section class="report-section" id="valuation">
+<div class="section-label">Section 21</div>
+<h2>💎 Valuation & Peer Comparison</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Company</th><th>Mkt Cap</th><th>Rev (LTM)</th><th>EV/Rev</th><th>Gross Margin</th><th>Notes</th></tr></thead>
+<tbody>
+<tr style="background:var(--primary-light)"><td><strong>EOS (ASX:EOS)</strong></td><td><strong>A$1.83B</strong></td><td><strong>A$128.5M</strong></td><td><strong>~14x</strong></td><td><strong>63%</strong></td><td><strong>Subject company. Forward revenue ~A$200M+ reduces to ~9x.</strong></td></tr>
+<tr><td>DroneShield (ASX:DRO)</td><td>~A$1.5B</td><td>~A$80M</td><td>~18x</td><td>~55%</td><td>C-UAS pure play; electronic warfare focus. No laser.</td></tr>
+<tr><td>Rheinmetall (ETR:RHM)</td><td>~EUR 40B</td><td>~EUR 7.2B</td><td>~6x</td><td>~25%</td><td>Diversified defence prime. HEL at 20kW. German market leader.</td></tr>
+<tr><td>AeroVironment (NASDAQ:AVAV)</td><td>~US$10B</td><td>~US$750M</td><td>~13x</td><td>~40%</td><td>Small UAS + Switchblade loitering munitions. C-UAS adjacent.</td></tr>
+<tr><td>Leonardo DRS (NYSE:DRS)</td><td>~US$12B</td><td>~US$3B</td><td>~4x</td><td>~28%</td><td>Defence electronics. Directed energy programmes.</td></tr>
+</tbody>
+</table>
+</div>
+<p>EOS trades at a premium to diversified defence primes but at a discount to other C-UAS pure plays (DroneShield at 18x) when adjusted for the A$459M order book. On forward revenue of A$200M+, EOS's EV/Revenue falls to ~9x, which is more reasonable for a high-growth, high-margin defence technology company with monopolistic positioning.</p>
+
+<h4>Sum-of-the-Parts</h4>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Segment</th><th>Methodology</th><th>Est. Value (A$M)</th><th>Per Share (A$)</th></tr></thead>
+<tbody>
+<tr><td>RWS / C-UAS (Defence)</td><td>10x FY2027E EBITDA (~A$30M)</td><td>300</td><td>1.55</td></tr>
+<tr><td>HEL (Laser Weapons)</td><td>15x FY2027E EBITDA (~A$25M)</td><td>375</td><td>1.94</td></tr>
+<tr><td>Space Control (ATLAS)</td><td>Optionality value / 5x FY2028E revenue (~A$50M)</td><td>250</td><td>1.30</td></tr>
+<tr><td>MARSS / C2 Platform</td><td>Replacement cost + pipeline value</td><td>150</td><td>0.78</td></tr>
+<tr><td>Net Cash</td><td>A$107M - MARSS outlay + facility</td><td>70</td><td>0.36</td></tr>
+<tr><td><strong>Total Base Case SOTP</strong></td><td></td><td><strong>1,145</strong></td><td><strong>A$5.93</strong></td></tr>
+<tr><td><strong>Bull Case (higher multiples + wins)</strong></td><td></td><td><strong>2,400</strong></td><td><strong>A$12.44</strong></td></tr>
+</tbody>
+</table>
+</div>
+<p>The SOTP suggests the current share price (~A$9.48) is pricing in significant execution on the laser weapons pipeline and at least one additional major contract win. The base case valuation is below the current price, but the bull case provides meaningful upside — the difference is almost entirely about the number and timing of HEL export contracts secured.</p>
+</section>
+
+<!-- SECTION 22: DCF & SCENARIOS -->
+<section class="report-section" id="dcf">
+<div class="section-label">Section 22</div>
+<h2>📐 Probabilistic DCF & Scenarios</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Scenario</th><th>Assumptions</th><th>Probability</th><th>Implied Price</th></tr></thead>
+<tbody>
+<tr><td><span class="scenario-label">🐻 Bear</span></td><td>Backlog conversion fails; no new HEL contracts in 2026; Korean scandal deepens. Revenue A$150M in FY2026, flat thereafter.</td><td>15%</td><td>A$3.50–4.50</td></tr>
+<tr><td><span class="scenario-label">⚖️ Base</span></td><td>Backlog converts at 40%; 1 new HEL contract; revenue A$200M in FY2026, growing to A$300M by FY2028. EBITDA breakeven FY2026.</td><td>40%</td><td>A$7.00–9.00</td></tr>
+<tr><td><span class="scenario-label">🐂 Bull</span></td><td>Backlog converts at 50%+; 2–3 new HEL contracts; German UTF won; revenue A$250M+ in FY2026, A$400M by FY2028. European listing. EBITDA A$50M+ by FY2028.</td><td>30%</td><td>A$13.00–16.00</td></tr>
+<tr><td><span class="scenario-label">🚀 Mega-Bull</span></td><td>All of the above + 300kW C-RAM programme funded; multiple ATLAS sales; homeland security breakout. Revenue A$500M+ by FY2029. European re-rating.</td><td>10%</td><td>A$20.00–28.00</td></tr>
+<tr><td><span class="scenario-label">💀 Black Swan</span></td><td>Management fraud/accounting scandal confirmed; major contract cancellations; geopolitical détente collapses demand.</td><td>5%</td><td>A$1.00–2.00</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Probability-Weighted Fair Value:</strong></p>
+<p style="font-family:'JetBrains Mono',monospace;font-size:1.4rem;font-weight:700;color:var(--primary);">A$9.85 — ~4% upside from current</p>
+<p>Sensitivities: Each additional HEL contract worth EUR 50M+ adds approximately A$1.50–2.00 per share. A European listing re-rating could add A$2.00–4.00. Conversely, a failed FY2026 revenue number (below A$170M) could trigger a 30–40% correction.</p>
+
+<div class="table-wrap">
+<table>
+<thead><tr><th>Timeframe</th><th>Bear Target</th><th>Base Target</th><th>Bull Target</th></tr></thead>
+<tbody>
+<tr><td>12 months</td><td>A$5.50</td><td>A$10.00</td><td>A$14.00</td></tr>
+<tr><td>24 months</td><td>A$4.50</td><td>A$12.00</td><td>A$18.00</td></tr>
+<tr><td>36 months</td><td>A$4.00</td><td>A$15.00</td><td>A$25.00</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<!-- SECTION 23: VALUE CHAIN -->
+<section class="report-section" id="valuechain">
+<div class="section-label">Section 23</div>
+<h2>🔗 Value Chain & Ecosystem Map</h2>
+<div class="value-chain">
+<div class="chain-link"><strong>Components</strong>Laser diodes, optics, servo motors, electronics (sourced globally; long lead times)</div>
+<div class="chain-link"><strong>Manufacturing</strong>Singapore (HEL), Canberra (RWS), Partner facilities (Diehl, MSI, KNDS)</div>
+<div class="chain-link"><strong>Integration</strong>EOS system integration + MARSS AI/C2 software (NiDAR platform)</div>
+<div class="chain-link"><strong>Distribution</strong>Direct to government / via OEM partners (General Dynamics, Calidus, Roketsan)</div>
+<div class="chain-link"><strong>Sustainment</strong>In-country support, spare parts, software updates, training</div>
+</div>
+<p><strong>Pricing Power:</strong> Strong in HEL (monopoly supplier for exports) and space control (sole provider). Moderate in RWS (competitive market, but accuracy differentiation supports premium pricing). The key insight: EOS's full IP ownership means it can set terms for licensing and local production — a pricing lever that competitors who assemble from third-party components simply do not have.</p>
+</section>
+
+<!-- SECTION 24: OPTIONS -->
+<section class="report-section" id="options">
+<div class="section-label">Section 24</div>
+<h2>📈 Options Plays</h2>
+<p>EOS trades on the ASX, where single-stock options are available but liquidity is typically thin for mid-cap stocks. Standardised options on EOS.AX are listed by ASX Clear, but spreads tend to be wide and open interest is limited. Investors seeking leveraged or defined-risk exposure should note the following caveats.</p>
+<p><strong>Liquidity Assessment:</strong> Thin. Wide bid-ask spreads likely. Exercise caution with limit orders only.</p>
+<p><em>Given the illiquidity, we present conceptual structures rather than live pricing (verify with your broker before trading):</em></p>
+
+<h4>Cash-Secured Puts</h4>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Strike</th><th>Expiry</th><th>Rationale</th></tr></thead>
+<tbody>
+<tr><td>A$7.00</td><td>Jun 2026</td><td>~26% below current. Effective entry near post-Grizzly support. Annualized yield estimated 15–25% on secured cash.</td></tr>
+<tr><td>A$6.00</td><td>Sep 2026</td><td>~37% below current. Near base-case floor valuation. Lower premium but excellent entry if assigned.</td></tr>
+</tbody>
+</table>
+</div>
+
+<h4>Bull Call Spreads</h4>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Long Strike</th><th>Short Strike</th><th>Expiry</th><th>Rationale</th></tr></thead>
+<tbody>
+<tr><td>A$10.00</td><td>A$14.00</td><td>Dec 2026</td><td>Defined-risk play on H2 2026 catalysts (HEL contracts, backlog conversion). Max R/R ~3:1 if stock reaches A$14.</td></tr>
+</tbody>
+</table>
+</div>
+
+<p style="font-style:italic;font-size:12px;color:var(--text-muted);">Illiquidity warning: ASX single-stock options on EOS may have very wide spreads. Use limit orders only. Options data is time-sensitive. Verify before trading. Not a recommendation.</p>
+</section>
+
+<!-- SECTION 25: IMPLEMENTATION -->
+<section class="report-section" id="implementation">
+<div class="section-label">Section 25</div>
+<h2>🎯 Implementation & Portfolio Construction</h2>
+
+<div class="verdict-banner" style="margin-bottom:20px;">
+🎯 INVESTMENT RATING: <strong>LONG</strong> — 72% Conviction | Expected 3-yr annualized return: ~28% | P(outperform ASX 200): 68%
+</div>
+
+<p><strong>Is this binary?</strong> Partially. The thesis does not depend on a single contract, but the magnitude of the outcome is highly sensitive to whether EOS secures 1, 2, or 3+ additional HEL export contracts. A zero-contract outcome (no new HEL deals in 2026) would significantly weaken the bull case.</p>
+
+<h4>Phased Entry Strategy</h4>
+<p>Given the elevated valuation and recent volatility, we recommend a phased approach: 40% initial position at current levels (A$9–10), 30% on any pullback to A$7–8 (Grizzly-level support), and 30% reserved for confirmation of a second HEL contract. Use cash-secured puts to generate income while waiting.</p>
+
+<h4>Conviction Breakdown</h4>
+<p>Our 72% conviction reflects the following balance: the technology is real and demonstrably ahead of competitors (+20%), the order book is diversified and unconditional (+15%), the European defence super-cycle is structural (+15%), management under Schwer has executed a credible turnaround (+10%), and the balance sheet is clean (+5%). Offsetting factors: Korean contract opacity (-8%), execution risk at scale (-7%), valuation already pricing in significant success (-5%), and historical governance concerns (-3%). The total net conviction is 72%, which supports a LONG rating with a phased entry strategy rather than an all-in position.</p>
+
+<h4>Kelly Criterion</h4>
+<p>Estimated edge: 15–20%. Win probability: ~65%. Kelly optimal: ~25% of portfolio. Given the high volatility (beta 2.72) and concentration risk, we recommend a half-Kelly position of <strong>10–12% of portfolio</strong> for aggressive accounts, or 5–7% for balanced accounts.</p>
+
+<h4>Exit Triggers</h4>
+<p><strong>Positive exits:</strong> (1) Take 30% profit at A$14 (48% gain). (2) Trim to core position at A$18. (3) Full exit on European listing re-rating if it produces a 100%+ return.</p>
+<p><strong>Negative exits:</strong> (1) Hard stop if FY2026 H1 revenue below A$70M (suggests backlog conversion failure). (2) Exit if a second governance scandal emerges under current management. (3) Reduce on any confirmed geopolitical détente that structurally reduces European defence spending commitments.</p>
+</section>
+
+<!-- SECTION 26: CONFIDENCE -->
+<section class="report-section" id="confidence">
+<div class="section-label">Final Section</div>
+<h2>🏁 Thesis Confidence & Monitoring</h2>
+<div class="card" style="border:2px solid var(--primary);background:var(--primary-light);">
+<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:12px;">
+<div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);">Thesis Confidence</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:2.5rem;font-weight:700;color:var(--primary);">72%</div>
+</div>
+<div style="font-size:13px;max-width:500px;">
+<strong>Single Biggest Risk:</strong> Management over-promises and under-delivers on backlog conversion, echoing the 2022 revenue guidance debacle under the previous CEO. If FY2026 revenue comes in below A$170M despite the A$459M order book, credibility will be severely damaged.
+</div>
+</div>
+<div class="progress-bar"><div class="progress-fill" style="width:72%"></div></div>
+</div>
+
+<h4>Kill Signals</h4>
+<p>1. FY2026 H1 revenue below A$70M (delivery failure). 2. Second major governance issue under current management. 3. Loss of Netherlands contract or significant delivery delay. 4. European defence spending commitments formally reversed. 5. CEO departure or surprise management change.</p>
+
+<h4>Accelerate Signals</h4>
+<p>1. Second HEL export contract signed (any value above EUR 30M). 2. German UTF tender win announcement. 3. German HEL programme award to EOS. 4. European stock listing confirmed. 5. FY2026 H1 revenue above A$100M (confirms backlog conversion). 6. M1A3 Abrams follow-on order above US$50M.</p>
+</section>
+
+<!-- TEAR SHEET -->
+<section class="report-section">
+<div class="tear-sheet">
+<div class="tear-sheet-header">
+<div>
+<strong style="font-family:'Playfair Display',serif;font-size:1.3rem;">Electro Optic Systems</strong>
+<span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text-muted);"> | ASX:EOS | A$9.48 | 8 Mar 2026</span>
+</div>
+</div>
+<div class="tear-cols">
+<div>
+<p><strong>Thesis:</strong> EOS holds a monopoly position in 100kW+ laser weapon exports at the onset of a generational European defence spending super-cycle. With a A$459M order book, zero debt, and full IP ownership, the company is positioned to scale revenue from A$128M to A$250M+ within 18 months — if management can execute on delivery.</p>
+<p style="font-size:12px;"><strong>Market Cap:</strong> A$1.83B | <strong>EV:</strong> A$1.82B | <strong>Revenue (LTM):</strong> A$128.5M | <strong>Rev Growth (order intake):</strong> +500% YoY | <strong>Gross Margin:</strong> 63% | <strong>Net Cash:</strong> A$107M | <strong>Backlog:</strong> A$459M</p>
+<p style="font-size:12px;"><strong>Price Targets:</strong> Bear A$4.50 | Base A$10.00 | Bull A$16.00</p>
+<p style="font-size:12px;"><strong>Top 3 Catalysts:</strong> (1) Additional HEL export contract(s) in 2026. (2) German HEL programme / UTF tender award. (3) European listing decision.</p>
+<p style="font-size:12px;"><strong>Top 3 Risks:</strong> (1) Backlog conversion execution failure. (2) Korean contract / governance reputational damage. (3) Valuation correction from elevated multiples.</p>
+</div>
+<div>
+<div style="text-align:center;margin-bottom:16px;">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);">Verdict</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:2rem;font-weight:700;color:var(--primary);">LONG — 72%</div>
+</div>
+<div style="font-size:12px;">
+<p><strong>Probability-Weighted FV:</strong> A$9.85 (+4%)</p>
+<p><strong>Meme Score:</strong> 72/100</p>
+<p><strong>Short Squeeze Score:</strong> 25/100</p>
+<p><strong>Sector Optimism:</strong> 82/100</p>
+<p><strong>Insider Alignment:</strong> PARTIALLY (trending YES)</p>
+<p><strong>In one sentence:</strong> The only company that can export a 100kW laser weapon, sitting at the centre of the largest European defence spending cycle since the Cold War, with a A$459M order book and zero debt.</p>
+</div>
+</div>
+</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text-muted);text-align:center;margin-top:16px;padding-top:12px;border-top:1px solid var(--border);">Solid Peer Research | Sko · 8 March 2026 · Not financial advice</div>
+</div>
+</section>
+
+<!-- SOURCES -->
+<section class="report-section sources-section">
+<div class="section-label">Sources</div>
+<h2>📚 Sources</h2>
+
+<h4>Company Filings & Presentations</h4>
+<a href="https://eos-aus.com/investor/" target="_blank">EOS Investor Hub — Annual Reports, Presentations, Quarterly Reports</a>
+<a href="https://investorhub.eos-aus.com/" target="_blank">EOS ASX Announcements Hub</a>
+<a href="https://eos-aus.com/about-us/executive-officers/" target="_blank">EOS Executive Officers Biographies</a>
+<a href="https://eos-aus.com/about-us/board-of-directors/" target="_blank">EOS Board of Directors</a>
+
+<h4>Earnings Transcripts</h4>
+<a href="https://www.investing.com/news/transcripts/earnings-call-transcript-electro-optic-systems-h2-2025-revenue-declines-stock-surges-93CH-4517652" target="_blank">EOS FY2025 Full-Year Earnings Call Transcript — 23 Feb 2026 (Investing.com)</a>
+
+<h4>News & Press</h4>
+<a href="https://finance.yahoo.com/news/exclusive-australian-laser-maker-eos-100707574.html" target="_blank">Reuters Exclusive: Australian laser maker EOS heads for Europe — 30 Jan 2026</a>
+<a href="https://www.investing.com/news/stock-market-news/electro-optic-systems-flags-potential-legal-breaches-over-grizzly-short-report-shares-end-higher-4495546" target="_blank">Reuters: EOS flags potential legal breaches over Grizzly short report — 10 Feb 2026</a>
+<a href="https://eos-aus.com/news/the-stock-network-interview-with-dr-andreas-schwer-eos/" target="_blank">The Stock Network Interview with Dr Andreas Schwer — Mar 2026</a>
+<a href="https://primaryignition.com/2026/02/25/electro-optic-systems-stock-surges-on-record-order-book-and-strategic-moves/" target="_blank">EOS Stock Surges on Record Order Book — Primary Ignition, 25 Feb 2026</a>
+<a href="https://www.tipranks.com/news/company-announcements/eos-sets-mandatory-shareholding-levels-for-board-and-senior-executives" target="_blank">EOS Sets Mandatory Shareholding Levels — TipRanks, 29 Dec 2025</a>
+
+<h4>Short Seller Reports</h4>
+<a href="https://grizzlyreports.com/eos/" target="_blank">Grizzly Research: "EOS Behind the Hype" — 5 Feb 2026</a>
+
+<h4>Regulatory</h4>
+<a href="https://www.asic.gov.au/about-asic/news-centre/find-a-media-release/2025-releases/25-287mr-defence-systems-manufacturer-electro-optic-systems-holdings-admits-to-breaching-continuous-disclosure-requirements/" target="_blank">ASIC: EOS admits breaching continuous disclosure — 26 Nov 2025</a>
+
+<h4>Industry Data</h4>
+<a href="https://www.marketsandmarkets.com/Market-Reports/counter-cuas-systems-market-4197284.html" target="_blank">MarketsandMarkets: Counter-UAS Systems Market to US$20.31B by 2030</a>
+<a href="https://www.marketsandmarkets.com/Market-Reports/directed-energy-weapon-market-19132295.html" target="_blank">MarketsandMarkets: Directed Energy Weapons Market</a>
+
+<h4>Analyst / Research</h4>
+<a href="https://kalkine.com.au/news/technology/why-analysts-are-turning-bullish-on-electro-optic-systems-asxeos-a-2026-deep-dive" target="_blank">Kalkine: Why Analysts Are Turning Bullish on EOS — Feb 2026</a>
+<a href="https://simplywall.st/stocks/au/capital-goods/asx-eos/electro-optic-systems-holdings-shares" target="_blank">Simply Wall St: EOS Stock Analysis</a>
+<a href="https://stockanalysis.com/quote/asx/EOS/" target="_blank">Stock Analysis: EOS Overview & Statistics</a>
+<a href="https://www.tipranks.com/stocks/au:eos/forecast" target="_blank">TipRanks: EOS Price Target & Analyst Consensus</a>
+
+<h4>Social Media / Forums</h4>
+<a href="https://hotcopper.com.au/asx/eos/" target="_blank">HotCopper: EOS Discussion Forum</a>
+<a href="https://strawman.com/reports/EOS/all" target="_blank">Strawman: EOS Community Reports & Analysis</a>
+</section>
+
+<!-- SIGNATURE & FOOTER -->
+<section class="report-section" style="text-align:center;padding:30px 0 10px;">
+<div style="font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--primary);margin-bottom:4px;">Solid Peer Research | Sko</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-muted);letter-spacing:1px;">The laser-focused conviction memo · 8 March 2026</div>
+</section>
+</div>
+
+<footer class="footer">
+<canvas id="footerCanvas"></canvas>
+<div class="container">
+<div class="sig">Solid Peer Research | Sko</div>
+<div class="tagline">"Burning through consensus, one photon at a time."</div>
+<div class="legal">
+Not financial advice. For informational and entertainment purposes only. Do your own research. Verify all figures. Author may have exposure to discussed securities and may trade at any time without notice. All data sourced from public filings, earnings transcripts, and publicly available reports. Numbers marked as "estimated" reflect the author's best assessment based on available information.<br><br>
+© 2026 Solid Peer Research | Sko
+</div>
+</div>
+</footer>
+
+<script>
+/* ====== HERO AMBIENT ANIMATION ====== */
+(function(){
+  var c = document.getElementById('heroCanvas');
+  if(!c) return;
+  var ctx = c.getContext('2d');
+  var w, h, particles = [];
+  function resize(){
+    w = c.width = c.parentElement.offsetWidth;
+    h = c.height = c.parentElement.offsetHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+  
+  // Laser beam particles
+  for(var i=0;i<60;i++){
+    particles.push({
+      x: Math.random()*2000,
+      y: Math.random()*800,
+      vx: 0.3 + Math.random()*0.8,
+      vy: -0.1 + Math.random()*0.2,
+      r: 1 + Math.random()*2,
+      a: 0.1 + Math.random()*0.4,
+      color: Math.random()>0.7 ? '#c49b2a' : (Math.random()>0.5 ? '#3d6b4f' : '#5a9a70')
+    });
+  }
+  
+  // Crosshair / tracking circles
+  var targets = [];
+  for(var i=0;i<5;i++){
+    targets.push({
+      x: 100 + Math.random()*(w-200),
+      y: 50 + Math.random()*(h-100),
+      r: 15 + Math.random()*25,
+      angle: Math.random()*Math.PI*2,
+      speed: 0.005 + Math.random()*0.01,
+      drift: 0.2 + Math.random()*0.3
+    });
+  }
+  
+  function draw(){
+    ctx.clearRect(0,0,w,h);
+    
+    // Draw laser beams (horizontal streaks)
+    for(var i=0;i<particles.length;i++){
+      var p = particles[i];
+      ctx.beginPath();
+      ctx.moveTo(p.x, p.y);
+      ctx.lineTo(p.x - 20 - Math.random()*30, p.y);
+      ctx.strokeStyle = p.color;
+      ctx.globalAlpha = p.a;
+      ctx.lineWidth = p.r;
+      ctx.stroke();
+      
+      p.x += p.vx;
+      p.y += p.vy;
+      if(p.x > w+50){p.x = -50; p.y = Math.random()*h;}
+    }
+    
+    // Draw tracking reticles
+    ctx.globalAlpha = 0.15;
+    for(var i=0;i<targets.length;i++){
+      var t = targets[i];
+      t.angle += t.speed;
+      t.x += Math.sin(t.angle)*t.drift;
+      t.y += Math.cos(t.angle*0.7)*t.drift*0.5;
+      
+      if(t.x < 0 || t.x > w) t.drift *= -1;
+      if(t.y < 0 || t.y > h) t.drift *= -1;
+      
+      ctx.beginPath();
+      ctx.arc(t.x, t.y, t.r, 0, Math.PI*2);
+      ctx.strokeStyle = '#c49b2a';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      
+      // Crosshairs
+      ctx.beginPath();
+      ctx.moveTo(t.x - t.r - 5, t.y);
+      ctx.lineTo(t.x - t.r + 8, t.y);
+      ctx.moveTo(t.x + t.r - 8, t.y);
+      ctx.lineTo(t.x + t.r + 5, t.y);
+      ctx.moveTo(t.x, t.y - t.r - 5);
+      ctx.lineTo(t.x, t.y - t.r + 8);
+      ctx.moveTo(t.x, t.y + t.r - 8);
+      ctx.lineTo(t.x, t.y + t.r + 5);
+      ctx.stroke();
+    }
+    
+    ctx.globalAlpha = 1;
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+/* ====== CLICK ANIMATIONS ====== */
+var lastClick = 0, clickTimer = null;
+document.addEventListener('click', function(e) {
+  var now = Date.now();
+  if (now - lastClick < 300) {
+    clearTimeout(clickTimer);
+    bigBoom(e.clientX, e.clientY);
+    lastClick = 0;
+  } else {
+    lastClick = now;
+    clickTimer = setTimeout(function() { smallBoom(e.clientX, e.clientY); }, 300);
+  }
+});
+document.addEventListener('dblclick', function(e) { e.preventDefault(); });
+
+function smallBoom(x, y) {
+  var box = document.createElement('div');
+  box.style.cssText = 'position:fixed;left:'+x+'px;top:'+y+'px;width:0;height:0;pointer-events:none;z-index:9999;';
+  document.body.appendChild(box);
+  
+  // Laser beam burst
+  for(var i=0;i<14;i++){
+    var beam = document.createElement('div');
+    var angle = (i/14)*Math.PI*2;
+    var dist = 40 + Math.random()*60;
+    var len = 15 + Math.random()*25;
+    var rot = angle * (180/Math.PI);
+    beam.style.cssText = 'position:absolute;left:-1px;top:-1px;width:'+len+'px;height:2px;background:linear-gradient(90deg,#c49b2a,#3d6b4f,transparent);border-radius:1px;transform-origin:left center;transform:rotate('+rot+'deg);';
+    box.appendChild(beam);
+    beam.animate([
+      {opacity:1, transform:'rotate('+rot+'deg) translateX(0)'},
+      {opacity:0, transform:'rotate('+rot+'deg) translateX('+dist+'px)'}
+    ], {duration:500, fill:'forwards', easing:'cubic-bezier(0,0.8,0.2,1)'});
+  }
+  
+  // Central flash
+  var flash = document.createElement('div');
+  flash.style.cssText = 'position:absolute;left:-8px;top:-8px;width:16px;height:16px;background:radial-gradient(circle,#fff,#c49b2a,transparent);border-radius:50%;';
+  box.appendChild(flash);
+  flash.animate([
+    {opacity:1, transform:'scale(1)'},
+    {opacity:0, transform:'scale(3)'}
+  ], {duration:400, fill:'forwards'});
+  
+  setTimeout(function() { if (box.parentNode) box.parentNode.removeChild(box); }, 700);
+}
+
+function bigBoom(x, y) {
+  var box = document.createElement('div');
+  box.style.cssText = 'position:fixed;left:'+x+'px;top:'+y+'px;width:0;height:0;pointer-events:none;z-index:9999;';
+  document.body.appendChild(box);
+  
+  // Multiple rings (tracking reticle expanding)
+  for(var r=0;r<3;r++){
+    var ring = document.createElement('div');
+    var size = 30 + r*40;
+    ring.style.cssText = 'position:absolute;left:-'+(size/2)+'px;top:-'+(size/2)+'px;width:'+size+'px;height:'+size+'px;border:2px solid #c49b2a;border-radius:50%;';
+    box.appendChild(ring);
+    ring.animate([
+      {opacity:0.8, transform:'scale(0.3)'},
+      {opacity:0, transform:'scale(2.5)'}
+    ], {duration:600+r*200, fill:'forwards', delay:r*100});
+  }
+  
+  // Laser beams radiating outward
+  for(var i=0;i<24;i++){
+    var beam = document.createElement('div');
+    var angle = (i/24)*Math.PI*2;
+    var dist = 80 + Math.random()*120;
+    var len = 20 + Math.random()*40;
+    var rot = angle * (180/Math.PI);
+    var color = i%3===0 ? '#c49b2a' : (i%3===1 ? '#3d6b4f' : '#5a9a70');
+    beam.style.cssText = 'position:absolute;left:0;top:-1px;width:'+len+'px;height:'+(1+Math.random()*2)+'px;background:linear-gradient(90deg,'+color+',transparent);transform-origin:left center;transform:rotate('+rot+'deg);';
+    box.appendChild(beam);
+    beam.animate([
+      {opacity:1, transform:'rotate('+rot+'deg) translateX(5px)'},
+      {opacity:0, transform:'rotate('+rot+'deg) translateX('+dist+'px)'}
+    ], {duration:700, fill:'forwards', easing:'cubic-bezier(0,0.8,0.2,1)', delay:Math.random()*150});
+  }
+  
+  // Drone fragments (small squares tumbling)
+  for(var i=0;i<12;i++){
+    var frag = document.createElement('div');
+    var sz = 3 + Math.random()*6;
+    var angle = Math.random()*Math.PI*2;
+    var dist = 50 + Math.random()*80;
+    var dx = Math.cos(angle)*dist;
+    var dy = Math.sin(angle)*dist - 30;
+    frag.style.cssText = 'position:absolute;left:-'+sz/2+'px;top:-'+sz/2+'px;width:'+sz+'px;height:'+sz+'px;background:'+(Math.random()>0.5?'#555':'#888')+';';
+    box.appendChild(frag);
+    frag.animate([
+      {opacity:1, transform:'translate(0,0) rotate(0deg)'},
+      {opacity:0, transform:'translate('+dx+'px,'+dy+'px) rotate('+(360+Math.random()*360)+'deg)'}
+    ], {duration:800, fill:'forwards', easing:'cubic-bezier(0,0.5,0.3,1)', delay:50+Math.random()*100});
+  }
+  
+  // Central explosion
+  var exp = document.createElement('div');
+  exp.style.cssText = 'position:absolute;left:-15px;top:-15px;width:30px;height:30px;background:radial-gradient(circle,#fff,#c49b2a,#3d6b4f,transparent);border-radius:50%;';
+  box.appendChild(exp);
+  exp.animate([
+    {opacity:1, transform:'scale(0.5)'},
+    {opacity:0, transform:'scale(4)'}
+  ], {duration:600, fill:'forwards'});
+  
+  setTimeout(function() { if (box.parentNode) box.parentNode.removeChild(box); }, 1100);
+}
+
+/* ====== FOOTER CANVAS ====== */
+(function(){
+  var c = document.getElementById('footerCanvas');
+  if(!c) return;
+  var ctx = c.getContext('2d');
+  var w, h;
+  var stars = [];
+  var satellites = [];
+  
+  function resize(){
+    w = c.width = c.parentElement.offsetWidth;
+    h = c.height = c.parentElement.offsetHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+  
+  // Stars
+  for(var i=0;i<80;i++){
+    stars.push({
+      x: Math.random()*2000,
+      y: Math.random()*400,
+      r: 0.5 + Math.random()*1.5,
+      twinkle: Math.random()*Math.PI*2,
+      speed: 0.01 + Math.random()*0.03
+    });
+  }
+  
+  // Satellites (small moving dots)
+  for(var i=0;i<4;i++){
+    satellites.push({
+      x: Math.random()*2000,
+      y: 20 + Math.random()*100,
+      vx: 0.5 + Math.random()*1,
+      r: 1.5
+    });
+  }
+  
+  function draw(){
+    ctx.clearRect(0,0,w,h);
+    
+    // Stars
+    for(var i=0;i<stars.length;i++){
+      var s = stars[i];
+      s.twinkle += s.speed;
+      var a = 0.2 + Math.sin(s.twinkle)*0.3;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+      ctx.fillStyle = 'rgba(255,255,255,'+a+')';
+      ctx.fill();
+    }
+    
+    // Satellites
+    for(var i=0;i<satellites.length;i++){
+      var sat = satellites[i];
+      sat.x += sat.vx;
+      if(sat.x > w + 20) sat.x = -20;
+      
+      ctx.beginPath();
+      ctx.arc(sat.x, sat.y, sat.r, 0, Math.PI*2);
+      ctx.fillStyle = 'rgba(196,155,42,0.6)';
+      ctx.fill();
+      
+      // Laser beam from ground to satellite (occasionally)
+      if(Math.random() < 0.003){
+        ctx.beginPath();
+        ctx.moveTo(w*0.4, h);
+        ctx.lineTo(sat.x, sat.y);
+        ctx.strokeStyle = 'rgba(61,107,79,0.15)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      }
+    }
+    
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+</script>
+
+</body>
+</html>
