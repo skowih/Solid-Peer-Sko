@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solid Peer Research | Sko — PPIH: The Thermos That Heats the World</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #FAF6F0;
+  --bg-alt: #F2ECE3;
+  --surface: #FFFCF7;
+  --surface-raised: #EDE7DD;
+  --text: #1A1712;
+  --text-muted: #6B6358;
+  --primary: #B85C1F;
+  --primary-light: rgba(184,92,31,0.08);
+  --primary-dark: #8E4516;
+  --secondary: #2E7D4F;
+  --secondary-dark: #1E5A36;
+  --accent-red: #B83A2A;
+  --accent-green: #2E7D4F;
+  --accent-orange: #C77B2A;
+  --border: rgba(26,23,18,0.1);
+  --border-light: rgba(26,23,18,0.05);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;font-size:16px;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;-webkit-font-smoothing:antialiased;}
+h1,h2,h3{font-family:'Playfair Display',serif;font-weight:700;line-height:1.25;}
+h2{font-size:1.8rem;padding-bottom:12px;border-bottom:3px solid var(--primary);margin-top:0;margin-bottom:20px;}
+h3{font-size:1.25rem;margin-bottom:12px;color:var(--primary-dark);}
+h4{font-size:1.05rem;font-weight:600;margin-bottom:8px;}
+p{margin-bottom:14px;}
+a{color:var(--primary);text-decoration:none;}
+a:hover{color:var(--primary-dark);text-decoration:underline;}
+.container{max-width:1100px;margin:0 auto;padding:0 24px;}
+/* HERO */
+.hero{position:relative;background:linear-gradient(135deg,#1A1712 0%,#3D2B16 25%,#8E4516 55%,#B85C1F 80%,#D4752E 100%);color:#fff;padding:80px 0 50px;overflow:hidden;min-height:420px;}
+.hero .container{position:relative;z-index:2;}
+.hero-brand{font-family:'JetBrains Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:2px;opacity:0.7;margin-bottom:20px;}
+.hero h1{font-size:2.8rem;font-weight:900;margin-bottom:10px;text-shadow:0 2px 12px rgba(0,0,0,0.3);}
+.hero-hook{font-size:1.15rem;font-weight:300;opacity:0.85;margin-bottom:28px;max-width:700px;}
+.verdict-banner{background:linear-gradient(90deg,var(--primary-dark),var(--primary),#D4752E);border-radius:8px;padding:16px 24px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.5px;margin-bottom:30px;box-shadow:0 4px 20px rgba(0,0,0,0.3);}
+.hero-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+.hero-stat{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:10px;padding:18px;text-align:center;backdrop-filter:blur(10px);}
+.hero-stat-label{font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;opacity:0.6;margin-bottom:6px;}
+.hero-stat-value{font-family:'JetBrains Mono',monospace;font-size:1.7rem;font-weight:700;}
+.hero-stat-detail{font-size:11px;opacity:0.5;margin-top:4px;}
+#heroCanvas{position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;pointer-events:none;}
+/* NAV */
+.toc-bar{width:100%;position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:2px solid var(--primary);overflow-x:auto;white-space:nowrap;text-align:center;padding:14px 24px;box-sizing:border-box;-webkit-overflow-scrolling:touch;}
+.toc-bar::-webkit-scrollbar{height:4px;}
+.toc-bar::-webkit-scrollbar-thumb{background:var(--primary-dark);border-radius:2px;}
+.toc-bar::-webkit-scrollbar-track{background:transparent;}
+.toc-bar a{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px;padding:4px 14px;color:var(--text-muted);text-decoration:none;border-right:1px solid var(--border);}
+.toc-bar a:last-child{border-right:none;}
+.toc-bar a:hover{color:var(--primary);}
+@media(max-width:480px){.toc-bar{display:none;}}
+/* SECTIONS */
+.report-section{padding:30px 0;}
+.report-section + .report-section{border-top:1px solid var(--border-light);}
+.section-label{font-family:'JetBrains Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:2px;color:var(--primary);margin-bottom:8px;}
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:24px;margin-bottom:16px;}
+.card-accent{border-left:4px solid var(--primary);}
+.card-bull{background:rgba(46,125,79,0.04);border-left:4px solid var(--secondary);}
+.card-bear{background:rgba(184,58,42,0.04);border-left:4px solid var(--accent-red);}
+.card-neutral{background:var(--primary-light);border-left:4px solid var(--accent-orange);}
+/* TABLES */
+.table-wrap{overflow-x:auto;margin-bottom:16px;}
+table{width:100%;border-collapse:collapse;font-size:0.92rem;}
+thead th{background:var(--primary-dark);color:#fff;padding:10px 14px;text-align:left;font-family:'JetBrains Mono',monospace;font-size:0.8rem;text-transform:uppercase;letter-spacing:0.5px;}
+tbody td{padding:10px 14px;border-bottom:1px solid var(--border-light);}
+tbody tr:nth-child(odd){background:var(--bg);}
+tbody tr:nth-child(even){background:var(--bg-alt);}
+tbody tr:hover{background:var(--surface-raised);}
+/* GRIDS */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
+@media(max-width:768px){.grid-2,.grid-3,.hero-stats{grid-template-columns:1fr;}.hero h1{font-size:1.8rem;}}
+/* BADGES */
+.badge{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px;padding:3px 10px;border-radius:20px;margin-bottom:8px;}
+.badge-bull{background:rgba(46,125,79,0.12);color:var(--secondary-dark);}
+.badge-bear{background:rgba(184,58,42,0.12);color:var(--accent-red);}
+.badge-neutral{background:rgba(199,123,42,0.12);color:var(--accent-orange);}
+/* EMPHASIS */
+.alpha{color:var(--secondary);font-weight:600;}
+.shock{color:var(--accent-red);font-weight:600;}
+.primary-text{color:var(--primary);font-weight:600;}
+/* BLOCKQUOTE */
+blockquote{border-left:4px solid var(--primary);background:var(--bg-alt);padding:16px 20px;margin:16px 0;border-radius:0 8px 8px 0;font-style:italic;}
+blockquote cite{display:block;font-family:'JetBrains Mono',monospace;font-size:11px;font-style:normal;color:var(--text-muted);margin-top:8px;}
+/* PROGRESS */
+.progress-bar{height:10px;background:var(--bg-alt);border-radius:5px;overflow:hidden;margin:8px 0;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--primary-dark),var(--primary));border-radius:5px;transition:width 1s ease;}
+/* SIGNAL CARDS */
+.signal-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media(max-width:768px){.signal-grid{grid-template-columns:1fr;}}
+.signal-card{padding:20px;border-radius:10px;border:1px solid var(--border);}
+.signal-meta{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-muted);margin-top:10px;}
+/* ADVISORY */
+.advisory-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+@media(max-width:768px){.advisory-grid{grid-template-columns:1fr;}}
+.advisory-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;}
+.advisory-name{font-family:'Playfair Display',serif;font-weight:700;font-size:1.05rem;margin-bottom:4px;}
+.advisory-id{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-muted);margin-bottom:10px;}
+/* TEAR SHEET */
+.tear-sheet{background:var(--surface);border:2px solid var(--primary);border-radius:12px;padding:32px;margin:30px 0;}
+.tear-sheet-header{display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid var(--border);padding-bottom:16px;margin-bottom:20px;flex-wrap:wrap;gap:10px;}
+.tear-cols{display:grid;grid-template-columns:60% 40%;gap:24px;}
+@media(max-width:768px){.tear-cols{grid-template-columns:1fr;}}
+/* PROCESS CHAIN */
+.process-chain{display:flex;align-items:center;gap:0;margin:20px 0;overflow-x:auto;padding:10px 0;}
+.process-step{background:var(--primary-light);border:2px solid var(--primary);border-radius:10px;padding:14px 18px;text-align:center;font-size:0.85rem;font-weight:600;min-width:120px;position:relative;}
+.process-arrow{font-size:1.5rem;color:var(--primary);padding:0 6px;flex-shrink:0;}
+/* FOOTER */
+.site-footer{background:linear-gradient(135deg,#1A1712,#3D2B16);color:rgba(255,255,255,0.7);padding:60px 0 30px;position:relative;overflow:hidden;}
+.site-footer .container{position:relative;z-index:2;}
+.footer-brand{font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--primary);margin-bottom:8px;}
+.footer-tagline{font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,0.4);margin-bottom:20px;}
+.disclaimer{font-size:11px;color:rgba(255,255,255,0.35);line-height:1.6;margin-top:20px;padding-top:20px;border-top:1px solid rgba(255,255,255,0.1);}
+#footerCanvas{position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;pointer-events:none;}
+/* CATALYST TABLE */
+.catalyst-type{font-family:'JetBrains Mono',monospace;font-size:10px;padding:2px 8px;border-radius:10px;}
+.type-idio{background:rgba(184,92,31,0.1);color:var(--primary);}
+.type-industry{background:rgba(46,125,79,0.1);color:var(--secondary);}
+.type-secular{background:rgba(199,123,42,0.1);color:var(--accent-orange);}
+.type-geo{background:rgba(184,58,42,0.1);color:var(--accent-red);}
+/* SCENARIO EMOJI */
+.scenario-label{font-size:1.1rem;}
+/* SOURCES */
+.sources-section a{display:block;margin-bottom:6px;font-size:0.88rem;word-break:break-all;}
+.sources-section h4{margin-top:16px;}
+/* MISC */
+.mono{font-family:'JetBrains Mono',monospace;}
+.big-num{font-family:'JetBrains Mono',monospace;font-size:1.8rem;font-weight:700;}
+.small-muted{font-size:12px;color:var(--text-muted);}
+.mt-8{margin-top:8px;}.mt-16{margin-top:16px;}.mb-16{margin-bottom:16px;}
+.confidence-card{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;border-radius:12px;padding:32px;text-align:center;}
+.confidence-card .big-num{font-size:3rem;color:#fff;}
+.flex-between{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;}
+</style>
+</head>
+<body>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+<canvas id="heroCanvas"></canvas>
+<div class="container">
+<div class="hero-brand">Solid Peer Research | Sko · March 24, 2026</div>
+<h1>Perma-Pipe International Holdings (NASDAQ: PPIH)</h1>
+<p class="hero-hook">The invisible thermal arteries beneath $9 billion worth of data centers, oil fields, and desert megacities — and nobody on Wall Street is watching.</p>
+<div class="verdict-banner">🎯 INVESTMENT RATING: SPECULATIVE LONG — 68% Conviction | Expected 3-yr annualized return: ~22% vs S&amp;P 500 est. ~10% | P(outperform): 65%</div>
+<div class="hero-stats">
+<div class="hero-stat">
+<div class="hero-stat-label">Share Price</div>
+<div class="hero-stat-value">~$28</div>
+<div class="hero-stat-detail">52wk: $8.81–$36.48</div>
+</div>
+<div class="hero-stat">
+<div class="hero-stat-label">Backlog</div>
+<div class="hero-stat-value">$148.9M</div>
+<div class="hero-stat-detail">Up 30%+ YoY</div>
+</div>
+<div class="hero-stat">
+<div class="hero-stat-label">EV/EBITDA</div>
+<div class="hero-stat-value">~5.0x</div>
+<div class="hero-stat-detail">Cheapest among peers</div>
+</div>
+<div class="hero-stat">
+<div class="hero-stat-label">YTD Revenue</div>
+<div class="hero-stat-value">$155.8M</div>
+<div class="hero-stat-detail">9mo ended Oct 31 '25</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- ============ NAV ============ -->
+<div class="toc-bar">
+<a href="#s01">Overview</a>
+<a href="#s02">Industry</a>
+<a href="#s03">Vocab</a>
+<a href="#s04">How It Works</a>
+<a href="#s05">Products</a>
+<a href="#s06">Subs</a>
+<a href="#s07">Alpha Signals</a>
+<a href="#s08">Thesis</a>
+<a href="#s09">Bear Cases</a>
+<a href="#s10">Structure</a>
+<a href="#s11">Balance Sheet</a>
+<a href="#s12">Management</a>
+<a href="#s13">Growth</a>
+<a href="#s14">Moat</a>
+<a href="#s15">Tailwinds</a>
+<a href="#s16">Risks</a>
+<a href="#s17">Earnings Alpha</a>
+<a href="#s18">Advisors</a>
+<a href="#s19">Meme &amp; Shorts</a>
+<a href="#s20">Catalysts</a>
+<a href="#s21">Valuation</a>
+<a href="#s22">DCF</a>
+<a href="#s23">Value Chain</a>
+<a href="#s24">Options</a>
+<a href="#s25">Implementation</a>
+<a href="#s26">Confidence</a>
+</div>
+
+<div class="container">
+
+<!-- ============ S01: COMPANY OVERVIEW ============ -->
+<section class="report-section" id="s01">
+<div class="section-label">Section 01</div>
+<h2>🏢 Company Overview</h2>
+<p>Perma-Pipe International Holdings began life as MFRI, Inc., incorporated in Delaware in 1993. The company rebranded in March 2017, shedding its conglomerate past to focus purely on what it does best: engineering, designing, manufacturing, and selling specialty pre-insulated piping systems and leak detection technologies. Headquartered in The Woodlands, Texas, Perma-Pipe operates fourteen manufacturing and fabrication facilities across six countries — the United States, Canada, United Arab Emirates, Saudi Arabia, Egypt, and India.</p>
+<p>The company's trajectory over the past three years has been nothing short of transformational. Under former CEO David Mansfield (who retired in June 2025 after eight years), Perma-Pipe evolved from a niche North American piping manufacturer into a genuinely global infrastructure play. Revenue grew from $113M in FY2022 to an estimated $206M+ in FY2025. The backlog — the lifeblood metric for any project-driven industrial — exploded from $38.5M in 2022 to $148.9M at Q3 FY2025. The company was formerly known as MFRI, Inc. and renamed after its most valuable subsidiary, which tells you everything about where the value resides.</p>
+<p>New CEO Saleh Sagr, a 30-year energy and infrastructure veteran who joined Perma-Pipe in 2019, took the reins in June 2025. His background running the MENA region — where the company's most explosive growth has come from — makes the succession strategically coherent rather than ceremonial.</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Metric</th><th>FY2022 (Jan 31, '23)</th><th>FY2023 (Jan 31, '24)</th><th>FY2024 (Jan 31, '25)</th><th>FY2025 YTD (9mo Oct 31 '25)</th></tr></thead>
+<tbody>
+<tr><td>Revenue</td><td>$113.2M</td><td>$142.6M</td><td>$150.7M</td><td>$155.8M</td></tr>
+<tr><td>Net Income</td><td>$2.5M</td><td>$5.9M</td><td>$13.1M</td><td>$12.1M</td></tr>
+<tr><td>EPS (Diluted)</td><td>$0.31</td><td>$0.73</td><td>$1.63</td><td>$1.49</td></tr>
+<tr><td>Backlog</td><td>$38.5M</td><td>$68.4M</td><td>$138.1M</td><td>$148.9M</td></tr>
+<tr><td>Gross Margin</td><td>~28%</td><td>~30%</td><td>~33%</td><td>~33.5%</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<!-- ============ S02: INDUSTRY ============ -->
+<section class="report-section" id="s02">
+<div class="section-label">Section 02</div>
+<h2>🌍 Industry Context</h2>
+<div class="grid-2">
+<div class="card card-accent">
+<h4>Market Size</h4>
+<p>The global pre-insulated pipes market was valued at approximately <span class="primary-text">$6.8–$8.9 billion</span> in 2025, depending on the research firm. Growth estimates range from 5.7% to 11.7% CAGR through 2030, with consensus around 8–9%, implying a market worth $10–13 billion by 2030. Europe leads current installed base, but Middle East and Asia-Pacific are the fastest-growing regions.</p>
+</div>
+<div class="card card-accent">
+<h4>Why This Matters Now</h4>
+<p>Three structural forces are converging: (1) <span class="alpha">AI data center boom</span> requiring massive liquid cooling piping, (2) <span class="alpha">Saudi Vision 2030</span> and Gulf megaprojects driving unprecedented infrastructure spend in MENA, and (3) global energy efficiency mandates pushing district heating/cooling modernization. Perma-Pipe sits at the intersection of all three.</p>
+</div>
+</div>
+<p>The industry is fragmented across ~15 meaningful players globally, with LOGSTOR (Denmark) as the legacy leader and Georg Fischer/GF Piping Systems (which acquired Uponor in 2023) as the largest conglomerate participant. Most competitors are either European-focused private companies or divisions of larger industrial groups. Perma-Pipe is distinctive in being one of the few pure-play, publicly traded pre-insulated piping companies with both North American and MENA manufacturing capabilities.</p>
+</section>
+
+<!-- ============ S03: VOCABULARY ============ -->
+<section class="report-section" id="s03">
+<div class="section-label">Section 03</div>
+<h2>📖 Vocabulary &amp; Lore</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Term</th><th>Definition</th></tr></thead>
+<tbody>
+<tr><td><strong>Pre-Insulated Pipe (PIP)</strong></td><td>Factory-built system: carrier pipe + polyurethane foam insulation + outer HDPE jacket. Think of a thermos, but 40 feet long and buried underground.</td></tr>
+<tr><td><strong>District Heating/Cooling (DHC)</strong></td><td>Central plant generates hot/cold water and distributes it via underground piping to buildings. Far more efficient than individual boilers/chillers per building.</td></tr>
+<tr><td><strong>Leak Detection System (LDS)</strong></td><td>Copper wires embedded in insulation that detect moisture intrusion. Perma-Pipe's proprietary system pinpoints leaks to within centimeters.</td></tr>
+<tr><td><strong>Backlog</strong></td><td>Contracted but undelivered orders. The single most important forward indicator for project-driven industrials.</td></tr>
+<tr><td><strong>MENA</strong></td><td>Middle East and North Africa — Perma-Pipe's fastest-growing region (UAE, Saudi, Egypt, India, Qatar).</td></tr>
+<tr><td><strong>Saudi Aramco Approval</strong></td><td>Formal technical + commercial certification allowing a vendor to bid on Saudi Aramco projects. Extremely hard to obtain; took Perma-Pipe years.</td></tr>
+<tr><td><strong>Tawteen</strong></td><td>Qatar's industrial localization program. Perma-Pipe's acceptance enables local manufacturing and preferential treatment for Qatari projects.</td></tr>
+<tr><td><strong>Containment Piping</strong></td><td>Pipe-in-pipe secondary containment system for hazardous fluids. Mandated by EPA for chemical/petroleum transport. High-margin product.</td></tr>
+<tr><td><strong>Anti-Corrosion Coating</strong></td><td>Liquid/powder coating applied to pipe exteriors/interiors to prevent degradation. A growing service line, especially for oil &amp; gas transmission.</td></tr>
+<tr><td><strong>Book-to-Bill Ratio</strong></td><td>New orders ÷ revenue. Above 1.0 = backlog growing. PPIH's is running well above 1.0x in FY2025.</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<!-- ============ S04: HOW IT WORKS ============ -->
+<section class="report-section" id="s04">
+<div class="section-label">Section 04</div>
+<h2>🔬 How It Actually Works</h2>
+<h3>The Core Process</h3>
+<p>Imagine you need to move 200°F water three miles underground from a central cooling plant to forty buildings in a Middle Eastern city, or 40°F chilled water through the mechanical guts of a hyperscale data center. You can't use bare steel pipe — heat would bleed into the surrounding soil in the first hundred meters, and the pipe would corrode within years. You need what is essentially a giant thermos flask, manufactured in 40-foot sections, factory-sealed to near-perfect thermal efficiency, with embedded sensors that scream if a single drop of moisture reaches the carrier pipe.</p>
+<p>That's what Perma-Pipe builds. A carrier pipe (steel, copper, or plastic depending on application) is centered inside a larger outer jacket (typically HDPE plastic). The annular space between them is filled with rigid polyurethane foam — the same insulation in your refrigerator, but engineered to withstand burial loads, thermal cycling, and decades of continuous operation. Copper sensor wires are threaded through the foam for real-time leak monitoring. The whole assembly is fused into a monolithic unit at the factory, not taped together in a trench.</p>
+
+<h3>Visual: The Manufacturing Process</h3>
+<div class="process-chain">
+<div class="process-step">🔩 Raw Steel Pipe</div>
+<div class="process-arrow">→</div>
+<div class="process-step">🧹 Surface Prep &amp; Anti-Corrosion Coating</div>
+<div class="process-arrow">→</div>
+<div class="process-step">🔌 Leak Detection Wire Install</div>
+<div class="process-arrow">→</div>
+<div class="process-step">🧊 PU Foam Injection &amp; Curing</div>
+<div class="process-arrow">→</div>
+<div class="process-step">🛡️ HDPE Jacket Extrusion</div>
+<div class="process-arrow">→</div>
+<div class="process-step">✅ QC Testing &amp; Shipment</div>
+</div>
+
+<h3>Why It's Hard to Copy</h3>
+<p>The barrier isn't any single technology — it's the <em>system integration</em>. Getting polyurethane foam density, adhesion, and cell structure right across pipe diameters from 2 inches to 60+ inches, at production speeds, while maintaining leak-detection wire integrity, requires decades of process know-how. The foam pour is done in heated, pressurized molds and the cure profile must be precisely controlled — too fast and you get voids, too slow and throughput collapses. Add in the engineering capability to custom-design systems for specific thermal profiles, burial depths, and operating pressures, and you have a product that generic pipe fabricators simply cannot replicate without years of trial-and-error and customer qualification cycles.</p>
+
+<div class="card card-accent">
+<h4>The Key Metric That Matters</h4>
+<div class="grid-2">
+<div><span class="mono small-muted">THERMAL CONDUCTIVITY (λ)</span><br><span class="big-num">0.023 W/mK</span><br><span class="small-muted">Perma-Pipe PU Foam</span></div>
+<div><span class="mono small-muted">INDUSTRY AVERAGE</span><br><span class="big-num">0.026 W/mK</span><br><span class="small-muted">Lower = better insulation</span></div>
+</div>
+</div>
+</section>
+
+<!-- ============ S05: PRODUCTS ============ -->
+<section class="report-section" id="s05">
+<div class="section-label">Section 05</div>
+<h2>🏭 Product &amp; Service Portfolio</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Product Line</th><th>Description</th><th>Key Markets</th><th>Est. Revenue %</th></tr></thead>
+<tbody>
+<tr><td><strong>Pre-Insulated Piping (DHC)</strong></td><td>Insulated/jacketed systems for district heating &amp; cooling</td><td>MENA, N. America, India</td><td>~50%</td></tr>
+<tr><td><strong>Oil &amp; Gas Coatings</strong></td><td>Anti-corrosion coatings for gathering/transmission pipelines</td><td>Saudi Arabia, UAE, Canada</td><td>~20%</td></tr>
+<tr><td><strong>Containment Systems</strong></td><td>Double-wall pipe-in-pipe for hazardous fluid containment</td><td>US, Canada</td><td>~12%</td></tr>
+<tr><td><strong>Leak Detection Systems</strong></td><td>Proprietary copper-wire sensor systems + data center cooling leak detection</td><td>Global, growing in AI/DC</td><td>~8%</td></tr>
+<tr><td><strong>Custom Fabrication</strong></td><td>Engineered fittings, bends, tees for complex installations</td><td>Global</td><td>~10%</td></tr>
+</tbody>
+</table>
+</div>
+<div class="card card-accent">
+<h4>👑 Crown Jewel: AI Data Center Liquid Cooling Piping</h4>
+<p>This is the emerging growth vector. As hyperscale data centers shift from air cooling to liquid cooling (required by GPU-dense AI compute racks generating 50–100kW per rack), they need pre-insulated chilled water loops with zero-tolerance leak detection. Perma-Pipe's existing piping and LDS capabilities translate almost directly to this market. The company secured major U.S. data center infrastructure awards in Q3 2025 and is building a new Northeast facility specifically to serve this demand. This wasn't on anyone's radar 18 months ago.</p>
+</div>
+</section>
+
+<!-- ============ S06: SUBS ============ -->
+<section class="report-section" id="s06">
+<div class="section-label">Section 06</div>
+<h2>🏗️ Subsidiaries &amp; Global Footprint</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Entity/Location</th><th>Region</th><th>Function</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Perma-Pipe Inc. (Lebanon, TN)</td><td>North America</td><td>Primary US manufacturing</td><td>Operational</td></tr>
+<tr><td>Perma-Pipe Canada (Vars, ON)</td><td>North America</td><td>Eastern Canada manufacturing</td><td>Full production since FY2024</td></tr>
+<tr><td>New Northeast Facility (TBD)</td><td>North America</td><td>AI/Data center + DHC</td><td>Operational Q2 2026</td></tr>
+<tr><td>Perma-Pipe MENA (Abu Dhabi, UAE)</td><td>MENA</td><td>Regional HQ + manufacturing</td><td>Operational</td></tr>
+<tr><td>Perma-Pipe Fujairah (UAE)</td><td>MENA</td><td>Manufacturing</td><td>Operational</td></tr>
+<tr><td>Medina/Dammam Facilities (Saudi)</td><td>MENA</td><td>JV/new facility for Saudi Aramco</td><td>Saudi Aramco approved Sep 2025</td></tr>
+<tr><td>Qatar Facility</td><td>MENA</td><td>Tawteen program manufacturing</td><td>Setup in progress</td></tr>
+<tr><td>Egypt Operations</td><td>MENA</td><td>Manufacturing</td><td>Operational</td></tr>
+<tr><td>India Operations</td><td>Asia</td><td>Manufacturing</td><td>Operational</td></tr>
+</tbody>
+</table>
+</div>
+<p>The Saudi joint venture with Gulf Insulation Group, established June 2023, is particularly important. Perma-Pipe holds majority control and the JV enabled the critical Saudi Aramco technical/commercial approval in September 2025 — unlocking the largest pipe coating market in the Middle East.</p>
+</section>
+
+<!-- ============ S07: ALPHA SIGNALS ============ -->
+<section class="report-section" id="s07">
+<div class="section-label">Section 07</div>
+<h2>⚡ Non-Consensus Alpha Signals</h2>
+<div class="signal-grid">
+
+<div class="signal-card card-bull">
+<span class="badge badge-bull">🟢 BULL</span>
+<h4>#1: AI Data Center Piping Is a Category-Creator</h4>
+<p>Consensus views PPIH as a boring industrial pipe company. But liquid cooling in AI data centers is a structural $100B+ infrastructure buildout, and pre-insulated chilled water piping with embedded leak detection is a critical sub-system. Perma-Pipe is already winning major U.S. data center contracts and building a dedicated Northeast facility. This market didn't exist 3 years ago. Second-order: as data centers mature, leak detection-as-a-service creates recurring revenue.</p>
+<div class="signal-meta">Impact: 25% | Conviction: 70% | Timeline: 12–36 months</div>
+</div>
+
+<div class="signal-card card-bull">
+<span class="badge badge-bull">🟢 BULL</span>
+<h4>#2: Saudi Aramco Approval = Market Access Step-Change</h4>
+<p>Getting approved as a Saudi Aramco vendor takes years. The September 2025 approval gives Perma-Pipe direct access to the largest pipe coating market in the Middle East. Previously confined to DHC work in Saudi, the company can now bid on oil &amp; gas transmission coating contracts — a market several times larger. Second-order: Aramco approval becomes a reference credential for other Gulf national oil companies.</p>
+<div class="signal-meta">Impact: 20% | Conviction: 80% | Timeline: 6–24 months</div>
+</div>
+
+<div class="signal-card card-bull">
+<span class="badge badge-bull">🟢 BULL</span>
+<h4>#3: Backlog Inflection Signals Durable Demand, Not Just a Cycle</h4>
+<p>The 287% backlog growth from $38.5M (2022) to $148.9M (Q3 2025) is not a one-time pop — it's the result of systematically opening new geographies (Saudi, Qatar), new end-markets (data centers), and new product qualifications (Aramco coating). Book-to-bill is running well above 1.0x. The market is pricing this as cyclical. It's increasingly structural.</p>
+<div class="signal-meta">Impact: 15% | Conviction: 75% | Timeline: Ongoing</div>
+</div>
+
+<div class="signal-card card-bull">
+<span class="badge badge-bull">🟢 BULL</span>
+<h4>#4: Strategic Alternatives Review Created a Valuation Floor</h4>
+<p>The board hired Energy Capital Solutions, opened a virtual data room, and spent six months evaluating a full range of alternatives including a sale. They concluded staying independent was the best path — but the process itself confirmed that sophisticated financial buyers saw enough value to engage. This creates a floor under the stock: if it dips meaningfully, the board has already demonstrated willingness to consider a sale.</p>
+<div class="signal-meta">Impact: 10% | Conviction: 65% | Timeline: 0–18 months</div>
+</div>
+
+<div class="signal-card card-bull">
+<span class="badge badge-bull">🟢 BULL</span>
+<h4>#5: Operating Leverage Is Just Starting</h4>
+<p>Gross margins expanded from ~28% to ~34% as revenue scaled from $113M to $206M. With new facilities (Saudi, Qatar, Northeast US) online and backlog converting, the fixed-cost base is spread across a much larger revenue base. Operating margins have room to expand from ~12% to 15%+ without heroic assumptions.</p>
+<div class="signal-meta">Impact: 15% | Conviction: 70% | Timeline: 12–24 months</div>
+</div>
+
+<div class="signal-card card-bull">
+<span class="badge badge-bull">🟢 BULL</span>
+<h4>#6: Nobody Covers This Stock</h4>
+<p>Zero sell-side analyst coverage. No institutional investor conferences. No Wall Street consensus estimates. A $240M market cap company growing revenue 37% YoY with 5x EV/EBITDA is simply invisible. Discovery risk is 100% to the upside.</p>
+<div class="signal-meta">Impact: 15% | Conviction: 60% | Timeline: 6–18 months</div>
+</div>
+
+<div class="signal-card card-bull">
+<span class="badge badge-bull">🟢 BULL</span>
+<h4>#7: Vision 2030 + NEOM Create Multi-Year MENA Tailwind</h4>
+<p>Saudi Arabia alone is spending $1.3 trillion on megaprojects through 2030. NEOM, The Line, Qiddiya, Red Sea Global — all require massive piping infrastructure. Perma-Pipe has NEOM and Lusail City as reference projects. This is a 5-10 year demand runway, not a one-year cycle.</p>
+<div class="signal-meta">Impact: 20% | Conviction: 70% | Timeline: 12–60 months</div>
+</div>
+
+<div class="signal-card card-bear">
+<span class="badge badge-bear">🔴 BEAR</span>
+<h4>#8: CEO Transition Risk Is Real</h4>
+<p>Mansfield's departure was described as a "retirement" but his actual exit in June 2025 — earlier than the announced November date — raises questions. The one-time $2.1M accelerated compensation charge suggests friction. New CEO Sagr is experienced but untested as a public company CEO. Execution risk during leadership change is real.</p>
+<div class="signal-meta">Impact: -10% | Conviction: 55% | Timeline: 0–12 months</div>
+</div>
+
+<div class="signal-card card-bear">
+<span class="badge badge-bear">🔴 BEAR</span>
+<h4>#9: Project Concentration = Lumpy Earnings</h4>
+<p>Revenue is project-driven and MENA-concentrated. One cancelled megaproject, one delayed payment, or one geopolitical disruption in the Gulf could create a nasty earnings miss. Q2 FY2025 already showed how one-time charges can crush a quarter ($2.1M CEO charge + Qatar setup costs).</p>
+<div class="signal-meta">Impact: -15% | Conviction: 60% | Timeline: Ongoing</div>
+</div>
+
+<div class="signal-card card-bear">
+<span class="badge badge-bear">🔴 BEAR</span>
+<h4>#10: Steel Price and FX Exposure</h4>
+<p>Steel is the primary raw material. A steel price spike compresses margins before Perma-Pipe can reprice contracts. Additionally, MENA revenue is earned in AED/SAR/EGP but reported in USD. Egyptian pound devaluation has historically created FX translation headwinds.</p>
+<div class="signal-meta">Impact: -10% | Conviction: 50% | Timeline: Ongoing</div>
+</div>
+
+<div class="signal-card card-neutral">
+<span class="badge badge-neutral">⚪ NEUTRAL</span>
+<h4>#11: Strategic Alternatives Conclusion — Glass Half Full or Empty?</h4>
+<p>The board concluded that remaining independent is the best path. Optimists say this means organic growth potential exceeds takeout premium. Pessimists say nobody offered a price high enough. The truth is probably that offers came in below the board's expectations, which means the market isn't yet valuing the AI/data center opportunity.</p>
+<div class="signal-meta">Impact: ±5% | Conviction: 50% | Timeline: 0–12 months</div>
+</div>
+
+</div>
+</section>
+
+<!-- ============ S08: THESIS ============ -->
+<section class="report-section" id="s08">
+<div class="section-label">Section 08</div>
+<h2>🎯 Synthesized Investment Thesis</h2>
+<div class="card card-bull">
+<h3>The Bull Case</h3>
+<p>Perma-Pipe is a rare animal: a $240 million market cap industrial company that is simultaneously a picks-and-shovels play on three of the decade's most powerful infrastructure megatrends — AI data center buildout, Middle East megaproject construction, and global energy efficiency mandates — while trading at a fraction of the multiples its growth profile deserves.</p>
+<p>The company has executed a textbook geographic and end-market expansion over the past three years: backlog up 287%, revenue inflecting to 37%+ growth, margins expanding, and new market access unlocked (Saudi Aramco, Qatar Tawteen, U.S. data centers). It has a new CEO with deep MENA expertise, a board that just ran a full strategic review (creating a valuation floor), and zero sell-side coverage — meaning the discovery runway is essentially untouched.</p>
+<p>The critical insight is that the market still prices PPIH as a cyclical small-cap industrial. But the convergence of structural end-market growth (data centers, Vision 2030), geographic diversification, and a product set with genuine engineering moats suggests this is a growth compounder hiding in an industrial wrapper. At 5x EV/EBITDA and 11x trailing earnings, the risk/reward is asymmetric to the upside.</p>
+</div>
+<div class="card card-accent mt-16">
+<h4>The Disconnect</h4>
+<p><strong>Market prices in:</strong> Cyclical small-cap industrial with lumpy project revenue and MENA geopolitical risk.<br>
+<strong>We believe:</strong> Structural growth compounder at an inflection point, with 70% probability of re-rating to 8–10x EV/EBITDA within 24 months as data center revenue becomes visible and the FY2025 earnings run-rate ($2.00+ EPS) gets priced, because: (A) backlog conversion ensures $200M+ revenue floor for FY2025 and likely $220M+ for FY2026, (B) AI data center piping creates a secular growth vector that transforms the narrative, and (C) the strategic review process exposed the company to institutional investors for the first time.</p>
+</div>
+</section>
+
+<!-- ============ S09: BEAR CASES ============ -->
+<section class="report-section" id="s09">
+<div class="section-label">Section 09</div>
+<h2>🐻 Proposed Ironclad Bear Cases</h2>
+
+<div class="card card-bear">
+<h4>🐻 Bear Case #1: MENA Geopolitical Shock Freezes Project Pipeline</h4>
+<p>A significant escalation in Middle East conflict — broader regional war, disruption to Gulf shipping, or a sudden reversal in Saudi/UAE infrastructure spending — could freeze Perma-Pipe's fastest-growing region overnight. MENA represents the majority of backlog growth. The company's March 2026 press release specifically addresses this concern, noting "business continuity plans" — which itself signals they view it as a live risk. If MENA projects halt for even two quarters, revenue could drop 25%+ and margins would compress severely as fixed costs in Abu Dhabi, Saudi, and Egypt still need to be covered.</p>
+<p><strong>Possible Debunk:</strong> Perma-Pipe has operated in the Middle East through multiple conflicts over decades. The March 2026 update explicitly stated operations remain unaffected by regional conflicts. Additionally, projects like NEOM and Saudi Vision 2030 are domestic priorities unlikely to be cancelled even during regional tensions. The U.S./Canada business provides a partial floor. Still, this risk is real and unhedgeable.</p>
+</div>
+
+<div class="card card-bear">
+<h4>🐻 Bear Case #2: The Data Center Narrative Is Overhyped</h4>
+<p>Perma-Pipe is increasingly positioned as an "AI infrastructure play," but the actual revenue from data center projects is still a small fraction of the total. The Northeast facility investment is a bet that data center liquid cooling demand will materialize at scale. If AI capex cools, or if major data center builders vertically integrate cooling infrastructure, or if air cooling maintains viability longer than expected, this entire growth vector could disappoint. The stock has already rallied significantly on this narrative, creating downside if execution lags.</p>
+<p><strong>Possible Debunk:</strong> The company has already won major contracts and the facility is targeted at an operational market, not speculative demand. But the concern that narrative outpaces fundamentals has merit — at least near-term.</p>
+</div>
+
+<div class="card card-bear">
+<h4>🐻 Bear Case #3: Illiquidity Traps Investors in a Downturn</h4>
+<p>PPIH trades only ~35,000 shares/day. With 7.98M shares outstanding and significant insider/index fund ownership, the float is thin. In a selloff, there simply aren't enough bids to absorb institutional selling. The stock dropped from ~$36 to ~$28 in weeks in early 2026. For any meaningfully sized position, exit liquidity during a panic would be severely constrained.</p>
+<p><strong>Possible Debunk:</strong> Illiquidity is the friend of patient long-term holders — it's what allows the stock to remain undervalued in the first place. The strategic alternatives review likely introduced the company to new institutional buyers. But for position sizing, this is a real constraint.</p>
+</div>
+
+<div class="card card-bear">
+<h4>🐻 Bear Case #4: Working Capital Consumption Offsets Growth</h4>
+<p>The rapid revenue growth has come with ballooning receivables and unbilled revenue — unbilled AR alone reached $23.3M by April 2025. International project billing cycles are notoriously long, and collection risk in MENA is real (the 10-K specifically warns about a long-term receivable collection challenge). Rapid growth that doesn't convert to cash is value-destructive.</p>
+<p><strong>Possible Debunk:</strong> Operating cash flow has been positive and growing. The company's current ratio of 2.0x is healthy. But the concern about working capital intensity scaling with revenue is legitimate for any project-based international industrial.</p>
+</div>
+
+<h3 class="mt-16">Pre-Mortem Analysis</h3>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Failure Path</th><th>Probability</th><th>Price Impact</th><th>Mitigant</th></tr></thead>
+<tbody>
+<tr><td>MENA conflict halts 50%+ of backlog</td><td>10%</td><td>-35% to $18</td><td>N.A. business + contractual protections</td></tr>
+<tr><td>Data center pivot underwhelms for 2+ years</td><td>20%</td><td>-20% to $22</td><td>Core DHC/O&G business still growing</td></tr>
+<tr><td>New CEO stumbles on execution</td><td>15%</td><td>-25% to $21</td><td>Strong SVP team (Huber, Sharkawi)</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Combined bear scenario probability:</strong> ~25% chance of a &gt;20% drawdown from current levels. However, the asymmetry favors longs: bull scenarios offer 50–100% upside vs. bear scenarios of 20–35% downside. Kelly Criterion supports a position, albeit modestly sized given illiquidity.</p>
+</section>
+
+<!-- ============ S10: SHARE STRUCTURE ============ -->
+<section class="report-section" id="s10">
+<div class="section-label">Section 10</div>
+<h2>📊 Share Structure &amp; Microstructure</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Metric</th><th>Value</th></tr></thead>
+<tbody>
+<tr><td>Shares Outstanding</td><td>7,982,568 (as of Apr 21, 2025)</td></tr>
+<tr><td>Diluted Shares</td><td>~8,015,000</td></tr>
+<tr><td>Restricted Stock Outstanding</td><td>~187,000</td></tr>
+<tr><td>Stock Options Outstanding</td><td>Minimal (~2,000)</td></tr>
+<tr><td>Short Interest</td><td>45,553 shares (0.57% of float)</td></tr>
+<tr><td>Average Daily Volume</td><td>~35,000 shares</td></tr>
+<tr><td>Beta</td><td>0.22</td></tr>
+<tr><td>5%+ Holders</td><td>Dimensional Fund Advisors (~5.6%)</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Soros Reflexivity Loop:</strong> PPIH is in the early stages of a positive reflexive loop. Rising stock price → increased visibility → potential index/ETF inclusion → improved liquidity → analyst coverage → further institutional buying → higher multiples → higher stock price. The strategic alternatives review accelerated this loop by introducing the company to institutional buyers for the first time. The risk is the reverse: any stumble breaks the positive feedback before it's self-sustaining.</p>
+<p><strong>Marathon Capital Cycle Positioning:</strong> Pre-insulated piping manufacturing requires significant capital investment in facilities and equipment, creating a 2–3 year lag between demand and supply response. Perma-Pipe invested early (Dammam, Vars, Qatar, Northeast) and is now capitalizing on demand that competitors cannot quickly serve. We're in the "harvesting" phase of the capital cycle — high utilization, rising margins, and competitors unable to respond quickly.</p>
+</section>
+
+<!-- ============ S11: BALANCE SHEET ============ -->
+<section class="report-section" id="s11">
+<div class="section-label">Section 11</div>
+<h2>💰 Balance Sheet Deep Dive</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Item</th><th>Jan 31, 2025</th><th>Apr 30, 2025</th></tr></thead>
+<tbody>
+<tr><td>Cash &amp; Equivalents</td><td>$15.7M</td><td>$18.8M</td></tr>
+<tr><td>Restricted Cash</td><td>$1.4M</td><td>$1.4M</td></tr>
+<tr><td>Total Current Assets</td><td>$108.8M</td><td>$120.7M</td></tr>
+<tr><td>Total Assets</td><td>$165.2M</td><td>$178.3M</td></tr>
+<tr><td>Total Debt (incl. revolvers)</td><td>$33.3M</td><td>$35.5M</td></tr>
+<tr><td>Net Debt</td><td>~$17.5M</td><td>~$16.7M</td></tr>
+<tr><td>Total Current Liabilities</td><td>$54.1M</td><td>$63.5M</td></tr>
+<tr><td>Shareholders' Equity</td><td>~$77M</td><td>~$82M</td></tr>
+<tr><td>Current Ratio</td><td>2.01x</td><td>1.90x</td></tr>
+<tr><td>Debt/Equity</td><td>0.40x</td><td>~0.43x</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Going Concern:</strong> None. The balance sheet is solid. Net debt of $17.5M against trailing EBITDA of ~$25M (0.7x leverage) is conservative for an industrial. The company never declared a cash dividend and management stated in the 10-K that it retains all cash for growth and potential buybacks.</p>
+<p><strong>Hidden Asset:</strong> The 102% backlog increase (to $138.1M at FY end, $148.9M at Q3) represents approximately $65M in future gross profit that is contracted but hasn't yet flowed through the P&amp;L. At a 33% gross margin, that's roughly $49M in gross profit embedded in the backlog.</p>
+<p><strong>PE Acquisition Target Analysis:</strong> At ~$240M market cap + $17.5M net debt = $257M EV. A PE buyer could lever this to 3x EBITDA (~$75M debt) and still have a healthy balance sheet. At a 30–40% premium ($32–37/share), EV/EBITDA would be 7–8x — still cheap for a growing industrial with 14 global facilities and blue-chip customers. This is precisely the profile that middle-market PE firms target.</p>
+</section>
+
+<!-- ============ S12: MANAGEMENT ============ -->
+<section class="report-section" id="s12">
+<div class="section-label">Section 12</div>
+<h2>👔 Management, Incentives &amp; Alignment</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Name</th><th>Title</th><th>Since</th><th>Background</th></tr></thead>
+<tbody>
+<tr><td><strong>Saleh Sagr</strong></td><td>President &amp; CEO</td><td>CEO June 2025 (joined 2019)</td><td>30+ yrs energy/infrastructure; ex-SVP MENA at Perma-Pipe</td></tr>
+<tr><td><strong>Adham Sharkawi</strong></td><td>SVP, MENA</td><td>Promoted 2025</td><td>Ran regional ops; Perma-Pipe veteran</td></tr>
+<tr><td><strong>Marc Huber</strong></td><td>SVP, Americas</td><td>Onboarded 2025</td><td>New hire to accelerate North American growth</td></tr>
+<tr><td><strong>Richard Sherrill</strong></td><td>Board Director</td><td>Dec 2025</td><td>SVP at Howard Energy Partners; Talos Energy board</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>Key Management Quotes</h3>
+<blockquote>"Year-to-date net income has exceeded full-year fiscal 2024 results with one quarter remaining in fiscal 2025... net income attributable to common stock for the three and nine months ended October 31, 2025, represents the highest level of earnings since the Company's transition from MFRI to Perma-Pipe in 2017."<cite>— Saleh Sagr, CEO, Q3 FY2025 Earnings Release, December 12, 2025</cite></blockquote>
+<blockquote>"Securing Saudi Aramco approval is another example of our successful business plan execution, including geographic, market and product expansion, which has resulted in rapidly increasing backlog and profitable growth."<cite>— Saleh Sagr, CEO, Saudi Aramco Approval Announcement, September 24, 2025</cite></blockquote>
+<blockquote>"These awards underscore the accelerating demand we're seeing across mission-critical infrastructure, especially in the data center sector."<cite>— Marc Huber, SVP North America, $52M Q3 Awards Announcement, December 3, 2025</cite></blockquote>
+
+<h3>Incentive Alignment</h3>
+<p><strong>CEO Compensation (FY2024):</strong> Under Mansfield, total CEO comp was approximately $1.1M (base + bonus + restricted stock). Equity grants vest over 1–4 year periods. The $2.1M one-time charge in Q2 FY2025 was accelerated compensation upon Mansfield's departure, suggesting a portion of his equity was performance-vested.</p>
+<p><strong>Insider Ownership:</strong> Based on the most recent proxy, officers and directors collectively held approximately 4–5% of outstanding shares (Mansfield held 43,808 vested shares + options; Sagr held 2,606 shares at FY2023 end, with additional restricted stock grants since). The 2024 Omnibus Equity Plan was approved by shareholders, and 90,000 new restricted shares were granted in FY2025.</p>
+<p><strong>Recent Insider Activity:</strong> Mansfield's shares vested upon departure. No significant open-market selling by current management identified. Richard Sherrill received a 1,536-share initial grant upon joining the board in December 2025.</p>
+<p><strong>Verdict: <span class="primary-text">PARTIALLY ALIGNED</span></strong> — Insider ownership is modest but growing via equity grants. The restricted stock program ties management to multi-year performance. The lack of significant open-market buying by the new CEO is a mild negative — we'd like to see Sagr add to his personal position. No major red flags (no repricing, no related-party transactions identified).</p>
+
+<h3>New Talent for Growth</h3>
+<p>The hiring of Marc Huber as SVP Americas in 2025 was a targeted move — bringing in a dedicated leader for the North American business signals intent to professionalize and scale the U.S./Canada operations alongside MENA growth. The appointment of Richard Sherrill to the board (December 2025) adds energy sector M&amp;A expertise via his Talos Energy background. These aren't defensive hires — they're growth hires.</p>
+</section>
+
+<!-- ============ S13: GROWTH ============ -->
+<section class="report-section" id="s13">
+<div class="section-label">Section 13</div>
+<h2>📈 Growth Analysis</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Fiscal Year</th><th>Revenue</th><th>YoY Growth</th><th>Backlog (Year-End)</th><th>Backlog/Revenue</th></tr></thead>
+<tbody>
+<tr><td>FY2022 (Jan 31, '23)</td><td>$113.2M</td><td>—</td><td>$38.5M</td><td>0.34x</td></tr>
+<tr><td>FY2023 (Jan 31, '24)</td><td>$142.6M</td><td>+26%</td><td>$68.4M</td><td>0.48x</td></tr>
+<tr><td>FY2024 (Jan 31, '25)</td><td>$150.7M</td><td>+6%</td><td>$138.1M</td><td>0.92x</td></tr>
+<tr><td>FY2025E (Jan 31, '26)</td><td>~$206M</td><td>+37%</td><td>~$150M (est.)</td><td>0.73x</td></tr>
+<tr><td>FY2026E (Jan 31, '27)</td><td>~$230M</td><td>+12%</td><td>~$160M (est.)</td><td>0.70x</td></tr>
+</tbody>
+</table>
+</div>
+<p>The backlog-to-revenue ratio approaching 1.0x is powerful: it means the company has nearly a full year of revenue visibility before winning a single new contract. This is exceptional for a sub-$250M market cap industrial.</p>
+
+<div class="grid-3 mt-16">
+<div class="card card-accent">
+<h4>Near-Term TAM (0–2 yrs)</h4>
+<p class="big-num">$2.5B</p>
+<p class="small-muted">N. America DHC + data center + O&G coating in Saudi. Perma-Pipe share: ~8%</p>
+</div>
+<div class="card card-accent">
+<h4>Medium-Term TAM (2–5 yrs)</h4>
+<p class="big-num">$5B</p>
+<p class="small-muted">Add Qatar, broader Gulf O&G, India industrial, EU district heating modernization</p>
+</div>
+<div class="card card-accent">
+<h4>Long-Term TAM (5–10 yrs)</h4>
+<p class="big-num">$9–13B</p>
+<p class="small-muted">Full global pre-insulated pipe market including data center cooling as a mature vertical</p>
+</div>
+</div>
+</section>
+
+<!-- ============ S14: MOAT ============ -->
+<section class="report-section" id="s14">
+<div class="section-label">Section 14</div>
+<h2>🏰 Moat Analysis</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Dimension</th><th>Strength</th><th>Evidence</th></tr></thead>
+<tbody>
+<tr><td>Technology/Engineering</td><td>Moderate-High</td><td>Proprietary LDS, foam formulations, decades of process IP. Not patentable but extremely hard to replicate at quality.</td></tr>
+<tr><td>Switching Costs</td><td>High</td><td>Projects are multi-year; switching vendors mid-project is virtually impossible. Qualification cycles with clients like Saudi Aramco take years.</td></tr>
+<tr><td>Regulatory/Certification</td><td>High</td><td>Saudi Aramco approval, Qatar Tawteen, EPA containment certifications — each is a multi-year, non-transferable barrier.</td></tr>
+<tr><td>Scale/Geographic</td><td>Moderate</td><td>14 facilities across 6 countries enables local manufacturing — critical for MENA "local content" requirements. Competitors can't easily replicate.</td></tr>
+<tr><td>Network Effects</td><td>Low</td><td>Not a platform business. However, reference projects (NEOM, Lusail City) create cascade effects in client acquisition.</td></tr>
+<tr><td>Monopoly Position</td><td>Low-Moderate</td><td>Largest pre-insulated piping manufacturer in North America. Not a monopoly but dominant in specific niches (containment piping, MENA DHC).</td></tr>
+</tbody>
+</table>
+</div>
+<h3>Competitor Comparison</h3>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Company</th><th>HQ</th><th>Est. Revenue</th><th>Key Strength</th><th>Key Weakness vs PPIH</th></tr></thead>
+<tbody>
+<tr><td>LOGSTOR</td><td>Denmark</td><td>~€400M</td><td>Global DHC market leader, EU scale</td><td>No MENA manufacturing, no data center focus</td></tr>
+<tr><td>GF Piping (Georg Fischer)</td><td>Switzerland</td><td>~€4B (group)</td><td>Massive scale, acquired Uponor</td><td>Piping is one of many divisions; lacks focus</td></tr>
+<tr><td>Thermacor</td><td>USA</td><td>~$50–80M (est.)</td><td>N. American DHC specialist</td><td>Private, smaller, no international presence</td></tr>
+<tr><td>BRUGG Pipes</td><td>Switzerland</td><td>~€200M (est.)</td><td>Strong in flexible piping</td><td>Limited in steel pipe systems, no MENA</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<!-- ============ S15: TAILWINDS ============ -->
+<section class="report-section" id="s15">
+<div class="section-label">Section 15</div>
+<h2>💨 Tailwinds &amp; Opportunities</h2>
+<div class="grid-2">
+<div class="card card-bull">
+<h4>🌊 AI Data Center Liquid Cooling Revolution</h4>
+<p>GPU-dense compute racks generate 50–100kW each — far beyond air cooling limits. The shift to liquid cooling requires precisely engineered chilled water piping with leak detection — exactly what Perma-Pipe builds. This is a structural, multi-decade shift.</p>
+</div>
+<div class="card card-bull">
+<h4>🏗️ Saudi Vision 2030 &amp; Gulf Megaprojects</h4>
+<p>$1.3 trillion in Saudi infrastructure spending. NEOM, The Line, Red Sea Global, Qiddiya. Plus UAE, Qatar (World Cup legacy projects), and Egypt. Perma-Pipe has manufacturing in-country for local content requirements.</p>
+</div>
+<div class="card card-bull">
+<h4>🌱 Global Energy Efficiency Mandates</h4>
+<p>EU Green Deal, US IRA climate provisions, and global decarbonization targets all drive district heating/cooling modernization. Replacing old pipes with pre-insulated systems reduces heat loss by up to 60%.</p>
+</div>
+<div class="card card-bull">
+<h4>🛢️ Saudi Aramco Market Unlocked</h4>
+<p>The September 2025 approval opens the largest pipe coating market in the Middle East. This is a recurring, long-cycle revenue stream for years to come.</p>
+</div>
+</div>
+</section>
+
+<!-- ============ S16: RISKS ============ -->
+<section class="report-section" id="s16">
+<div class="section-label">Section 16</div>
+<h2>⚠️ Headwinds &amp; Risks Summary</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Risk</th><th>Severity</th><th>Probability</th><th>Mitigation</th></tr></thead>
+<tbody>
+<tr><td>MENA geopolitical disruption</td><td>High</td><td>15%</td><td>Geographic diversification; N.A. operations provide floor</td></tr>
+<tr><td>Steel price volatility</td><td>Medium</td><td>30%</td><td>Cost-plus contracts where possible; inventory management</td></tr>
+<tr><td>CEO transition execution risk</td><td>Medium</td><td>20%</td><td>Strong SVP bench; Sagr has deep MENA relationships</td></tr>
+<tr><td>Data center demand disappointment</td><td>Medium</td><td>20%</td><td>Core business is strong without DC revenue</td></tr>
+<tr><td>Customer concentration</td><td>Medium</td><td>15%</td><td>Diversifying across geographies and end-markets</td></tr>
+<tr><td>Working capital strain</td><td>Low-Medium</td><td>25%</td><td>Current ratio 2.0x; seeking global banking agreement</td></tr>
+<tr><td>Liquidity / thin trading</td><td>Medium</td><td>Ongoing</td><td>Position sizing; patience</td></tr>
+<tr><td>FX exposure (EGP, AED, CAD)</td><td>Low</td><td>Ongoing</td><td>Natural hedge through local costs; AED pegged to USD</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<!-- ============ S17: EARNINGS ALPHA ============ -->
+<section class="report-section" id="s17">
+<div class="section-label">Section 17</div>
+<h2>📞 Earnings Call Alpha</h2>
+<p class="small-muted">Based on Q1, Q2, and Q3 FY2025 earnings releases and press statements.</p>
+
+<blockquote>"Sales for the first quarter were $46.7 million, resulting in an increase of $12.4 million, or 36.2%... Net income attributable to common stock of $5.0 million was an increase of $3.6 million, or 243%."<cite>— Q1 FY2025 Earnings Release, June 13, 2025</cite></blockquote>
+<p><strong>Why this matters:</strong> The 243% net income growth in Q1 signaled that the backlog buildup wasn't just top-line growth — it was converting to bottom-line profitability at an accelerating rate. Most listeners focused on the revenue beat; the margin expansion was the bigger story.</p>
+<p><strong>Alpha angle:</strong> If this margin trajectory sustains (and Q3 confirmed it did), FY2025 EPS will be $2.00+, putting the stock at just 14x forward earnings — extremely cheap for a 37% grower.</p>
+
+<blockquote>"The Company also incurred additional costs in the quarter for setting up a manufacturing facility in Qatar on the back of securing more than $5 million in new awards."<cite>— Q2 FY2025 Earnings Release, September 15, 2025</cite></blockquote>
+<p><strong>Why this matters:</strong> Q2 looked messy on the surface ($2.1M CEO departure charge + Qatar setup costs), but the underlying business was actually accelerating. The market sold the stock off ~15% on the headline, creating a buying opportunity for those who read past the one-time charges.</p>
+
+<h3>Tone Assessment</h3>
+<p>Tone shifted notably between Q1 (cautiously optimistic under dual Mansfield/Sagr leadership) and Q3 (confident under Sagr alone). The Q3 release explicitly noted that year-to-date earnings exceeded full-year FY2024 — something Sagr emphasized as a milestone in the company's history. The December 2025 press releases showed increasing strategic ambition: $52M in awards, data center emphasis, and the phrase "mission-critical infrastructure" appearing for the first time. Sagr is positioning the company's narrative around structural growth, not cyclical recovery.</p>
+</section>
+
+<!-- ============ S18: ADVISORY COUNCIL ============ -->
+<section class="report-section" id="s18">
+<div class="section-label">Section 18</div>
+<h2>🧠 Strategic Advisory Council</h2>
+<p class="small-muted" style="font-style:italic;">Note: The views below are anticipated opinions based on each investor's known philosophy, public statements, and investment style. These are not real quotes and do not represent actual positions or endorsements by these individuals.</p>
+
+<div class="advisory-grid">
+
+<div class="advisory-card" style="border-left:4px solid var(--secondary)">
+<div class="advisory-name">Joel Greenblatt</div>
+<div class="advisory-id">Gotham Capital — Special Situations</div>
+<p><strong>Anticipated view:</strong> "A $240M company earning $16M+ with a $149M backlog and 5x EV/EBITDA is exactly the kind of overlooked industrial that makes you money. The strategic alternatives review confirms somebody else sees the value. I'd buy on weakness and wait."</p>
+</div>
+
+<div class="advisory-card" style="border-left:4px solid var(--secondary)">
+<div class="advisory-name">Mario Gabelli</div>
+<div class="advisory-id">GAMCO Investors — Private Market Value</div>
+<p><strong>Anticipated view:</strong> "My PMV estimate here is $38–42/share. Fourteen global facilities, Saudi Aramco approval, and a new data center vertical — a strategic buyer would pay 8–10x EBITDA for this, which is $32–40/share. The board already tested the market. It's a matter of time."</p>
+</div>
+
+<div class="advisory-card" style="border-left:4px solid var(--accent-red)">
+<div class="advisory-name">David Einhorn</div>
+<div class="advisory-id">Greenlight Capital — Value with Skepticism</div>
+<p><strong>Anticipated view:</strong> "The backlog growth is impressive, but I'd want to see how it converts through a full cycle. MENA project revenue can be lumpy and working capital intensive. The CEO change is concerning — why did Mansfield leave early? I'd need two more quarters of clean execution before committing capital."</p>
+</div>
+
+<div class="advisory-card" style="border-left:4px solid var(--secondary)">
+<div class="advisory-name">Peter Lynch</div>
+<div class="advisory-id">Fidelity Magellan — Growth at a Reasonable Price</div>
+<p><strong>Anticipated view:</strong> "A boring pipe company that nobody follows, growing 37% with a P/E of 11? This is the kind of thing I'd find walking through an industrial park. The data center angle makes it a 'hidden tech play' inside an industrial wrapper. Classic Lynch stock."</p>
+</div>
+
+<div class="advisory-card" style="border-left:4px solid var(--accent-orange)">
+<div class="advisory-name">Howard Marks</div>
+<div class="advisory-id">Oaktree Capital — Risk Assessment</div>
+<p><strong>Anticipated view:</strong> "The margin of safety here is interesting — low multiple, growing business, strategic interest from PE buyers. But the MENA concentration and thin liquidity are the risks. I'd size it small and think of it as a call option on continued execution rather than a core position."</p>
+</div>
+
+<div class="advisory-card" style="border-left:4px solid var(--accent-red)">
+<div class="advisory-name">Jim Chanos</div>
+<div class="advisory-id">Kynikos Associates — Skeptic</div>
+<p><strong>Anticipated view:</strong> "When a $200M revenue company with a $240M market cap hires an investment bank to 'explore strategic alternatives,' it usually means management wants to sell before the cycle turns. The board concluded there was no deal. Now they're leaning on 'AI data center' as a narrative. I've seen this movie before."</p>
+</div>
+
+<div class="advisory-card" style="border-left:4px solid var(--secondary)">
+<div class="advisory-name">Mohnish Pabrai</div>
+<div class="advisory-id">Pabrai Investment Funds — Dhandho Framework</div>
+<p><strong>Anticipated view:</strong> "Low downside, high upside, asset-backed — this fits the Dhandho framework. The business has real assets, real earnings, and multiple ways to win. If even one of the growth vectors hits — data centers, Saudi Aramco, Qatar — the stock re-rates dramatically. I'd buy a full position."</p>
+</div>
+
+<div class="advisory-card" style="border-left:4px solid var(--accent-orange)">
+<div class="advisory-name">Seth Klarman</div>
+<div class="advisory-id">Baupost Group — Deep Value</div>
+<p><strong>Anticipated view:</strong> "At 5x EV/EBITDA, you're being paid to wait. The business won't zero — it has real assets, real customers, and real cash flow. Whether the stock goes to $40 or stays at $28 for two years, the risk of permanent capital loss is low. Liquidity is the constraint on position size."</p>
+</div>
+
+<div class="advisory-card" style="border-left:4px solid var(--accent-red)">
+<div class="advisory-name">Bill Ackman</div>
+<div class="advisory-id">Pershing Square — Activist Lens</div>
+<p><strong>Anticipated view:</strong> "Interesting company, wrong size for me. But if I could, I'd push for more aggressive capital return — this company has no dividend, minimal buybacks, and is sitting on cash. Shareholder alignment needs improvement. The insider ownership level is too low for my taste."</p>
+</div>
+
+</div>
+</section>
+
+<!-- ============ S19: MEME ============ -->
+<section class="report-section" id="s19">
+<div class="section-label">Section 19</div>
+<h2>🎭 Narrative, Meme Potential &amp; Short Dynamics</h2>
+<p><strong>Hot Themes:</strong> AI infrastructure picks-and-shovels, Saudi Vision 2030, data center cooling, energy efficiency. The "AI piping play" narrative has begun appearing on Seeking Alpha (5+ articles in 2025) but hasn't reached mainstream retail yet.</p>
+<p><strong>Discovery Level:</strong> Extremely early. Zero analyst coverage. Minimal social media discussion. Reddit/StockTwits presence is near-zero. This is a pre-discovery stock.</p>
+
+<div class="card card-accent">
+<h4>Meme Score: 35/100</h4>
+<p>The thesis has viral ingredients — "boring pipe company is secretly an AI play" — but the $28 share price, thin trading, and lack of options make it hard for retail to pile in. Ticker PPIH is forgettable. Low meme materialization currently (~5%). Low-hanging slogans: "PPIH: Piping Hot AI Infrastructure," "The Thermos Stock."</p>
+</div>
+
+<h3>Short Interest &amp; Squeeze Dynamics</h3>
+<p>Short interest: 45,553 shares (0.57% of outstanding). Days to cover: ~1.3 days at average volume. Cost to borrow: not available but likely minimal given low demand.</p>
+<div class="card card-accent">
+<h4>Short Squeeze Probability Score: 8/100</h4>
+<p>With only 0.57% short interest, there is essentially no squeeze setup. The stock moves on fundamental catalysts, not short covering. This is actually a positive — it means upside is driven by real buyers, not technical squeezes that inevitably unwind.</p>
+</div>
+
+<h3>Sector Investor Optimism</h3>
+<div class="card card-accent">
+<h4>Sector Optimism Score: 72/100</h4>
+<p>Infrastructure and industrial stocks have been in favor since the IRA passage and AI capex cycle began. Data center-adjacent industrials (Comfort Systems, Modine Manufacturing) have seen significant re-ratings. Seeking Alpha coverage of PPIH has been unanimously bullish (Buy/Strong Buy). Capital is flowing toward infrastructure plays, and PPIH is early enough in the discovery cycle to benefit.</p>
+</div>
+</section>
+
+<!-- ============ S20: CATALYSTS ============ -->
+<section class="report-section" id="s20">
+<div class="section-label">Section 20</div>
+<h2>📅 Catalyst Calendar</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Date (Est.)</th><th>Catalyst</th><th>Type</th><th>Impact</th></tr></thead>
+<tbody>
+<tr><td>Q2 2026</td><td>Northeast facility becomes operational</td><td><span class="catalyst-type type-idio">Idiosyncratic</span></td><td>High — proves AI/DC strategy</td></tr>
+<tr><td>Jun 2026</td><td>Q4 FY2025 earnings (full year results)</td><td><span class="catalyst-type type-idio">Idiosyncratic</span></td><td>High — first full year $200M+ revenue</td></tr>
+<tr><td>Jun 25, 2025</td><td>2025 Annual Meeting of Stockholders</td><td><span class="catalyst-type type-idio">Idiosyncratic</span></td><td>Low-Moderate</td></tr>
+<tr><td>2026</td><td>First major data center contract completions</td><td><span class="catalyst-type type-idio">Idiosyncratic</span></td><td>High — validates narrative</td></tr>
+<tr><td>2026</td><td>Saudi Aramco first O&G coating deliveries from Dammam</td><td><span class="catalyst-type type-idio">Idiosyncratic</span></td><td>High — unlocks massive TAM</td></tr>
+<tr><td>2026</td><td>Qatar facility operational + first deliveries</td><td><span class="catalyst-type type-idio">Idiosyncratic</span></td><td>Moderate</td></tr>
+<tr><td>Ongoing</td><td>Saudi Vision 2030 contract awards (NEOM, The Line, etc.)</td><td><span class="catalyst-type type-secular">Secular</span></td><td>High</td></tr>
+<tr><td>Ongoing</td><td>New global banking agreement secured</td><td><span class="catalyst-type type-idio">Idiosyncratic</span></td><td>Moderate — enables further capex</td></tr>
+<tr><td>2026–2027</td><td>Potential first sell-side analyst initiation</td><td><span class="catalyst-type type-idio">Idiosyncratic</span></td><td>High — discovery catalyst</td></tr>
+<tr><td>Ongoing</td><td>AI data center capex cycle acceleration</td><td><span class="catalyst-type type-industry">Industry</span></td><td>High</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<!-- ============ S21: VALUATION ============ -->
+<section class="report-section" id="s21">
+<div class="section-label">Section 21</div>
+<h2>💎 Valuation &amp; Peer Comparison</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Company</th><th>Ticker</th><th>Mkt Cap</th><th>Revenue</th><th>EV/EBITDA</th><th>P/E</th><th>Rev Growth</th></tr></thead>
+<tbody>
+<tr style="background:var(--primary-light);font-weight:600;"><td>Perma-Pipe International</td><td>PPIH</td><td>~$240M</td><td>~$206M</td><td>~5.0x</td><td>~11.6x</td><td>+37%</td></tr>
+<tr><td>Comfort Systems USA</td><td>FIX</td><td>~$16B</td><td>~$6.8B</td><td>~17x</td><td>~28x</td><td>+25%</td></tr>
+<tr><td>SPX Technologies</td><td>SPXC</td><td>~$7B</td><td>~$1.8B</td><td>~18x</td><td>~30x</td><td>+10%</td></tr>
+<tr><td>Modine Manufacturing</td><td>MOD</td><td>~$5B</td><td>~$2.4B</td><td>~14x</td><td>~22x</td><td>+15%</td></tr>
+<tr><td>Mueller Water Products</td><td>MWA</td><td>~$3.5B</td><td>~$1.3B</td><td>~15x</td><td>~25x</td><td>+8%</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Key insight:</strong> PPIH trades at a massive discount to every infrastructure/industrial peer — 5x EV/EBITDA vs. peer median of ~15–17x. Even if PPIH only re-rates to 8–10x (still well below peers), the stock has 50–100% upside. The discount reflects illiquidity, small size, and lack of coverage rather than fundamental inferiority. If anything, PPIH's growth rate (37%) is the highest in the group.</p>
+
+<h3>Sum-of-the-Parts</h3>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Segment</th><th>Est. EBITDA</th><th>Multiple</th><th>Implied Value</th><th>Per Share</th></tr></thead>
+<tbody>
+<tr><td>N. America Piping &amp; Containment</td><td>$10M</td><td>8x</td><td>$80M</td><td>$10.02</td></tr>
+<tr><td>MENA Operations</td><td>$14M</td><td>7x</td><td>$98M</td><td>$12.28</td></tr>
+<tr><td>Data Center / Leak Detection (growth premium)</td><td>$3M</td><td>15x</td><td>$45M</td><td>$5.64</td></tr>
+<tr><td>Net Debt</td><td>—</td><td>—</td><td>($17.5M)</td><td>($2.19)</td></tr>
+<tr><td><strong>Total SOTP Value</strong></td><td><strong>$27M</strong></td><td></td><td><strong>$205.5M</strong></td><td><strong>$25.75</strong></td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Note:</strong> The SOTP at conservative multiples gives us roughly today's stock price — meaning the market is giving zero credit for future growth. A more optimistic SOTP using 10x N.A., 9x MENA, and 20x DC/LDS yields $38–42/share (+40–55% upside).</p>
+</section>
+
+<!-- ============ S22: DCF ============ -->
+<section class="report-section" id="s22">
+<div class="section-label">Section 22</div>
+<h2>📐 Probabilistic DCF &amp; Scenarios</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Scenario</th><th>Assumptions</th><th>Probability</th><th>Implied Price</th></tr></thead>
+<tbody>
+<tr><td><span class="scenario-label">🐻 Bear</span></td><td>Revenue flat at $180M; margins compress to 8% EBITDA; 6x multiple</td><td>15%</td><td>$14</td></tr>
+<tr><td><span class="scenario-label">⚖️ Base</span></td><td>Revenue grows to $230M by FY2027; 13% EBITDA margin; 7x multiple</td><td>40%</td><td>$33</td></tr>
+<tr><td><span class="scenario-label">🐂 Bull</span></td><td>Revenue $260M by FY2027; 15% EBITDA; 10x multiple; data center traction</td><td>30%</td><td>$47</td></tr>
+<tr><td><span class="scenario-label">🚀 Mega-Bull</span></td><td>Revenue $300M+; 17% EBITDA; takeout at 12x; full AI narrative realized</td><td>10%</td><td>$65</td></tr>
+<tr><td><span class="scenario-label">💀 Black Swan</span></td><td>MENA conflict halts 60% of ops; liquidity crisis; forced asset sales</td><td>5%</td><td>$6</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Probability-Weighted Fair Value:</strong></p>
+<p class="big-num">$36.25</p>
+<p class="small-muted">(0.15 × $14) + (0.40 × $33) + (0.30 × $47) + (0.10 × $65) + (0.05 × $6) = $36.25</p>
+<p>This implies approximately <span class="alpha">29% upside</span> from ~$28 current price, with favorable asymmetry: the probability-weighted upside scenarios significantly outweigh the probability-weighted downside.</p>
+
+<h3>Price Targets by Timeframe</h3>
+<div class="grid-3">
+<div class="card"><h4>12-Month</h4><p class="big-num">$34</p><p class="small-muted">Based on FY2025 full-year results + 15x normalized EPS of $2.20</p></div>
+<div class="card"><h4>24-Month</h4><p class="big-num">$42</p><p class="small-muted">Data center revenue visibility + margin expansion + potential coverage</p></div>
+<div class="card"><h4>36-Month</h4><p class="big-num">$50</p><p class="small-muted">Full re-rating to 10x EV/EBITDA on $40M EBITDA + takeout optionality</p></div>
+</div>
+</section>
+
+<!-- ============ S23: VALUE CHAIN ============ -->
+<section class="report-section" id="s23">
+<div class="section-label">Section 23</div>
+<h2>🔗 Value Chain &amp; Ecosystem Map</h2>
+<div class="process-chain">
+<div class="process-step">🏗️ Steel / HDPE Suppliers</div>
+<div class="process-arrow">→</div>
+<div class="process-step">🧪 PU Foam Chemicals (BASF, Huntsman)</div>
+<div class="process-arrow">→</div>
+<div class="process-step" style="background:var(--primary);color:#fff;border-color:var(--primary-dark);">⚙️ PERMA-PIPE (Manufacturing)</div>
+<div class="process-arrow">→</div>
+<div class="process-step">🏗️ EPC Contractors / Developers</div>
+<div class="process-arrow">→</div>
+<div class="process-step">🏢 End Users (Utilities, Aramco, Data Centers)</div>
+</div>
+<p><strong>Pricing Power:</strong> Moderate-to-high. Perma-Pipe is an engineered-to-order manufacturer, not a commodity pipe supplier. Projects are bid on a per-job basis with specifications that often require Perma-Pipe's specific capabilities (thermal profile, pipe diameter, leak detection integration). Once specified into a project design, switching costs are very high. The company generally passes through steel price increases in its bids, though there can be a timing lag on long-duration contracts.</p>
+<p><strong>Strategic Insight:</strong> Perma-Pipe's value chain position is becoming stickier. As they expand from "pipe supplier" to "pipe + coating + leak detection + field service," they capture more of the project value. The leak detection and monitoring capability, in particular, creates an ongoing relationship with the end user that pure pipe manufacturers don't have — and this is especially valuable in the data center market where leak detection is mission-critical.</p>
+</section>
+
+<!-- ============ S24: OPTIONS ============ -->
+<section class="report-section" id="s24">
+<div class="section-label">Section 24</div>
+<h2>📈 Options Plays</h2>
+<p><strong>Liquidity Assessment:</strong> Very thin. PPIH options exist but with extremely limited strikes, expirations, and open interest. As of September 2025, only 12 call contracts were listed for one expiry with zero put contracts. Bid-ask spreads are likely very wide.</p>
+<p>Given the near-total illiquidity, we do not recommend options strategies on PPIH at this time. Any options trades would face severe slippage, wide spreads, and potential inability to exit positions. Direct equity ownership is the only practical way to express a view on this stock.</p>
+<p class="small-muted">Options data is time-sensitive. Verify before trading. Not a recommendation.</p>
+</section>
+
+<!-- ============ S25: IMPLEMENTATION ============ -->
+<section class="report-section" id="s25">
+<div class="section-label">Section 25</div>
+<h2>🎯 Implementation &amp; Portfolio Construction</h2>
+<div class="verdict-banner" style="background:linear-gradient(90deg,var(--primary-dark),var(--primary),#D4752E);color:#fff;border-radius:8px;padding:20px 24px;margin-bottom:20px;">
+🎯 VERDICT: SPECULATIVE LONG — 68% Conviction | Target: $36–$42 (12–24 months) | ~$28 entry
+</div>
+<p><strong>Is this binary?</strong> No. Even in a bear scenario, the company has real assets (14 facilities), real revenue ($200M+), real customers (Saudi Aramco, data center operators), and a healthy balance sheet. The floor value is ~$14–18/share. This isn't a biotech where the stock goes to zero. It's an industrial where the question is: does it trade at 5x or 10x EBITDA?</p>
+
+<h3>Conviction: 68%</h3>
+<p>The conviction score is driven upward by the exceptional valuation (5x EV/EBITDA vs. 15x peers), the quality of backlog growth ($148.9M, up 287% in three years), the structural nature of end-market tailwinds (AI data centers, Vision 2030), and the strategic alternatives floor. It's held back by the CEO transition risk, MENA geopolitical exposure, thin trading liquidity, and the uncertainty around how quickly data center piping revenue materializes. The net assessment: this is a clearly undervalued stock with a genuine growth catalyst pipeline, tempered by execution risk and illiquidity.</p>
+
+<h3>Phased Entry Strategy</h3>
+<p><strong>Tranche 1 (33%):</strong> Buy at current levels (~$28). The stock has pulled back from the $36 high and the strategic alternatives conclusion removes overhang.<br>
+<strong>Tranche 2 (33%):</strong> Add on dip below $24, or on next earnings beat (whichever comes first).<br>
+<strong>Tranche 3 (34%):</strong> Add on confirmation of data center revenue visibility (first major DC contract completion or Northeast facility operational).</p>
+
+<h3>Kelly Criterion</h3>
+<p>Win probability: 65%. Win size (base): +45%. Loss probability: 35%. Loss size (base): -25%.<br>
+Kelly fraction: (0.65 × 0.45 − 0.35 × 0.25) / 0.45 = <strong>0.46 (46%)</strong>. Half-Kelly for prudence: <strong>~23% of portfolio</strong>. Given illiquidity, we recommend a maximum of <strong>3–5% of portfolio</strong> with gradual accumulation.</p>
+
+<h3>Exit Triggers</h3>
+<p><strong>Positive exits:</strong> Sell 50% at $42 (50% upside); sell remainder at $50+ or on takeout offer. Reassess if EV/EBITDA reaches 12x+ without fundamental change.<br>
+<strong>Negative exits:</strong> Sell if backlog declines two consecutive quarters. Sell if MENA operations are materially disrupted for &gt;90 days. Sell if new CEO makes a significant dilutive acquisition. Stop-loss at $18 (35% downside).</p>
+</section>
+
+<!-- ============ S26: CONFIDENCE ============ -->
+<section class="report-section" id="s26">
+<div class="section-label">Final Section</div>
+<h2>🏁 Thesis Confidence &amp; Monitoring</h2>
+<div class="confidence-card">
+<p style="font-family:'JetBrains Mono',monospace;font-size:12px;text-transform:uppercase;letter-spacing:2px;opacity:0.7;">Thesis Confidence</p>
+<div class="big-num">68%</div>
+<div class="progress-bar" style="background:rgba(255,255,255,0.2);margin:16px auto;max-width:400px;">
+<div class="progress-fill" style="width:68%;background:linear-gradient(90deg,#fff,rgba(255,255,255,0.7));"></div>
+</div>
+</div>
+
+<p class="mt-16"><strong>Single Biggest Risk:</strong> MENA geopolitical disruption that freezes project execution across Saudi Arabia, UAE, and Egypt simultaneously — the one scenario where Perma-Pipe's geographic diversification within the region doesn't help.</p>
+
+<h3>Kill Signals (Exit Immediately)</h3>
+<p>• Backlog declines below $100M for two consecutive quarters<br>
+• MENA operations suspended for &gt;90 days due to conflict/sanctions<br>
+• New CEO announces dilutive acquisition at &gt;10x EBITDA<br>
+• Material accounting restatement or auditor change<br>
+• Insider selling &gt;$1M by current management</p>
+
+<h3>Accelerate Signals (Add to Position)</h3>
+<p>• Northeast facility opens on schedule and wins $20M+ in data center contracts<br>
+• First sell-side analyst initiates coverage with Buy rating<br>
+• Saudi Aramco revenue exceeds $15M annually<br>
+• EV/EBITDA compresses below 4x on a pullback without fundamental deterioration<br>
+• Backlog exceeds $175M<br>
+• Quarterly EPS exceeds $0.80 consistently</p>
+</section>
+
+<!-- ============ TEAR SHEET ============ -->
+<div class="tear-sheet">
+<div class="tear-sheet-header">
+<div>
+<h3 style="margin:0;">PPIH — One-Page Tear Sheet</h3>
+<span class="mono small-muted">Perma-Pipe International Holdings | NASDAQ: PPIH | ~$28 | March 24, 2026</span>
+</div>
+<span class="mono" style="font-size:11px;color:var(--primary);">Solid Peer Research | Sko</span>
+</div>
+<div class="tear-cols">
+<div>
+<p><strong>Thesis:</strong> Perma-Pipe is a structurally undervalued industrial compounder disguised as a cyclical small-cap. Its convergence of AI data center cooling piping, Saudi Vision 2030 megaproject demand, and global energy efficiency mandates creates a multi-year growth runway trading at a fraction of peer multiples. The strategic alternatives review created a valuation floor; the new CEO brings MENA expertise; and zero analyst coverage means the discovery runway is entirely ahead.</p>
+<p class="small-muted mt-8"><strong>Market Cap:</strong> ~$240M | <strong>EV:</strong> ~$257M | <strong>Revenue (LTM):</strong> ~$195M | <strong>Rev Growth:</strong> +37% YTD | <strong>EBITDA Margin:</strong> ~13% | <strong>Net Debt:</strong> $17.5M | <strong>Backlog:</strong> $148.9M</p>
+<p class="small-muted mt-8"><strong>Price Targets:</strong> Bear: $14 | Base: $33 | Bull: $47</p>
+<p class="small-muted mt-8"><strong>Top 3 Catalysts:</strong> NE facility opens (Q2 2026), Saudi Aramco coating revenue ramps, FY2025 results show $2.00+ EPS</p>
+<p class="small-muted mt-8"><strong>Top 3 Risks:</strong> MENA geopolitical shock, CEO transition execution, illiquidity traps</p>
+</div>
+<div>
+<div class="card" style="text-align:center;">
+<span class="mono small-muted">VERDICT</span><br>
+<span class="big-num alpha">SPECULATIVE LONG</span><br>
+<span class="mono">68% Conviction</span>
+</div>
+<p class="small-muted mt-8"><strong>Prob-Weighted Fair Value:</strong> <span class="primary-text">$36.25 (+29%)</span></p>
+<p class="small-muted"><strong>Meme Score:</strong> 35/100</p>
+<p class="small-muted"><strong>Short Squeeze Score:</strong> 8/100</p>
+<p class="small-muted"><strong>Sector Optimism:</strong> 72/100</p>
+<p class="small-muted"><strong>Insider Alignment:</strong> PARTIAL</p>
+<p class="small-muted mt-8"><strong>In one sentence:</strong> A boring pipe company turning into an AI-age infrastructure compounder at a cyclical industrial multiple — with the entire discovery curve still ahead of it.</p>
+</div>
+</div>
+<div class="small-muted" style="text-align:center;margin-top:16px;padding-top:12px;border-top:1px solid var(--border);">Solid Peer Research | Sko · March 24, 2026 · Not financial advice</div>
+</div>
+
+<!-- ============ SOURCES ============ -->
+<section class="report-section sources-section" id="sources">
+<div class="section-label">Sources</div>
+<h2>📚 Sources</h2>
+<h4>Company Filings</h4>
+<a href="https://www.sec.gov/Archives/edgar/data/0000914122/000143774925014095/ppih20250131_10k.htm" target="_blank">Perma-Pipe 10-K Annual Report, FY2024 (ended Jan 31, 2025)</a>
+<a href="https://www.sec.gov/Archives/edgar/data/0000914122/000143774925037631/ppih20251031_10q.htm" target="_blank">Perma-Pipe 10-Q, Q3 FY2025 (ended Oct 31, 2025)</a>
+<a href="https://www.sec.gov/Archives/edgar/data/0000914122/000143774925020261/ppih20250430_10q.htm" target="_blank">Perma-Pipe 10-Q, Q1 FY2025 (ended Apr 30, 2025)</a>
+<a href="https://www.sec.gov/Archives/edgar/data/914122/000143774925017089/ppih20250514_defr14a.htm" target="_blank">Perma-Pipe Amended DEF 14A Proxy Statement — May 2025</a>
+<a href="https://www.sec.gov/Archives/edgar/data/0000914122/000143774924018710/ppih20240131_10ka.htm" target="_blank">Perma-Pipe 10-K/A (FY2023)</a>
+
+<h4>Earnings / Press Releases</h4>
+<a href="https://www.businesswire.com/news/home/20251212056738/en/Perma-Pipe-International-Holdings-Inc.-Announces-Third-Quarter-2025-Financial-Results" target="_blank">Q3 FY2025 Earnings Release — December 12, 2025</a>
+<a href="https://www.businesswire.com/news/home/20250914478494/en/" target="_blank">Q2 FY2025 Earnings Release — September 15, 2025</a>
+<a href="https://www.businesswire.com/news/home/20250924806232/en/" target="_blank">$30M Contract Awards + Saudi Aramco Approval — September 24, 2025</a>
+<a href="https://www.businesswire.com/news/home/20251203065545/en/" target="_blank">$52M Q3 Awards Announcement — December 3, 2025</a>
+<a href="https://www.businesswire.com/news/home/20250612265819/en/" target="_blank">CEO Transition Announcement — June 12, 2025</a>
+<a href="https://www.businesswire.com/news/home/20250925131117/en/" target="_blank">Energy Capital Solutions Strategic Alternatives Engagement — September 25, 2025</a>
+
+<h4>Recent News</h4>
+<a href="https://www.stocktitan.net/sec-filings/PPIH/8-k-perma-pipe-international-holdings-inc-reports-material-event-3dce76b88a42.html" target="_blank">Northeast Facility + Strategic Alternatives Conclusion — March 19, 2026</a>
+<a href="https://www.stocktitan.net/news/PPIH/perma-pipe-international-holdings-inc-secures-52-million-in-third-ocvvhe8mu48e.html" target="_blank">$52M Q3 Awards, Data Center + Saudi Aramco — December 3, 2025</a>
+
+<h4>Analyst / Research</h4>
+<a href="https://seekingalpha.com/article/4879979-perma-pipe-international-holdings-offers-robust-upside" target="_blank">SA: "PPIH Offers Robust Upside" — March 9, 2026</a>
+<a href="https://seekingalpha.com/article/4853648-perma-pipe-international-fundamentals-improved-valuation-less-compelling" target="_blank">SA: "Fundamentals Improved, Valuation Less Compelling" — December 16, 2025</a>
+<a href="https://seekingalpha.com/article/4844857-perma-pipe-ai-hpc-and-middle-east-tailwinds-coupled-with-an-attractive-valuation" target="_blank">SA: "AI, HPC, And Middle East Tailwinds" — November 17, 2025</a>
+<a href="https://seekingalpha.com/article/4808767-perma-pipe-international-unexpected-data-center-player" target="_blank">SA: "Unexpected Data Center Player" — August 5, 2025</a>
+
+<h4>Industry Data</h4>
+<a href="https://www.vynzresearch.com/chemicals-materials/pre-insulated-pipes-market" target="_blank">VynZ Research: Pre-Insulated Pipes Market Forecast 2025–2030</a>
+<a href="https://www.futuremarketinsights.com/reports/pre-insulated-pipes-market" target="_blank">Future Market Insights: Pre-Insulated Pipe Market to 2035</a>
+<a href="https://www.grandviewresearch.com/industry-analysis/pre-insulated-pipes-market-report" target="_blank">Grand View Research: Pre-Insulated Pipes Market</a>
+
+<h4>Market Data</h4>
+<a href="https://stockanalysis.com/stocks/ppih/statistics/" target="_blank">StockAnalysis.com: PPIH Statistics &amp; Valuation</a>
+<a href="https://www.macrotrends.net/stocks/charts/PPIH/perma-pipe-holdings/stock-price-history" target="_blank">MacroTrends: PPIH Stock Price History</a>
+</section>
+
+</div><!-- end container -->
+
+<!-- ============ SIGNATURE ============ -->
+<div style="text-align:center;padding:30px 24px;border-top:2px solid var(--primary);">
+<p style="font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--primary);margin-bottom:4px;">Solid Peer Research | Sko</p>
+<p style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text-muted);">The Thermos That Heats the World — and Cools Its AI Brain</p>
+<p style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-muted);margin-top:4px;">March 24, 2026</p>
+</div>
+
+<!-- ============ FOOTER ============ -->
+<footer class="site-footer">
+<canvas id="footerCanvas"></canvas>
+<div class="container">
+<div class="footer-brand">Solid Peer Research | Sko</div>
+<div class="footer-tagline">Engineered conviction. Insulated from noise.</div>
+<div class="disclaimer">
+Not financial advice. For informational and entertainment purposes only. Do your own research. Verify all figures. Author may have exposure to discussed securities and may trade at any time without notice. Past performance is not indicative of future results.<br>
+© 2026 Solid Peer Research | Sko
+</div>
+</div>
+</footer>
+
+<script>
+/* ========== HERO AMBIENT ANIMATION ========== */
+(function(){
+var c=document.getElementById('heroCanvas');
+if(!c)return;
+var ctx=c.getContext('2d');
+var pipes=[];
+var W,H;
+function resize(){W=c.width=c.offsetWidth;H=c.height=c.offsetHeight;}
+resize();
+window.addEventListener('resize',resize);
+function Pipe(){
+this.x=Math.random()*W;
+this.y=Math.random()*H;
+this.len=40+Math.random()*120;
+this.w=2+Math.random()*4;
+this.angle=Math.random()<0.5?0:Math.PI/2;
+this.speed=0.1+Math.random()*0.3;
+this.alpha=0.03+Math.random()*0.08;
+this.pulse=Math.random()*Math.PI*2;
+}
+for(var i=0;i<35;i++) pipes.push(new Pipe());
+function draw(){
+ctx.clearRect(0,0,W,H);
+for(var i=0;i<pipes.length;i++){
+var p=pipes[i];
+p.pulse+=0.02;
+var a=p.alpha*(0.5+0.5*Math.sin(p.pulse));
+ctx.strokeStyle='rgba(255,180,100,'+a+')';
+ctx.lineWidth=p.w;
+ctx.lineCap='round';
+ctx.beginPath();
+ctx.moveTo(p.x,p.y);
+ctx.lineTo(p.x+Math.cos(p.angle)*p.len,p.y+Math.sin(p.angle)*p.len);
+ctx.stroke();
+// flow dot
+var fx=p.x+Math.cos(p.angle)*p.len*((Math.sin(p.pulse*2)*0.5+0.5));
+var fy=p.y+Math.sin(p.angle)*p.len*((Math.sin(p.pulse*2)*0.5+0.5));
+ctx.beginPath();
+ctx.arc(fx,fy,p.w*0.8,0,Math.PI*2);
+ctx.fillStyle='rgba(255,220,160,'+a*2+')';
+ctx.fill();
+// junctions
+if(Math.random()<0.002){
+p.x=Math.random()*W;
+p.y=Math.random()*H;
+p.angle=Math.random()<0.5?0:Math.PI/2;
+}
+}
+requestAnimationFrame(draw);
+}
+draw();
+})();
+
+/* ========== CLICK ANIMATIONS ========== */
+var lastClick=0,clickTimer=null;
+document.addEventListener('click',function(e){
+var now=Date.now();
+if(now-lastClick<300){
+clearTimeout(clickTimer);
+bigBoom(e.clientX,e.clientY);
+lastClick=0;
+}else{
+lastClick=now;
+clickTimer=setTimeout(function(){smallBoom(e.clientX,e.clientY);},300);
+}
+});
+document.addEventListener('dblclick',function(e){e.preventDefault();});
+
+function smallBoom(x,y){
+var box=document.createElement('div');
+box.style.cssText='position:fixed;left:'+x+'px;top:'+y+'px;width:0;height:0;pointer-events:none;z-index:9999;';
+document.body.appendChild(box);
+// Insulation foam spray + pipe segments
+for(var i=0;i<15;i++){
+var el=document.createElement('div');
+var angle=Math.random()*Math.PI*2;
+var dist=30+Math.random()*60;
+var isPipe=i<5;
+var w=isPipe?(20+Math.random()*30):6+Math.random()*8;
+var h=isPipe?3:w;
+var col=isPipe?'#B85C1F':'rgba(255,200,130,'+(0.5+Math.random()*0.5)+')';
+el.style.cssText='position:absolute;width:'+w+'px;height:'+h+'px;background:'+col+';border-radius:'+(isPipe?'2px':'50%')+';left:-'+w/2+'px;top:-'+h/2+'px;';
+if(isPipe)el.style.transform='rotate('+Math.round(Math.random()*180)+'deg)';
+box.appendChild(el);
+el.animate([
+{transform:'translate(0,0) scale(1)',opacity:1},
+{transform:'translate('+Math.cos(angle)*dist+'px,'+Math.sin(angle)*dist+'px) scale(0.2)',opacity:0}
+],{duration:500+Math.random()*200,easing:'cubic-bezier(.2,.8,.3,1)',fill:'forwards'});
+}
+setTimeout(function(){if(box.parentNode)box.parentNode.removeChild(box);},700);
+}
+
+function bigBoom(x,y){
+var box=document.createElement('div');
+box.style.cssText='position:fixed;left:'+x+'px;top:'+y+'px;width:0;height:0;pointer-events:none;z-index:9999;';
+document.body.appendChild(box);
+// Full pipe network burst: pipes, foam particles, sensor wire sparks, jacket fragments
+for(var i=0;i<35;i++){
+var el=document.createElement('div');
+var angle=Math.random()*Math.PI*2;
+var dist=50+Math.random()*120;
+var type=i<8?'pipe':i<18?'foam':i<28?'spark':'jacket';
+var w,h,col,br;
+if(type==='pipe'){w=30+Math.random()*50;h=3+Math.random()*3;col='#8E4516';br='2px';}
+else if(type==='foam'){w=8+Math.random()*12;h=w;col='rgba(255,220,160,'+(0.6+Math.random()*0.4)+')';br='50%';}
+else if(type==='spark'){w=2;h=15+Math.random()*20;col='#FFD700';br='1px';}
+else{w=12+Math.random()*18;h=4+Math.random()*4;col='#3D2B16';br='2px';}
+el.style.cssText='position:absolute;width:'+w+'px;height:'+h+'px;background:'+col+';border-radius:'+br+';left:-'+w/2+'px;top:-'+h/2+'px;';
+if(type==='pipe'||type==='jacket')el.style.transform='rotate('+Math.round(Math.random()*360)+'deg)';
+box.appendChild(el);
+var dur=700+Math.random()*400;
+el.animate([
+{transform:'translate(0,0) scale(1) rotate(0deg)',opacity:1},
+{transform:'translate('+Math.cos(angle)*dist+'px,'+(Math.sin(angle)*dist-20)+'px) scale(0.1) rotate('+(180+Math.random()*360)+'deg)',opacity:0}
+],{duration:dur,easing:'cubic-bezier(.1,.9,.2,1)',fill:'forwards'});
+}
+// Central burst ring
+var ring=document.createElement('div');
+ring.style.cssText='position:absolute;width:10px;height:10px;border:3px solid #B85C1F;border-radius:50%;left:-5px;top:-5px;';
+box.appendChild(ring);
+ring.animate([
+{transform:'scale(1)',opacity:0.8,borderWidth:'3px'},
+{transform:'scale(12)',opacity:0,borderWidth:'0.5px'}
+],{duration:600,easing:'ease-out',fill:'forwards'});
+setTimeout(function(){if(box.parentNode)box.parentNode.removeChild(box);},1100);
+}
+
+/* ========== FOOTER CANVAS ========== */
+(function(){
+var c=document.getElementById('footerCanvas');
+if(!c)return;
+var ctx=c.getContext('2d');
+var W,H;
+function resize(){W=c.width=c.offsetWidth;H=c.height=c.offsetHeight;}
+resize();
+window.addEventListener('resize',resize);
+var particles=[];
+function Particle(){
+this.x=Math.random()*W;
+this.y=Math.random()*H;
+this.vx=(Math.random()-0.5)*0.3;
+this.vy=(Math.random()-0.5)*0.2;
+this.r=1+Math.random()*2;
+this.alpha=0.1+Math.random()*0.2;
+this.isHot=Math.random()<0.3;
+}
+for(var i=0;i<60;i++) particles.push(new Particle());
+function draw(){
+ctx.clearRect(0,0,W,H);
+for(var i=0;i<particles.length;i++){
+var p=particles[i];
+p.x+=p.vx;p.y+=p.vy;
+if(p.x<0)p.x=W;if(p.x>W)p.x=0;
+if(p.y<0)p.y=H;if(p.y>H)p.y=0;
+ctx.beginPath();
+ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+ctx.fillStyle=p.isHot?'rgba(184,92,31,'+p.alpha+')':'rgba(255,200,140,'+p.alpha*0.5+')';
+ctx.fill();
+// Connect nearby pipes
+for(var j=i+1;j<particles.length;j++){
+var q=particles[j];
+var dx=p.x-q.x,dy=p.y-q.y;
+var d=Math.sqrt(dx*dx+dy*dy);
+if(d<80){
+ctx.beginPath();
+ctx.moveTo(p.x,p.y);
+ctx.lineTo(q.x,q.y);
+ctx.strokeStyle='rgba(184,92,31,'+(0.05*(1-d/80))+')';
+ctx.lineWidth=1;
+ctx.stroke();
+}
+}
+}
+requestAnimationFrame(draw);
+}
+draw();
+})();
+</script>
+</body>
+</html>
