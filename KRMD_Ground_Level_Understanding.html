@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Solid Peer Research | Sko — KRMD: The Pump With No Batteries</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FAF7EF; --bg-alt:#F1EDE1; --surface:#FFFDF7; --surface-raised:#F6F1E4;
+  --text:#16292B; --text-muted:#54666A;
+  --primary:#0E6E6E; --primary-light:#DCEBE8; --primary-dark:#08484D;
+  --secondary:#1E7F55; --secondary-dark:#135436;
+  --accent-red:#AE3A32; --accent-green:#1E7F55; --accent-orange:#B87516;
+  --border:rgba(14,110,110,.22); --border-light:rgba(14,110,110,.10);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);
+  font-family:'Inter',system-ui,sans-serif;font-size:19px;line-height:1.75;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:'Playfair Display',Georgia,serif;font-weight:700;line-height:1.2}
+h2{font-size:30px;margin:0 0 8px}
+h3{font-size:22px;margin:28px 0 8px}
+p{margin:0 0 14px;max-width:60ch}
+.container{max-width:820px;margin:0 auto;padding:0 22px}
+.mono{font-family:'JetBrains Mono',monospace}
+.big-fig{font-family:'JetBrains Mono',monospace;font-size:32px;font-weight:700;line-height:1.1}
+.up{color:var(--secondary-dark);font-weight:700}
+.down{color:var(--accent-red);font-weight:700}
+
+/* HERO */
+.hero{position:relative;overflow:hidden;color:#EAF4F2;
+  background:linear-gradient(150deg,#03201F 0%,#08484D 38%,#0E6E6E 66%,#123F3C 100%)}
+#heroCanvas{position:absolute;inset:0;width:100%;height:100%;display:block;opacity:.5}
+.hero-inner{position:relative;z-index:2;padding:46px 0 38px}
+.brand{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:2.4px;
+  text-transform:uppercase;color:#7FCFC4;margin-bottom:18px}
+.hero h1{font-size:clamp(30px,5.2vw,50px);color:#FFFDF7;margin:0 0 12px}
+.hook{font-size:19px;color:#B9DBD6;max-width:560px;margin:0 0 24px;line-height:1.5}
+.verdict{background:linear-gradient(100deg,var(--primary-dark),var(--primary) 55%,#15857F);
+  border:1px solid rgba(255,255,255,.22);border-radius:10px;padding:16px 20px;
+  font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.9;color:#F2FBF9;margin-bottom:26px}
+.hero-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.hstat{background:rgba(255,253,247,.09);border:1px solid rgba(255,255,255,.17);border-radius:10px;padding:14px 15px}
+.hstat .lab{font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:1.4px;
+  text-transform:uppercase;color:#7FCFC4;margin-bottom:6px}
+.hstat .val{font-family:'JetBrains Mono',monospace;font-size:25px;font-weight:700;color:#FFFDF7;line-height:1.1}
+.hstat .sub{font-size:12.5px;color:#A8CCC7;margin-top:5px;line-height:1.4}
+
+/* NAV + PROGRESS */
+.toc-bar{width:100%;position:sticky;top:0;z-index:100;background:var(--bg);
+  border-bottom:2px solid var(--primary);overflow-x:auto;white-space:nowrap;text-align:center;
+  padding:14px 24px;box-sizing:border-box;-webkit-overflow-scrolling:touch}
+.toc-bar::-webkit-scrollbar{height:4px}
+.toc-bar::-webkit-scrollbar-thumb{background:var(--primary-dark);border-radius:2px}
+.toc-bar::-webkit-scrollbar-track{background:transparent}
+.toc-bar a{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:10px;
+  text-transform:uppercase;letter-spacing:1px;padding:4px 14px;color:var(--text-muted);
+  text-decoration:none;border-right:1px solid var(--border)}
+.toc-bar a:last-child{border-right:none}
+.toc-bar a:hover{color:var(--primary)}
+@media(max-width:480px){.toc-bar{display:none}}
+.progress-strip{position:sticky;top:0;z-index:99;background:var(--primary-dark);color:#EAF4F2;
+  padding:9px 22px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1.2px;
+  display:flex;align-items:center;gap:12px;justify-content:center}
+.progress-strip .pbar{flex:0 1 220px;height:9px;background:rgba(255,255,255,.2);border-radius:5px;overflow:hidden}
+.progress-strip .pbar i{display:block;height:100%;width:0%;background:#7FCFC4;transition:width .4s ease}
+@media(max-width:480px){.progress-strip{top:0}}
+
+/* SECTIONS */
+.report-section{padding:30px 0}
+.report-section + .report-section{border-top:1px solid var(--border-light)}
+.section-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2.2px;
+  text-transform:uppercase;color:var(--primary);margin-bottom:8px}
+.report-section h2{margin-top:0;margin-bottom:20px}
+
+/* QUICK TAKE */
+.quick{background:var(--primary-light);border-left:5px solid var(--primary);border-radius:0 10px 10px 0;
+  padding:14px 20px;margin:0 0 22px}
+.quick .qt{font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:1.6px;
+  text-transform:uppercase;color:var(--primary-dark);margin-bottom:5px}
+.quick p{margin:0;font-size:18.5px;font-weight:600;max-width:56ch}
+
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px 20px;margin-bottom:14px}
+.card.accent{border-left:4px solid var(--primary)}
+.card-title{font-family:'Playfair Display',serif;font-size:19px;font-weight:700;margin:0 0 8px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:768px){.grid2,.grid3,.hero-stats{grid-template-columns:1fr}}
+
+/* LISTS */
+ul.big{list-style:none;padding:0;margin:0 0 16px}
+ul.big li{position:relative;padding:10px 0 10px 36px;border-bottom:1px solid var(--border-light);font-size:18px}
+ul.big li:last-child{border-bottom:none}
+ul.big li .ic{position:absolute;left:0;top:9px;font-size:19px}
+
+/* QUIZ */
+.quiz{background:var(--surface);border:2px dashed var(--primary);border-radius:12px;
+  padding:20px 22px;margin:26px 0}
+.quiz .q-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.8px;
+  text-transform:uppercase;color:var(--primary);margin-bottom:9px}
+.quiz .q-text{font-size:19px;font-weight:700;margin:0 0 14px;max-width:56ch}
+.opt{display:block;width:100%;text-align:left;background:var(--bg-alt);border:1.5px solid var(--border);
+  border-radius:9px;padding:12px 15px;margin-bottom:9px;font-family:'Inter',sans-serif;font-size:17px;
+  color:var(--text);cursor:pointer;transition:background .15s,border-color .15s;line-height:1.5}
+.opt:hover:not(:disabled){background:var(--primary-light);border-color:var(--primary)}
+.opt:focus-visible{outline:3px solid var(--primary);outline-offset:2px}
+.opt:disabled{cursor:default;opacity:.72}
+.opt.right{background:rgba(30,127,85,.14);border-color:var(--secondary);opacity:1;font-weight:600}
+.opt.wrong{background:rgba(174,58,50,.10);border-color:var(--accent-red);opacity:1}
+.q-feedback{display:none;margin-top:12px;padding:13px 16px;border-radius:9px;font-size:17px;line-height:1.6}
+.q-feedback.show{display:block}
+.q-feedback.good{background:rgba(30,127,85,.10);border-left:4px solid var(--secondary)}
+.q-feedback.oops{background:rgba(184,117,22,.10);border-left:4px solid var(--accent-orange)}
+
+/* BOXES */
+.bear-box{background:rgba(174,58,50,.05);border-left:4px solid var(--accent-red);
+  border-radius:0 10px 10px 0;padding:16px 20px;margin-bottom:14px}
+.bear-box .card-title{color:var(--accent-red)}
+.bull-box{background:rgba(30,127,85,.06);border-left:4px solid var(--secondary);
+  border-radius:0 10px 10px 0;padding:16px 20px;margin-bottom:14px}
+.bull-box .card-title{color:var(--secondary-dark)}
+.callout{background:var(--primary-light);border:1px solid var(--border);border-radius:10px;padding:18px 20px;margin:16px 0}
+blockquote{margin:16px 0;padding:14px 18px;background:var(--bg-alt);border-left:4px solid var(--primary);border-radius:0 8px 8px 0}
+blockquote p{margin:0 0 6px;font-size:18px;font-style:italic}
+blockquote cite{font-family:'JetBrains Mono',monospace;font-size:11px;font-style:normal;color:var(--text-muted)}
+.bar{height:13px;background:var(--bg-alt);border-radius:7px;overflow:hidden;margin:8px 0 4px}
+.bar span{display:block;height:100%;background:linear-gradient(90deg,var(--primary-dark),var(--primary))}
+
+/* TABLES */
+.table-wrap{overflow-x:auto;margin:16px 0}
+table{width:100%;border-collapse:collapse;font-size:16px;min-width:380px}
+th{background:var(--primary-dark);color:#F4FBFA;font-family:'JetBrains Mono',monospace;font-size:10.5px;
+  letter-spacing:1.1px;text-transform:uppercase;text-align:left;padding:11px 13px;font-weight:500}
+td{padding:11px 13px;border-bottom:1px solid var(--border-light);vertical-align:top}
+tbody tr:nth-child(odd){background:var(--bg)}
+tbody tr:nth-child(even){background:var(--bg-alt)}
+
+/* CHAIN */
+.chain{display:flex;flex-wrap:wrap;align-items:stretch;gap:8px;margin:18px 0}
+.chain .node{flex:1 1 145px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 13px;min-width:135px}
+.chain .node b{display:block;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:1.2px;
+  text-transform:uppercase;color:var(--primary);margin-bottom:5px}
+.chain .node span{font-size:14.5px;line-height:1.45;display:block}
+.chain .arrow{align-self:center;color:var(--primary);font-size:19px;font-weight:700}
+@media(max-width:768px){.chain .arrow{display:none}}
+
+/* SCORE */
+#scorebox{background:var(--surface-raised);border:2px solid var(--primary);border-radius:12px;
+  padding:24px;text-align:center;margin:22px 0}
+#scoreline{font-family:'JetBrains Mono',monospace;font-size:38px;font-weight:700;color:var(--primary-dark)}
+#scoremsg{font-size:18px;margin-top:8px}
+.resetbtn{background:var(--primary-dark);color:#F4FBFA;border:0;border-radius:8px;padding:10px 20px;
+  font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1.4px;text-transform:uppercase;
+  cursor:pointer;margin-top:14px}
+.resetbtn:hover{background:var(--primary)}
+
+/* TEAR SHEET */
+.tear{background:var(--surface-raised);border:2px solid var(--primary);border-radius:12px;padding:24px;margin:22px 0}
+.tear-head{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1.3px;color:var(--primary-dark);
+  border-bottom:1px solid var(--border);padding-bottom:11px;margin-bottom:18px;text-transform:uppercase}
+.tear-cols{display:grid;grid-template-columns:56% 44%;gap:24px}
+@media(max-width:768px){.tear-cols{grid-template-columns:1fr}}
+.tear h4{font-family:'Inter',sans-serif;font-size:14px;font-weight:700;margin:16px 0 6px;color:var(--primary-dark)}
+.tear ul{margin:4px 0 12px;padding-left:19px}
+.tear li{margin-bottom:4px;font-size:16px}
+.kv{font-family:'JetBrains Mono',monospace;font-size:13.5px;line-height:2}
+
+/* SOURCES */
+.src-group{margin-bottom:18px}
+.src-group h4{color:var(--primary-dark);font-family:'JetBrains Mono',monospace;font-size:11px;
+  letter-spacing:1.5px;text-transform:uppercase;margin:0 0 8px}
+.src-group a{display:block;font-size:15px;padding:4px 0;color:var(--primary-dark);
+  text-decoration:none;border-bottom:1px solid var(--border-light)}
+.src-group a:hover{color:var(--primary);text-decoration:underline}
+
+/* SIGNATURE + FOOTER */
+.signature{text-align:center;padding:32px 0 24px;border-top:1px solid var(--border)}
+.signature .sg-brand{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:var(--primary-dark)}
+.signature .sg-line{font-size:16px;font-style:italic;color:var(--text-muted);margin-top:7px}
+.signature .sg-date{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:1.6px;color:var(--text-muted);margin-top:10px}
+footer{position:relative;background:#03201F;color:#9CC7C1;overflow:hidden}
+#footCanvas{position:absolute;inset:0;width:100%;height:100%;display:block;opacity:.5}
+.foot-inner{position:relative;z-index:2;padding:40px 0 32px;text-align:center}
+.foot-tag{font-family:'Playfair Display',serif;font-size:20px;color:#5FBFB4;font-style:italic;margin-bottom:14px}
+.foot-disc{font-family:'JetBrains Mono',monospace;font-size:10.5px;line-height:2;color:#6E9B96;max-width:660px;margin:0 auto}
+@media(prefers-reduced-motion:reduce){#heroCanvas,#footCanvas{display:none}
+  .opt,.progress-strip .pbar i{transition:none}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <canvas id="heroCanvas"></canvas>
+  <div class="container hero-inner">
+    <div class="brand">Solid Peer Research | Sko · Learn-It Edition · 18 August 2026</div>
+    <h1>KORU Medical (KRMD)</h1>
+    <p class="hook">A tiny pump that runs on a spring. No batteries. 60,000 sick people use it every week. Here is how you pull a real company apart and look at both sides — with quizzes, so you know you actually got it.</p>
+
+    <div class="verdict">
+      🎯 HOW TO READ THIS: every good bit has a bad bit right next to it. Your job is to weigh them up — not to be told an answer.
+    </div>
+
+    <div class="hero-stats">
+      <div class="hstat"><div class="lab">Price of 1 share</div><div class="val">$3.40</div><div class="sub">A year ago: $6.61. It fell a lot.</div></div>
+      <div class="hstat"><div class="lab">Whole company costs</div><div class="val">$157M</div><div class="sub">Small. Really small.</div></div>
+      <div class="hstat"><div class="lab">Money in per year</div><div class="val">$48M</div><div class="sub">Growing about 15% a year</div></div>
+      <div class="hstat"><div class="lab">Money they owe</div><div class="val">$0</div><div class="sub">Zero debt. That's unusual.</div></div>
+    </div>
+  </div>
+</header>
+
+<div class="toc-bar">
+<a href="#what">What they do</a><a href="#how">The pump</a><a href="#forever">Money forever</a><a href="#numbers">The numbers</a><a href="#crash">The crash</a><a href="#good">Good</a><a href="#bad">Bad</a><a href="#worth">Worth it?</a><a href="#score">Your score</a><a href="#cheat">Cheat sheet</a><a href="#sources">Sources</a>
+</div>
+<div class="progress-strip">
+  <span>Checkpoints</span>
+  <span class="pbar"><i id="pfill"></i></span>
+  <span id="pcount">0 / 6</span>
+</div>
+
+<main class="container">
+
+<!-- WHAT -->
+<section class="report-section" id="what">
+<div class="section-label">Part 1</div>
+<h2>💊 What does KORU actually do?</h2>
+
+<div class="quick">
+<div class="qt">Quick take</div>
+<p>Some people's bodies can't fight germs. They need medicine pushed under their skin every week, forever. KORU makes the pump that pushes it.</p>
+</div>
+
+<p>Your body makes tiny germ-fighters called <b>antibodies</b>. They're your immune system's army.</p>
+
+<p>Some people don't make enough. Maybe they were born that way. Maybe cancer treatment wrecked it. Either way, a normal cold could put them in hospital.</p>
+
+<p>The fix is real antibodies, collected from thousands of blood donors. It's thick — like honey. And they need it <b>every single week, for life</b>.</p>
+
+<p>It used to mean a whole day at the hospital. Now they do it <b>at home, on the sofa, in about an hour</b>. KORU makes the pump that made that possible.</p>
+
+<div class="quiz" data-quiz="1">
+<div class="q-label">✅ Checkpoint 1 of 6</div>
+<p class="q-text">Why do KORU's customers keep coming back week after week?</p>
+<button class="opt" data-ok="0" data-why="Nope — the pumps are built to last. It's not about things breaking.">The pumps break really often</button>
+<button class="opt" data-ok="0" data-why="Not really — KORU is tiny and barely advertises. The reason people stay is that they medically have to.">KORU runs really good adverts</button>
+<button class="opt" data-ok="1" data-why="Yes! Their condition never goes away. It's not like a cold you get over. That's why the customers stay for years and years.">Their illness never goes away, so they need the medicine forever</button>
+<div class="q-feedback"></div>
+</div>
+</section>
+
+<!-- HOW -->
+<section class="report-section" id="how">
+<div class="section-label">Part 2</div>
+<h2>🔬 How the pump works (the cool bit)</h2>
+
+<div class="quick">
+<div class="qt">Quick take</div>
+<p>It's powered by a coiled spring, like inside a tape measure. And it's <b>safer</b> because it's dumb, not smarter.</p>
+</div>
+
+<p>Here's the problem. You have to push thick medicine under someone's skin. Push too fast and it hurts — it makes a painful lump. Push too slow and you're stuck there all night.</p>
+
+<p>Now do that perfectly. For an hour. Every week. By yourself.</p>
+
+<p>Most companies fix this with a computer — a pump with a battery, a screen, and buttons to press. KORU fixed it with a bent piece of steel.</p>
+
+<h3>Two parts. That's it.</h3>
+
+<p><b>Part 1 — the spring.</b> Inside is a steel ribbon coiled up like a tape measure. It's special: it <b>pushes just as hard the whole way</b>. Normal springs get weaker as they unwind. This one doesn't.</p>
+
+<p><b>Part 2 — the tube.</b> The tube has a tiny hole in it, made to an exact size. Small hole = slow. Bigger hole = faster.</p>
+
+<p>So the nurse doesn't program anything. <b>She just hands you the right tube.</b> That's the whole control panel.</p>
+
+<div class="chain">
+  <div class="node"><b>Start</b><span>Syringe of thick medicine</span></div>
+  <div class="arrow">→</div>
+  <div class="node"><b>Spring</b><span>Pushes steadily, gently, always the same</span></div>
+  <div class="arrow">→</div>
+  <div class="node"><b>Tube</b><span>The hole size sets the speed</span></div>
+  <div class="arrow">→</div>
+  <div class="node"><b>Needles</b><span>Spread across 1–4 spots</span></div>
+  <div class="arrow">→</div>
+  <div class="node"><b>Done</b><span>Slows down by itself if the body needs it to</span></div>
+</div>
+
+<h3>Why being dumb is safer</h3>
+
+<p>A computer pump is stubborn. It was told "push this fast," so it <b>keeps pushing</b> even when the body is struggling. It only stops when an alarm goes off — and by then it already hurt.</p>
+
+<p>The spring pump <i>can't</i> be stubborn. It only ever pushes gently. So when the body pushes back, <b>the flow quietly slows down on its own</b>. No alarm. Nobody has to do anything.</p>
+
+<p>That safety isn't a feature someone added. <b>It's just physics.</b> You can't copy it with better software — you'd have to start over. Then spend 30 years getting doctors to trust you.</p>
+
+<div class="callout">
+<p style="margin-bottom:0"><b>One number that says everything:</b> in a real study of 103 patients, <b>97 used KORU's stuff. 6 used the main rival's.</b> That's not winning a market. That's being the habit.</p>
+</div>
+
+<div class="quiz" data-quiz="2">
+<div class="q-label">✅ Checkpoint 2 of 6</div>
+<p class="q-text">Why is the spring pump safer than a computer pump?</p>
+<button class="opt" data-ok="1" data-why="Spot on. It only ever pushes gently, so if the body pushes back it just slows down by itself. Nothing to program, nothing to override, no alarm needed.">Because it can only push gently, so it slows down by itself when the body pushes back</button>
+<button class="opt" data-ok="0" data-why="Not the reason. Both types have safety testing. The real difference is what happens when something goes wrong mid-use.">Because it's tested more carefully</button>
+<button class="opt" data-ok="0" data-why="Actually the opposite! It has no alarm at all — and it doesn't need one, because it never pushes too hard in the first place.">Because it has a louder alarm</button>
+<div class="q-feedback"></div>
+</div>
+</section>
+
+<!-- FOREVER -->
+<section class="report-section" id="forever">
+<div class="section-label">Part 3</div>
+<h2>🖨️ The trick: money that keeps coming</h2>
+
+<div class="quick">
+<div class="qt">Quick take</div>
+<p>The pump is not how they make money. The tubes and needles are.</p>
+</div>
+
+<p>You know how a printer is cheap but the ink costs a fortune? Or a game console is sold cheap because they make it back on the games?</p>
+
+<p>Same trick here.</p>
+
+<p>You buy the pump once. But every single time you use it, you burn through a fresh <b>tube</b> and a fresh <b>needle set</b>. Those are KORU's parts. You can't use cheap knock-offs — a doctor has to approve them.</p>
+
+<ul class="big">
+<li><span class="ic">👥</span><b>60,000 people</b> use this right now</li>
+<li><span class="ic">📅</span>Most use it <b>every week</b></li>
+<li><span class="ic">♾️</span>Most will use it <b>for life</b></li>
+<li><span class="ic">🔁</span>That's roughly <b>3 million</b> tube-and-needle sales a year <i>(our estimate: 60,000 × 52 weeks)</i></li>
+</ul>
+
+<p>And here's the sneaky part — <b>it's really annoying to switch</b>. Your doctor has to agree. A nurse has to retrain you. Your insurance has to approve it. Nobody bothers.</p>
+
+<p>So the customers basically stay forever. That's the best kind of customer there is.</p>
+
+<div class="quiz" data-quiz="3">
+<div class="q-label">✅ Checkpoint 3 of 6</div>
+<p class="q-text">Which part of KORU's business is most like printer ink?</p>
+<button class="opt" data-ok="0" data-why="Nope — the pump is the printer. You buy it once and then it just sits there. The money comes from what it uses up.">The pump itself</button>
+<button class="opt" data-ok="1" data-why="Yes! The tubes and needles are the ink. Bought again and again, forever, by people who can't easily switch brands. That's the real business.">The tubes and needles</button>
+<button class="opt" data-ok="0" data-why="Not quite. KORU doesn't make the medicine at all — big drug companies do. KORU only makes the thing that delivers it.">The medicine</button>
+<div class="q-feedback"></div>
+</div>
+</section>
+
+<!-- NUMBERS -->
+<section class="report-section" id="numbers">
+<div class="section-label">Part 4</div>
+<h2>📊 The numbers</h2>
+
+<div class="quick">
+<div class="qt">Quick take</div>
+<p>They finally made a profit — their first since 2019. It was small. But the direction is what counts.</p>
+</div>
+
+<h3>Their last report card (5 August 2026)</h3>
+<ul class="big">
+<li><span class="ic">📈</span>Money in over 3 months: <b>$12 million</b> — up <span class="up">18%</span></li>
+<li><span class="ic">✅</span>Profit: <b>$252,000</b> — small, but their <b>first in 7 years</b></li>
+<li><span class="ic">💵</span>For every <b>$100</b> they sell, <b>$65</b> is left after making the product</li>
+<li><span class="ic">🏦</span>Money in the bank: <b>$8.3 million</b>. Owed to others: <b>zero</b>.</li>
+</ul>
+
+<h3>The most important thing on this whole page</h3>
+<p>Look at these two numbers next to each other:</p>
+
+<div class="grid2">
+<div class="card accent">
+<div class="card-title">Money coming in grew <span class="up">20%</span></div>
+<p style="margin-bottom:0">More sales.</p>
+</div>
+<div class="card accent">
+<div class="card-title">Money going out grew <span class="mono">9%</span></div>
+<p style="margin-bottom:0">Costs grew way slower.</p>
+</div>
+</div>
+
+<p>Think of it like pocket money. If your allowance goes up 20% but your spending only goes up 9%, <b>you end up with more left over</b> — and the gap gets bigger every year you keep it going.</p>
+
+<p>That gap turning into real profit is the whole reason anyone would buy this stock.</p>
+
+<div class="quiz" data-quiz="4">
+<div class="q-label">✅ Checkpoint 4 of 6</div>
+<p class="q-text">Sales grew 20%. Costs grew 9%. Why is that a big deal?</p>
+<button class="opt" data-ok="0" data-why="Not really — 20% is good but plenty of companies grow faster. The interesting part isn't the 20% on its own.">Because 20% is a huge growth number</button>
+<button class="opt" data-ok="0" data-why="Careful — cutting costs would mean costs going DOWN. These costs went UP by 9%. They're just going up slower than sales, which is the good bit.">Because it means they're cutting costs</button>
+<button class="opt" data-ok="1" data-why="Exactly. Money in is growing more than twice as fast as money out — so the leftover gap keeps getting wider. That gap is profit.">Because the gap between them turns into profit, and it keeps getting wider</button>
+<div class="q-feedback"></div>
+</div>
+</section>
+
+<!-- CRASH -->
+<section class="report-section" id="crash">
+<div class="section-label">Part 5</div>
+<h2>📉 So why did the price crash?</h2>
+
+<div class="quick">
+<div class="qt">Quick take</div>
+<p>They did better than expected — and the stock still fell 14%. Because they said one word investors hate: "later."</p>
+</div>
+
+<p>On 5 August, KORU reported <b>good</b> news. More sales than expected. More profit than expected.</p>
+
+<p>The next day the price fell <b class="down">13.8%</b>.</p>
+
+<p>Why? They'd promised Europe would take off in late 2026. Instead they said it'll mostly happen in <b>2027</b>. A year late.</p>
+
+<h3>Why Europe got slow</h3>
+
+<p>Last year Europe was amazing (+80%). But that was <b>one country</b> where the government picks one winner in a big contest. Win it, and you get the whole country at once. Boom.</p>
+
+<p>The other countries don't work like that. There's no contest to win. You have to convince <b>one patient at a time</b>. Slowly.</p>
+
+<blockquote>
+<p>"In tender markets, we win the pharma practically overnight. In other markets... it may take a little bit more time."</p>
+<cite>Adam Kalbermatten, boss of KORU — 5 August 2026</cite>
+</blockquote>
+
+<p><b>In normal words:</b> they didn't lose anything. They just ran out of the easy countries.</p>
+
+<div class="callout">
+<p style="margin-bottom:0"><b>Here's the clue we like most.</b> In the <i>same</i> announcement, they said sales would be lower — but they said profit per sale would be <b>higher</b>. A company in real trouble can't raise its prices. So this smells like "late," not "broken."</p>
+</div>
+
+<div class="quiz" data-quiz="5">
+<div class="q-label">✅ Checkpoint 5 of 6</div>
+<p class="q-text">The price fell 14% even though the results beat expectations. What does that teach you about the stock market?</p>
+<button class="opt" data-ok="1" data-why="That's the lesson. Prices move on how the FUTURE looks compared to what people hoped, not on how the past went. Good news + worse plans = price falls.">Prices react to what people expect NEXT, not just what already happened</button>
+<button class="opt" data-ok="0" data-why="Not true — the results really were good. Sales and profit both beat what experts predicted. Something else caused the drop.">The results were secretly bad and they hid it</button>
+<button class="opt" data-ok="0" data-why="Nope — the market is often a bit mad, but it wasn't random here. There was a clear reason: the Europe plan slipped by a year.">Stock prices are totally random</button>
+<div class="q-feedback"></div>
+</div>
+</section>
+
+<!-- GOOD -->
+<section class="report-section" id="good">
+<div class="section-label">Part 6</div>
+<h2>🟢 Four things that look good</h2>
+
+<div class="grid2">
+<div class="card accent">
+<div class="card-title">1 · The bosses bought shares</div>
+<p style="margin-bottom:0">Four times in six weeks, KORU's bosses bought shares <b>with their own money</b>. Nobody sold. That includes the new boss — buying two weeks before he started.</p>
+</div>
+<div class="card accent">
+<div class="card-title">2 · Profit per sale is climbing</div>
+<p style="margin-bottom:0">Out of every $100 sold, the leftover went <b>62 → 63 → 65 dollars</b>. And they signed a deal where their supplies get <b>cheaper the more they buy</b>.</p>
+</div>
+<div class="card accent">
+<div class="card-title">3 · You're paying last year's price</div>
+<p style="margin-bottom:0">Compared to its sales, the stock costs the same as it did 15 months ago — even though the company got bigger and better since. You get the improvement free.</p>
+</div>
+<div class="card accent">
+<div class="card-title">4 · A free lottery ticket</div>
+<p style="margin-bottom:0">Cancer treatment wrecks people's immune systems. Big drug firms are testing fixes right now — <b>using medicines already approved on KORU's pump</b>. If those work, KORU gets loads of new patients for free.</p>
+</div>
+</div>
+
+<div class="bull-box">
+<div class="card-title">🐂 Why insiders buying matters so much</div>
+<p style="margin-bottom:0">Anyone can <i>say</i> their company is great. It costs nothing. But spending your own paycheck on shares is different — you actually lose money if you're wrong. Right now they're all down on their purchase. And still nobody has sold.</p>
+</div>
+</section>
+
+<!-- BAD -->
+<section class="report-section" id="bad">
+<div class="section-label">Part 7</div>
+<h2>🐻 Three things that could go wrong</h2>
+
+<p>Read this bit properly. It's the part everyone skips and then regrets.</p>
+
+<div class="bear-box">
+<div class="card-title">🐻 Bear Case #1: The warehouses might already be full</div>
+<p>Europe grew 59%. But that growth came from <b>shops buying pumps</b> — not from patients using them.</p>
+<p>Those are very different! If shops stocked up for a big year that just moved to 2027, <b>the pumps are sitting in a warehouse</b>. You can't sell into a full warehouse. Next report, Europe could go <b>backwards</b>.</p>
+<p style="margin-bottom:0"><b>Possible Debunk:</b> Their own forecast says the rest of the year is roughly flat, not falling. And they raised their profit forecast, which you wouldn't do if you expected returns. <b>But honestly — KORU never tells us the warehouse number.</b> Nobody outside the company can check this. It is the biggest unknown in the whole report, and no amount of clever thinking makes it go away.</p>
+</div>
+
+<div class="bear-box">
+<div class="card-title">🐻 Bear Case #2: They keep saying "soon"</div>
+<p>March: promised a number. May: repeated it. August: made it smaller. They also cancelled a cancer plan they'd promised, and Europe slipped a year.</p>
+<p style="margin-bottom:0"><b>Possible Debunk:</b> Every miss has been about <b>timing</b>, never about people wanting less. Sales still grew 22%, then 20%. But if a friend promised you something three times and was late three times, you'd stop believing them too. That's what's happening to the share price.</p>
+</div>
+
+<div class="bear-box">
+<div class="card-title">🐻 Bear Case #3: Only 73 people work there</div>
+<p>Seventy-three. That's about two school classes. And they've promised to do five huge things at once — Europe, a cancer plan, an approval, a brand-new pump, and a digital system.</p>
+<p style="margin-bottom:0"><b>Possible Debunk:</b> If they were drowning, costs would be exploding. They're not — costs grew 9% while sales grew 20%. The hardest part of the new pump is already done. But 73 people is still 73 people. Something will probably be late.</p>
+</div>
+
+<h3>If it goes wrong, how bad?</h3>
+<div class="table-wrap">
+<table>
+<thead><tr><th>What goes wrong</th><th>Chance</th><th>Price</th></tr></thead>
+<tbody>
+<tr><td>Warehouses were full; next report is ugly</td><td class="mono">25%</td><td class="mono down">$2.65</td></tr>
+<tr><td>Growth fizzles out, nothing new lands</td><td class="mono">18%</td><td class="mono down">$2.30</td></tr>
+<tr><td>They run low on cash and sell cheap new shares</td><td class="mono">10%</td><td class="mono down">$1.85</td></tr>
+</tbody>
+</table>
+</div>
+
+<p><b>Notice we never said "it goes to zero."</b> That's not us being nice. It's because there's no debt, they make money on every sale, and 60,000 people still need the product next week no matter what the price does.</p>
+
+<div class="quiz" data-quiz="6">
+<div class="q-label">✅ Checkpoint 6 of 6</div>
+<p class="q-text">What is the one important thing nobody outside the company can check?</p>
+<button class="opt" data-ok="0" data-why="Not this — we can check it, and it works brilliantly. 97 out of 103 patients in that study used it.">Whether the pump actually works</button>
+<button class="opt" data-ok="1" data-why="Correct — and this is the most grown-up idea in the whole report. KORU never publishes the warehouse number, so nobody outside can check it. When you can't check something important, the honest move is to say so out loud — not to guess and sound confident.">Whether Europe's warehouses are already stuffed with unsold pumps</button>
+<button class="opt" data-ok="0" data-why="We can check that one — it's 73 people, and companies have to publish it. Not a mystery.">How many people work there</button>
+<div class="q-feedback"></div>
+</div>
+</section>
+
+<!-- WORTH -->
+<section class="report-section" id="worth">
+<div class="section-label">Part 8</div>
+<h2>🎯 What might it be worth?</h2>
+
+<div class="quick">
+<div class="qt">Quick take</div>
+<p>Nobody can know the future. So instead you write down several futures and guess how likely each one is.</p>
+</div>
+
+<div class="table-wrap">
+<table>
+<thead><tr><th>Future</th><th>What happens</th><th>Chance</th><th>Price</th></tr></thead>
+<tbody>
+<tr><td><b>🐻 Bad</b></td><td>Warehouses were full. Growth story breaks.</td><td class="mono">22%</td><td class="mono down">$2.40</td></tr>
+<tr><td><b>⚖️ Normal</b></td><td>Europe shows up a year late. Boring and fine.</td><td class="mono"><b>42%</b></td><td class="mono">$4.40</td></tr>
+<tr><td><b>🐂 Good</b></td><td>Europe delivers and the new medicine gets approved.</td><td class="mono">24%</td><td class="mono up">$5.75</td></tr>
+<tr><td><b>🚀 Amazing</b></td><td>All that, plus the cancer jackpot or a big firm buys them.</td><td class="mono">7%</td><td class="mono up">$7.25</td></tr>
+<tr><td><b>💀 Disaster</b></td><td>They run out of cash, or a safety problem.</td><td class="mono">5%</td><td class="mono down">$1.60</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="callout">
+<div class="card-title">Blend it together: <span class="big-fig" style="display:inline;font-size:26px">$4.34</span></div>
+<p style="margin-bottom:0">Multiply each price by its chance, then add them up. That gives $4.34, against $3.40 today. <b>But the single number is the least interesting part.</b> Look at the spread instead: anywhere from <b class="down">$1.60</b> to <b class="up">$7.25</b>. That whole range is the honest answer.</p>
+</div>
+
+<p>Notice that the two worst futures add up to a <b>27% chance</b>. That is not small. Anyone who shows you only the good column is selling you something.</p>
+<p><b>We are not telling you this is a good buy or a bad one.</b> The point of this whole page was to show you how the argument gets built — the reasons for, the reasons against, and the bit nobody can check. Grown-ups who do this for a living disagree with each other about KORU all the time.</p>
+</section>
+
+<!-- SCORE -->
+<section class="report-section" id="score">
+<div class="section-label">How did you do?</div>
+<h2>🏆 Your score</h2>
+<div id="scorebox">
+  <div id="scoreline">— / 6</div>
+  <div id="scoremsg">Scroll back up and answer the checkpoints. They're the dotted boxes.</div>
+  <button class="resetbtn" id="resetq" type="button">Reset quiz</button>
+</div>
+<p style="font-size:16px;color:var(--text-muted)">Getting one wrong is genuinely fine — the explanation is the useful bit, not the tick. Real analysts get things wrong constantly. The trick is noticing <i>which</i> bits you're unsure about, and saying so.</p>
+</section>
+
+<!-- CHEAT -->
+<section class="report-section" id="cheat">
+<div class="section-label">One page</div>
+<h2>📋 Cheat sheet</h2>
+<div class="tear">
+<div class="tear-head">KORU Medical · KRMD · $3.40 · 18 August 2026</div>
+<div class="tear-cols">
+<div>
+<h4>The whole story in 3 lines</h4>
+<p style="font-size:17px">KORU makes a battery-free pump used by 60,000 people every week, for life — and they buy fresh tubes and needles every time. Sales are growing twice as fast as costs, and they just made their first profit in 7 years. The price fell 14% anyway, because Europe is arriving a year late.</p>
+
+<h4>Numbers to remember</h4>
+<div class="kv">
+<b>1 share:</b> $3.40 (was $6.61)<br>
+<b>Whole company:</b> $157M<br>
+<b>Money in per year:</b> $48M<br>
+<b>Kept per $100 sold:</b> $65<br>
+<b>Cash:</b> $8.3M &nbsp; <b>Debt:</b> $0<br>
+<b>Customers:</b> ~60,000
+</div>
+
+<h4>3 things that could go wrong</h4>
+<ul>
+<li>Europe's warehouses might be full</li>
+<li>They've been late 3 times running</li>
+<li>Only 73 people work there</li>
+</ul>
+</div>
+
+<div>
+<h4>The range of outcomes</h4>
+<div class="big-fig">$1.60<span style="font-size:20px"> → </span>$7.25</div>
+<div class="kv" style="margin-bottom:12px">Blended middle: <b>$4.34</b> · Today: <b>$3.40</b></div>
+
+<h4>Chance it goes badly</h4>
+<div class="big-fig down">27%</div>
+<div class="kv" style="margin-bottom:12px">Bad + disaster futures combined</div>
+
+<h4>The 3 big ideas to take away</h4>
+<div class="kv" style="font-size:12.5px">
+1. Sell the razor, make money on blades<br>
+2. Customers who can't leave are gold<br>
+3. Say out loud what you can't check
+</div>
+
+<h4 style="margin-top:16px">If you remember one thing</h4>
+<p style="font-size:17px;margin-bottom:0">A boring machine that collects money from 60,000 people every single week. Whether that is worth $3.40 depends on things nobody can check yet — and that is a completely normal place to end up.</p>
+</div>
+</div>
+<div class="tear-head" style="border-bottom:0;border-top:1px solid var(--border);padding:14px 0 0;margin:20px 0 0">Solid Peer Research | Sko · 18 August 2026 · Not financial advice</div>
+</div>
+</section>
+
+<!-- SOURCES -->
+<section class="report-section" id="sources">
+<div class="section-label">Where this came from</div>
+<h2>📚 Where we got all this</h2>
+<p style="font-size:17px">Every number here came from one of these. <b>Never just trust someone's summary</b> — including ours. Go look.</p>
+
+<div class="src-group">
+<h4>The company's own reports</h4>
+<a href="https://www.businesswire.com/news/home/20260805069380/en/KORU-Medical-Systems-Announces-Second-Quarter-2026-Results-and-Updates-Full-Year-2026-Guidance" target="_blank">The results that made the price crash — 5 August 2026</a>
+<a href="https://investingnews.com/koru-medical-systems-announces-second-quarter-2026-results-and-updates-full-year-2026-guidance/" target="_blank">Same results, with all the money tables</a>
+<a href="https://investors.korumedical.com/" target="_blank">KORU's page for investors</a>
+</div>
+
+<div class="src-group">
+<h4>What the boss actually said</h4>
+<a href="https://www.investing.com/news/transcripts/earnings-call-transcript-koru-medical-beats-q2-2026-estimates-shares-fall-93CH-4839443" target="_blank">Full write-up of the 5 August call — the quote in Part 6 is from here</a>
+<a href="https://ng.investing.com/news/company-news/koru-medical-q2-2026-slides-profitability-returns-amid-guidance-shift-93CH-2641218" target="_blank">The slides they showed investors</a>
+</div>
+
+<div class="src-group">
+<h4>Proof the bosses bought shares</h4>
+<a href="https://www.stocktitan.net/sec-filings/KRMD/form-4-koru-medical-systems-inc-insider-trading-activity-2442a5eb9243.html" target="_blank">The new boss buys 12,500 shares — 11 June 2026</a>
+<a href="https://www.stocktitan.net/sec-filings/KRMD/form-4-koru-medical-systems-inc-insider-trading-activity-7e09ca322b8e.html" target="_blank">The tech boss buys 5,000 shares — 18 May 2026</a>
+</div>
+
+<div class="src-group">
+<h4>How the pump works</h4>
+<a href="https://www.gavinpublishers.com/article/view/enhancing-efficiency-in-home-based-subcutaneous-immunoglobulin-therapy-a-comparative-analysis-of-supply-selection-for-infusion-time-optimization" target="_blank">The 103-patient study — 97 used KORU, 6 used the rival</a>
+<a href="https://www.dovepress.com/mechanical-versus-electronic-infusion-systems-in-subcutaneous-immunogl-peer-reviewed-fulltext-article-MDER" target="_blank">Spring pumps vs computer pumps — doctors' review, 2026</a>
+<a href="https://korumedical.com/freedom60/" target="_blank">KORU's own page about the pump</a>
+</div>
+
+<div class="src-group">
+<h4>Market numbers</h4>
+<a href="https://stockanalysis.com/stocks/krmd/" target="_blank">Live price and news</a>
+<a href="https://www.tipranks.com/news/the-fly/koru-medical-price-target-lowered-to-6-from-7-at-craig-hallum-thefly-news" target="_blank">An expert lowers their target after the results — 6 August 2026</a>
+</div>
+</section>
+
+</main>
+
+<div class="container">
+<div class="signature">
+<div class="sg-brand">Solid Peer Research | Sko</div>
+<div class="sg-line">Steady push, right-sized hole, no batteries. Good businesses work the same way.</div>
+<div class="sg-date">18 AUGUST 2026</div>
+</div>
+</div>
+
+<footer>
+<canvas id="footCanvas"></canvas>
+<div class="container foot-inner">
+<div class="foot-tag">Sixty thousand people. Once a week. For life.</div>
+<div class="foot-disc">
+<b>This is for learning, not for buying anything.</b> It is not financial advice.<br><br>
+If you're under 18 you can't buy shares by yourself anyway — an adult has to open a special account for you. That's a good rule. Investing means you can lose money, including all of it.<br><br>
+If any of this got you curious, that's brilliant. Go talk to a parent, a teacher, or someone who knows about money. Ask them what they think of the bear cases. That's more useful than any number in here.<br><br>
+Prices are from 10 August 2026 and will have changed by the time you read this. The author may own or trade this stock.<br><br>
+© 2026 Solid Peer Research | Sko
+</div>
+</div>
+</footer>
+
+<script>
+/* ---------- QUIZ ---------- */
+(function(){
+  var TOTAL = 6, done = 0, right = 0;
+  var fill = document.getElementById('pfill'),
+      count = document.getElementById('pcount'),
+      line = document.getElementById('scoreline'),
+      msg = document.getElementById('scoremsg');
+
+  function paint(){
+    fill.style.width = (done/TOTAL*100) + '%';
+    count.textContent = done + ' / ' + TOTAL;
+    if(done === 0){
+      line.textContent = '— / ' + TOTAL;
+      msg.textContent = "Scroll back up and answer the checkpoints. They're the dotted boxes.";
+      return;
+    }
+    line.textContent = right + ' / ' + TOTAL;
+    if(done < TOTAL){
+      msg.textContent = 'You have done ' + done + ' so far. Keep going!';
+    } else if(right === TOTAL){
+      msg.textContent = 'Every single one. You properly understand how this company makes money.';
+    } else if(right >= 4){
+      msg.textContent = 'Strong. Go back and re-read the explanations on the ones you missed.';
+    } else {
+      msg.textContent = "That's fine — this is genuinely hard stuff. Re-read the Quick Take boxes at the top of each part.";
+    }
+  }
+
+  document.addEventListener('click', function(e){
+    var btn = e.target.closest ? e.target.closest('.opt') : null;
+    if(!btn || btn.disabled) return;
+    var quiz = btn.closest('.quiz');
+    if(!quiz || quiz.dataset.answered === '1') return;
+
+    quiz.dataset.answered = '1';
+    var ok = btn.getAttribute('data-ok') === '1';
+    var opts = quiz.querySelectorAll('.opt');
+    for(var i=0;i<opts.length;i++){
+      opts[i].disabled = true;
+      if(opts[i].getAttribute('data-ok') === '1') opts[i].classList.add('right');
+    }
+    if(!ok) btn.classList.add('wrong');
+
+    var fb = quiz.querySelector('.q-feedback');
+    fb.textContent = (ok ? '✅ ' : '💡 ') + btn.getAttribute('data-why');
+    fb.className = 'q-feedback show ' + (ok ? 'good' : 'oops');
+
+    done++; if(ok) right++;
+    paint();
+  });
+
+  document.getElementById('resetq').addEventListener('click', function(){
+    done = 0; right = 0;
+    var quizzes = document.querySelectorAll('.quiz');
+    for(var i=0;i<quizzes.length;i++){
+      quizzes[i].dataset.answered = '0';
+      var o = quizzes[i].querySelectorAll('.opt');
+      for(var j=0;j<o.length;j++){ o[j].disabled = false; o[j].className = 'opt'; }
+      var f = quizzes[i].querySelector('.q-feedback');
+      f.className = 'q-feedback'; f.textContent = '';
+    }
+    paint();
+    document.getElementById('what').scrollIntoView({behavior:'smooth'});
+  });
+
+  paint();
+})();
+
+/* ---------- HERO AMBIENT ---------- */
+(function(){
+  var c=document.getElementById('heroCanvas'); if(!c) return;
+  var ctx=c.getContext('2d'),W,H,drops=[],t=0;
+  function size(){var r=c.getBoundingClientRect();c.width=W=Math.max(1,r.width);c.height=H=Math.max(1,r.height);}
+  function lineY(x,i){return H*(0.22+i*0.19)+Math.sin(x/150+i*1.7+t/90)*16;}
+  function init(){drops=[];for(var i=0;i<44;i++){drops.push({x:Math.random()*W,lane:i%4,sp:.22+Math.random()*.45,r:1.4+Math.random()*2.6,a:.2+Math.random()*.55});}}
+  size();init();
+  window.addEventListener('resize',function(){size();init();});
+  function frame(){
+    t++;ctx.clearRect(0,0,W,H);
+    for(var L=0;L<4;L++){ctx.beginPath();for(var x=0;x<=W;x+=14){var y=lineY(x,L);if(x===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);}
+      ctx.strokeStyle='rgba(127,207,196,0.13)';ctx.lineWidth=1.1;ctx.stroke();}
+    for(var i=0;i<drops.length;i++){var d=drops[i];d.x+=d.sp;if(d.x>W+12){d.x=-12;}
+      var yy=lineY(d.x,d.lane);ctx.beginPath();ctx.ellipse(d.x,yy,d.r*.78,d.r*1.15,0,0,Math.PI*2);
+      ctx.fillStyle='rgba(160,226,214,'+d.a+')';ctx.fill();}
+    for(var L2=0;L2<4;L2++){var ph=(t/200+L2*.25)%1,bx=W*.88,by=lineY(bx,L2);
+      ctx.beginPath();ctx.arc(bx,by,ph*46,0,Math.PI*2);
+      ctx.strokeStyle='rgba(127,207,196,'+(0.22*(1-ph))+')';ctx.lineWidth=1.4;ctx.stroke();}
+    requestAnimationFrame(frame);
+  }
+  frame();
+})();
+
+/* ---------- CLICK: a dose being delivered ---------- */
+function smallBoom(x,y){
+  var box=document.createElement('div');
+  box.style.cssText='position:fixed;left:'+x+'px;top:'+y+'px;width:0;height:0;pointer-events:none;z-index:9999;';
+  document.body.appendChild(box);
+  var p=document.createElement('div');
+  p.style.cssText='position:absolute;left:-16px;top:-3px;width:32px;height:6px;border-radius:3px;background:#0E6E6E;opacity:.9;';
+  box.appendChild(p);
+  p.animate([{transform:'scaleX(0.2)',opacity:.95},{transform:'scaleX(1.5)',opacity:0}],{duration:420,easing:'cubic-bezier(.2,.8,.3,1)',fill:'forwards'});
+  for(var i=0;i<14;i++){
+    var d=document.createElement('div'),sz=4+Math.random()*4;
+    d.style.cssText='position:absolute;left:0;top:0;width:'+sz+'px;height:'+(sz*1.3)+'px;border-radius:50% 50% 45% 45%;background:#15857F;opacity:.85;';
+    box.appendChild(d);
+    var ang=(-Math.PI/2)+(Math.random()-.5)*1.05,dist=30+Math.random()*52;
+    d.animate([{transform:'translate(0px,0px) scale(.5)',opacity:.9},
+      {transform:'translate('+(Math.cos(ang)*dist)+'px,'+(Math.sin(ang)*dist)+'px) scale(1)',opacity:0}],
+      {duration:480+Math.random()*120,easing:'cubic-bezier(.15,.7,.3,1)',fill:'forwards'});
+  }
+  var r=document.createElement('div');
+  r.style.cssText='position:absolute;left:-6px;top:-6px;width:12px;height:12px;border-radius:50%;border:1.5px solid #1E7F55;opacity:.8;';
+  box.appendChild(r);
+  r.animate([{transform:'scale(.4)',opacity:.8},{transform:'scale(4.2)',opacity:0}],{duration:520,easing:'ease-out',fill:'forwards'});
+  setTimeout(function(){if(box.parentNode)box.parentNode.removeChild(box);},700);
+}
+function bigBoom(x,y){
+  var box=document.createElement('div');
+  box.style.cssText='position:fixed;left:'+x+'px;top:'+y+'px;width:0;height:0;pointer-events:none;z-index:9999;';
+  document.body.appendChild(box);
+  for(var s=0;s<3;s++){
+    var coil=document.createElement('div'),d0=14+s*9;
+    coil.style.cssText='position:absolute;left:'+(-d0/2)+'px;top:'+(-d0/2)+'px;width:'+d0+'px;height:'+d0+'px;border-radius:50%;border:2px solid #0E6E6E;border-right-color:transparent;border-bottom-color:transparent;opacity:.85;';
+    box.appendChild(coil);
+    coil.animate([{transform:'rotate(0deg) scale(1)',opacity:.9},{transform:'rotate('+(320+s*90)+'deg) scale(2.6)',opacity:0}],
+      {duration:640+s*70,easing:'cubic-bezier(.2,.7,.3,1)',fill:'forwards'});
+  }
+  for(var i=0;i<22;i++){
+    var d=document.createElement('div'),sz=4+Math.random()*5;
+    d.style.cssText='position:absolute;left:0;top:0;width:'+sz+'px;height:'+(sz*1.35)+'px;border-radius:50% 50% 45% 45%;background:#15857F;opacity:.9;';
+    box.appendChild(d);
+    var ang=(i/22)*Math.PI*2+Math.random()*.28,dist=55+Math.random()*95;
+    d.animate([{transform:'translate(0px,0px) scale(.4)',opacity:.95},
+      {transform:'translate('+(Math.cos(ang)*dist)+'px,'+(Math.sin(ang)*dist)+'px) scale(1.05)',opacity:0}],
+      {duration:700+Math.random()*140,easing:'cubic-bezier(.12,.72,.28,1)',fill:'forwards'});
+  }
+  for(var b=0;b<10;b++){
+    var ring=document.createElement('div');
+    ring.style.cssText='position:absolute;left:-5px;top:-5px;width:10px;height:10px;border-radius:50%;border:1.5px solid #1E7F55;opacity:.75;';
+    box.appendChild(ring);
+    var ba=(b/10)*Math.PI*2+.3,bd=70+Math.random()*40;
+    ring.animate([{transform:'translate(0px,0px) scale(.3)',opacity:0},
+      {transform:'translate('+(Math.cos(ba)*bd*.62)+'px,'+(Math.sin(ba)*bd*.62)+'px) scale(1.6)',opacity:.7,offset:.55},
+      {transform:'translate('+(Math.cos(ba)*bd)+'px,'+(Math.sin(ba)*bd)+'px) scale(4.4)',opacity:0}],
+      {duration:800,easing:'ease-out',fill:'forwards'});
+  }
+  var core=document.createElement('div');
+  core.style.cssText='position:absolute;left:-9px;top:-9px;width:18px;height:18px;border-radius:50%;background:#7FCFC4;opacity:.7;';
+  box.appendChild(core);
+  core.animate([{transform:'scale(.3)',opacity:.75},{transform:'scale(3.4)',opacity:0}],{duration:600,easing:'ease-out',fill:'forwards'});
+  setTimeout(function(){if(box.parentNode)box.parentNode.removeChild(box);},1100);
+}
+var lastClick=0,clickTimer=null;
+document.addEventListener('click',function(e){
+  if(e.target.closest && e.target.closest('button, a')) return;
+  var now=Date.now();
+  if(now-lastClick<300){clearTimeout(clickTimer);bigBoom(e.clientX,e.clientY);lastClick=0;}
+  else{lastClick=now;clickTimer=setTimeout(function(){smallBoom(e.clientX,e.clientY);},300);}
+});
+document.addEventListener('dblclick',function(e){e.preventDefault();});
+
+/* ---------- FOOTER CANVAS ---------- */
+(function(){
+  var c=document.getElementById('footCanvas'); if(!c) return;
+  var ctx=c.getContext('2d'),W,H,t=0,drops=[],blooms=[];
+  function size(){var r=c.getBoundingClientRect();c.width=W=Math.max(1,r.width);c.height=H=Math.max(1,r.height);
+    drops=[];for(var i=0;i<34;i++){drops.push({x:Math.random()*W,lane:i%3,sp:.3+Math.random()*.5,r:1.3+Math.random()*2.2,a:.25+Math.random()*.5});}}
+  function laneY(x,i){return H*(0.3+i*0.22)+Math.sin(x/120+i*2.1+t/110)*10;}
+  size();window.addEventListener('resize',size);
+  function frame(){
+    t++;ctx.clearRect(0,0,W,H);
+    for(var L=0;L<3;L++){ctx.beginPath();for(var x=0;x<=W;x+=16){var y=laneY(x,L);if(x===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);}
+      ctx.strokeStyle='rgba(95,191,180,0.14)';ctx.lineWidth=1;ctx.stroke();}
+    for(var i=0;i<drops.length;i++){var d=drops[i];d.x+=d.sp;
+      if(d.x>W+10){d.x=-10;blooms.push({x:W*.9,y:laneY(W*.9,d.lane),r:0,a:.5});}
+      var yy=laneY(d.x,d.lane);ctx.beginPath();ctx.ellipse(d.x,yy,d.r*.8,d.r*1.2,0,0,Math.PI*2);
+      ctx.fillStyle='rgba(127,207,196,'+d.a+')';ctx.fill();}
+    for(var b=blooms.length-1;b>=0;b--){var bl=blooms[b];bl.r+=.85;bl.a-=.011;
+      if(bl.a<=0){blooms.splice(b,1);continue;}
+      ctx.beginPath();ctx.arc(bl.x,bl.y,bl.r,0,Math.PI*2);
+      ctx.strokeStyle='rgba(30,127,85,'+bl.a+')';ctx.lineWidth=1.2;ctx.stroke();}
+    if(blooms.length>40)blooms.splice(0,blooms.length-40);
+    requestAnimationFrame(frame);
+  }
+  frame();
+})();
+</script>
+</body>
+</html>
